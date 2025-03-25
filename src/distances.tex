@@ -80,9 +80,9 @@ Note that since it is not symmetric, it is not an actual distance.
     \vspace{-18pt}
     \begin{align*}
         &\text{Discrete case:}\\
-        &I(X,Y) = D_{KL}(p_{XY} || p_X p_Y) = \sum_{i,j} p_{XY}(a_i, a_j) \log \left ( \frac{p_{XY}(a_i, a_j)}{p_X(a_i)p_y(a_j)} \right ) = H(X) + H(Y) - H(X,Y)\\
+        &I(X,Y) = D_{KL}(p_{XY} || p_X p_Y) = \sum_{i,j} p_{XY}(a_i, a_j) \log \left ( \frac{p_{XY}(a_i, a_j)}{p_X(a_i)p_y(a_j)} \right ) = \\ &= H(X) + H(Y) - H(X;Y)\\
         &\text{Continuous case:}\\
-        &I(X,Y) = D_{KL}(f_{XY} || f_X f_Y) = \int_{-\infty}^{\infty} f_{XY}(x,y) \log \left ( \frac{f_{XY}(x,y)}{f_X(x)f_Y(y)} \right ) dx dy = H(X) + H(Y) - H(X,Y)
+        &I(X,Y) = D_{KL}(f_{XY} || f_X f_Y) = \int_{-\infty}^{\infty} f_{XY}(x,y) \log \left ( \frac{f_{XY}(x,y)}{f_X(x)f_Y(y)} \right ) dx dy = \\ &= H(X) + H(Y) - H(X;Y)
     \end{align*}
 }
 Mutual information measures how dependent the two distributions are. It quantifies how much the product of the marginals can reconstruct the joint distribution.

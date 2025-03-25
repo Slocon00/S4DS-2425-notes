@@ -100,3 +100,85 @@ Another issue that may arise is when the support of the random variable is bound
 
 \subsection{Numerical summaries}
 
+\paragraph{Sample summaries} Summaries of the empirical data can be used to estimate summaries of the true distribution. The following are some common ones:
+\begin{itemize}
+    \item \textbf{Sample mean}:
+    \begin{equation*}
+        \bar{x} = \frac{x_1 + \ldots + x_n}{n}
+    \end{equation*}
+    \item \textbf{Median}:
+    Let $x_1, x_2, \ldots, x_n$ be the data in the sample, sorted.
+    \begin{equation*}
+        Med(x_1, \ldots, x_n) = \begin{cases}
+            x_{n/2} &\text{if } n \text{ is odd}\\
+            \frac{x_{n/2} + x_{n/2 + 1}}{2} &\text{if } n \text{ is even} 
+        \end{cases}
+    \end{equation*}
+    The median of a distriution corresponds to the $0.5^{th}$ quantile.
+    \item \textbf{Sample variance and standard deviation}:
+    \begin{align*}
+        &s_n^2 = \frac{\sum_i^n (x_i - \bar{x_n})^2}{n-1} & s_n = \sqrt{s_n^2}
+    \end{align*}
+    \item \textbf{Median of absolute deviations}:
+    \begin{equation*}
+        MAD(x_1, \ldots, x_n) = Med(|x_1 - Med(x_1, \ldots, x_n)|, \ldots, |x_n - Med(x_1, \ldots, x_n|))
+    \end{equation*}
+    If the distribution is symmetric, the MAD is exactly equal to the difference between the $0.75^{th}$ and $0.5^{th}$ quantiles.
+\end{itemize}
+
+\paragraph{Order statistics} Let $x_1, x_2, \ldots, x_n$ be the ordered sequence of values in a sample. $x_{\langle i \rangle}$ is the $i^{th}$ order statistic. Order statistics are used to calculate empirical quantiles. Formally, the $p^{th}$ quantile is the value $q_p$ such that $q_p = \inf_x \{ P(X \leq x) \geq p \} = \inf_x \{F(x) \geq p\}$ (to be read as: ``the smallest number $x$ such that the probability of $X$ being less or equal than $x$ is greater or equal than $p$''). To find the empirical quantiles, we use the empirical approximation of the CDF in place of the true CDF:
+\[
+    q_p = \inf_x \{ F_n(x) \geq p \} = \inf_x \left\{\frac{|\{i | x_i \leq x \}|}{n} \geq p \right\}
+\]
+There are actually many ways to find the quantiles of a distribution. In \texttt{R}, there are 9 variants. The default one is type 7:
+\begin{equation*}
+    p = \frac{i-1}{n-1} \implies q_p = x_{\langle p\cdot(n-1) + 1 \rangle}
+\end{equation*}
+Another common choice is type 6:
+\begin{equation*}
+    p = \frac{i}{n+1} \implies q_p = x_{\langle p \cdot (n+1) \rangle}
+\end{equation*}
+The difference between the methods is irrelevant for big enough datasets.
+
+What if the supposed index of the quantile is not an integer? In this case, the quantile is approximated using linear interpolation. Let $k = \lfloor p \cdot (n+1) \rfloor$ (or whatever other formula is used by the chosen method). Then,
+\begin{equation*}
+    q_p = x_{\langle k \rangle} + \alpha \cdot (x_{\langle k+1 \rangle} - x_{\langle k \rangle})
+\end{equation*}
+where $\alpha = p \cdot (n+1) - k$, i.e., the decimal part of the index.
+
+\paragraph{Association and correlation}
+\textbf{Association} measures how much information one variable provides on another. If two variables are independent, they are not associated. Association is maximum when one variable is a (invertible) function of the other. \textbf{Correlation} measures the presence and strenght of an increasing/decreasing trend between two variables. If two variables are independent, their correlation is always 0, but the opposite is not always true.
+\boxdefinition{Correlation}{
+    Let $X$ and $Y$ be two random variables. The correlation coefficient $\rho$ is defined to be 0 if $Var(X) = 0$ or $Var(Y) = 0$, and otherwise as
+    \begin{eqnarray}
+        \rho = \frac{Cov(X, Y)}{\sqrt{Var(X) \cdot Var(Y)}}
+    \end{eqnarray}
+}
+Some common correlation coefficients are:
+\begin{itemize}
+    \item \textbf{Pearson's r}: it is obtained by substituting the sample covariance and the sample standard deviations of the random variables in the formula above:
+    \begin{align*}
+        &s_{xy} = \frac{\sum_{i=1}^n (x_i - \bar{x}) \cdot (y_i - \bar{y})}{n-1} &r = \frac{s_{xy}}{s_x \cdot s_y}
+    \end{align*}
+    It is bounded in the interval $[-1,1]$. The computational cost to calculate it is $O(n)$. A limitation of Pearson's r is that it can only detect linear relationships between random variables, and it can only be used when the variables are continuous.
+    \item \textbf{Spearman's $\rho$}: this coefficient is calculated as the correlation between ranks of the observations. Let $\textit{rank}(x)$ be the ranks of the values of the variable $x$. Then, Spearman's $\rho$ is calculated as
+    \begin{equation*}
+        \rho = r(\textit{rank}(x), \textit{rank}(y)) = 1 - \frac{6 \sum_{i=1}^n (rank(x)_i - rank(y)_i)^2}{n\cdot(n^2 - 1)} 
+    \end{equation*}
+    This coefficient assesses monotonic relationships of any kind (both linear and non-linear). The computational cost to calculate it is $O(n \cdot \log n)$, since it requires a sorting of the data to compute the ranks. It can be used when both variables are ordinal, continuous, or when one is ordinal and the other is continuous.
+    \item \textbf{Kendall's $\tau$}: this coefficient compares the sign of the differences between successive pairs of observations. It is calculated as
+    \begin{equation*}
+        \tau_a = \frac{2 \sum_{i<j} \textit{sign}(x_i - x_j) \cdot \textit{sign}(y_i - y_j)}{n \cdot (n-1)}
+    \end{equation*}
+    It calculates the fraction of concordant pairs minus discordant pairs of values between the two variables, and it is bounded in the interval $[-1,1]$. The computational cost to calculate it is $O(n^2)$. There is a variant, $\tau_b$, which also takes into account the possibility of ties; instead of dividing by $n \cdot (n-1)$, it counts how many pairs do not present a tie in $x$ or $y$. It can be used when both variables are ordinal, or when one is ordinal and the other is continuous.
+    \item \textbf{Somer's D}: this coefficient is used when one variable is continuous and the other is binary. It can be seen as an asymmetric version of Kendall's $\tau$:
+    \begin{eqnarray}
+        D = \frac{\tau_{xy}}{\tau{yy}} = \frac{\sum_{i<j} \textit{sign}(x_i - x_j) \cdot \textit{sign}(y_i - y_j)}{\sum_{i<j} \textit{sign}(y_i - y_j)^2}
+    \end{eqnarray}
+    It calculates the fraction of concordant pairs minus discordant pairs over the number of unequal pairs of values in $y$. An example application can be seen with probabilistic classifiers: $x$ is the confidence prediction of an example being positive, $y$ is the true class, and $D$ is the Gini index of the classifier.
+    \item \textbf{Thiel's U}: it is used when both variables are nominal. It can be calculated in a symmetric and an asymmetric way:
+    \begin{align*}
+        &U_{sym} = \frac{2 \cdot I(X,Y)}{H(X) + H(Y)} &U_{asym} = \frac{I(X,Y)}{H(X)}
+    \end{align*}
+    where $I(X,Y)$ is the mutual information between $X$ and $Y$, and $H(X), H(Y)$ are the entropies of the two random variables. The asymmetrical version, specifically, indicates what fraction of $X$ can be predicted by $Y$.
+\end{itemize}
