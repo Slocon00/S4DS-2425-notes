@@ -1,0 +1,3 @@
+*.synctex.gz
+src/svg-inkscape/
+/build/

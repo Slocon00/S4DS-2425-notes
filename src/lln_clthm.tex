@@ -1,0 +1,114 @@
+\section*{The law of large numbers}
+
+For many experiments that concern natural phenomena, different executions of the same experiment will likely yield different results. The variation in the outcome is due to randomness caused by uncontrollable factors. To mitigate the effect of this randomness, the same experiment can be repeated a number of times and the \textbf{average} of the results is studied instead. Formally, given $X_1, X_2, \dots, X_n$ independent random variables, their average is
+\begin{equation*}
+    \bar{X}_n = \frac{X_1 + X_2 + \ldots + X_n}{n}
+\end{equation*}
+\boxdefinition{Expected value and variance  of an average}{
+    If $\bar{X}_n$ is the average of $n$ independent random variables with the same expectation $\mu$ and variance $\sigma^2$, then
+    \begin{align*}
+        &\E[\bar{X}_n] = \mu &Var(\bar{X}_n) = \frac{\sigma^2}{n}
+    \end{align*}
+}
+The random variables do not need to be identically distributed. Note that the variance is inversely proportional to the number of random variables contributing to the average: the more variables we have, the more stable the average becomes.
+
+\boxdefinition{Markov's inequality}{
+    Let $X \geq 0$ be a random variable, and let $a > 0$. Then
+    \begin{equation*}
+        P(X \geq a) \leq \frac{\E[X]}{a}
+    \end{equation*}
+    \textbf{Corollary:} Assume $X \geq 0$, $\E[X] > 0$ and $k > 0$. Then
+    \begin{equation*}
+        P(X \geq k \E[X]) \leq \frac{1}{k}
+    \end{equation*}
+}
+The proof is as follows: let $\mathbbm{1}_{X \geq \alpha}$ be an indicator variable that is 1 if $X \geq \alpha$ and 0 otherwise. Then
+\begin{align*}
+    \alpha \mathbbm{1}_{X \geq \alpha} \leq X\\
+    \E[\alpha \mathbbm{1}_{X \geq \alpha}] \leq \E[X]\\
+    \alpha P(X \geq \alpha) \leq \E[X]\\
+    P(X \geq \alpha) \leq \frac{\E[X]}{\alpha}
+\end{align*}
+
+\boxdefinition{Chebyshev's inequality}{
+    Let $X$ be a random variable, and $a > 0$. Then
+    \begin{equation*}
+        P(|X - \E[X]| \geq a) \leq \frac{Var(X)}{a^2} 
+    \end{equation*}
+}
+This inequality claims that most of the probability mass of a random variable is within a few standard deviations from the expected value. It is a consequence of Markov's inequality:
+\begin{align*}
+    P(|X - \E[X]| \geq a) = P((X - \E[X])^2 \geq a^2) \leq \frac{\E[(X - \E[X])^2]}{a^2} = \frac{Var(X)}{a^2}
+\end{align*}
+Now, we can apply Chebyshev's inequality to the average of $n$ independent random variables, obtaining the following result:
+\boxdefinition{The (weak) law of large numbers}{
+    Let $\bar{X}_n$ be the average of $n$ independent random variables with the same expectation $\mu$ and variance $\sigma^2$. Then, for any $\varepsilon > 0$,
+    \begin{equation*}
+        \lim_{n \to \infty} P(|\bar{X}_n - \mu| > \varepsilon) = 0
+    \end{equation*}
+}
+This law confirms what we previously observed with the variance of the average. As $n$ goes to infinity, the probability that the value of the average significantly deviates from its expectation (that is also the same of the individual random variables in the average) becomes zero. This also holds if $\sigma^2$ is infinite, as long as the individual random variables have finite expectation.
+
+The consequence of the law of large numbers is that by calculating the average of a reasonably large enough set of random variables we can recover not only the mean and the stardard deviation, but pretty much any feature of the distribution of the random variables. Next up are two application examples.
+
+\paragraph{Recovering the probability of an event} Assume we want to know the probability that the outcome of some experiment falls within a certain range, i.e., $p = P(a \leq X \leq b)$. We run $n$ independent measurements of this same experiment, and we model those results with the r.v.s $X_1, X_2, \dots, X_n$. Then, we can define an indicator variable for each $X_i$:
+\begin{equation*}
+    Y_i = \mathbbm{1}_{a \leq X_i \leq b} = \begin{cases}
+        1 & \text{if } a \leq X_i \leq b\\
+        0 & \text{otherwise}
+    \end{cases}
+\end{equation*}
+The $Y_i$ are also independent (per the propagation of independence seen previously). Since $Y_i$ is an indicator variable, we know that
+\begin{align*}
+    &\E[Y_i] = p = P(a \leq X_i \leq b) &Var(Y_i) = p(1 - p)
+\end{align*}
+Let $\bar{Y}_n$ be the average of the indicator variables. By the law of large numbers:
+\begin{equation*}
+    \lim_{n \to \infty} P(|\bar{Y_n} - p| > \varepsilon) = 0
+\end{equation*}
+Informally, this means that if we perform the experiment $n$ times, count the amount of times the outcome falls within the range $[a, b]$, and divide by $n$, we get an estimate of the real probability of that event. The larger $n$ is, the better the estimate becomes.
+
+\paragraph{Estimating conditional probability} We want to estimate the conditional probability for two random variables: $p = P(C = c | A = a) = P(A=a, C=c)/P(A=a) = p_{ac}/p_a$. We run $n$ independent measurements of the experiment, modeling each result as a pair $(A_i, C_i)$. We define indicator variables as the example above:
+\begin{align*}
+    &Y_i = \mathbbm{1}_{A_i = a \land C_i = c} = \begin{cases}
+        1 & \text{if } A_i = a \land C_i = c\\
+        0 & \text{otherwise}
+    \end{cases}\\
+    &Z_i = \mathbbm{1}_{A_i = a} = \begin{cases}
+        1 & \text{if } A_i = a\\
+        0 & \text{otherwise}
+    \end{cases}
+\end{align*}
+By applying the (strong) law of large numbers, we get that
+\begin{align*}
+    \lim_{n \to \infty} P(\bar{Y}_n = p_{ac}) = 1 \\
+    \lim_{n \to \infty} P(\bar{Z}_n = p_a) = 1
+\end{align*}
+The two limits can be condensed in a ratio to estimate the conditional probability:
+\begin{equation*}
+    \lim_{n \to \infty} P(\frac{\bar{Y}_n}{\bar{Z}_n} = \frac{p_{ac}}{p_a}) = 1
+\end{equation*}
+
+\boxdefinition{Hoeffding bound}{
+    If $\bar{X}_n$ is the average of $n$ independent random variables with the same expectation $\mu$ and $P(a \leq X_i \leq b) = 1$, then for any $\varepsilon > 0$:
+    \begin{equation*}
+        P(|\bar{X}_n - \mu| \geq \varepsilon) \leq 2e^{-2n\varepsilon^2 / (b-a)^2} 
+    \end{equation*}
+}
+This offers a tight bound on the probability that the average deviates from its expectation by an arbitrarily small amount, but requires that the random variables have a bounded support.
+
+\section*{The central limit theorem}
+
+\boxdefinition{The central limit theorem}{
+    Let $X_1, X_2, \dots, X_n$ ne any sequence of i.i.d. random variables with the same expectation $\mu$ and finite positive vairance $\sigma^2$. For $n \geq 1$, let $Z_n$ be defined by
+    \begin{equation*}
+        Z_n = \sqrt{n}\frac{\bar{X}_n - \mu}{\sigma}
+    \end{equation*}
+    Then, for any number $a$
+    \begin{equation*}
+        \lim_{n \to \infty} F_{Z_n} (a) = \Phi(a)
+    \end{equation*}
+    where $\Phi$ is the distribution function of the $N(0,1)$ distribution.
+}
+This theorem states that if we take the average of $n$ random variables, remove its expectation, and divide by its standard deviation, the result is a random variable that converges to a standard normal distribution as $n$ goes to infinity. But, in practice, how large should $n$ be? A famous rule of thumb is to use $n \geq 30$ to get a good approximation, but it is mostly just a myth; the optimal value of $n$ depends on the distribution of the random variables.
+

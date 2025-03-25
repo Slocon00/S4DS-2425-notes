@@ -1,0 +1,65 @@
+\section*{Computations with random variables}
+
+Consider a random variable $X$ with a given distribution. Let $Y = g(X)$ be another random variable obtained as a function of the first. Then, the following theorems hold:
+\begin{itemize}
+    \item If $X$ is a discrete random variable, the PMF of $Y = g(X)$ is
+    \begin{equation*}
+        P_Y(Y = y) = \sum_{g(x) = y} P_X(X = x) = \sum_{x \in g^{-1}(y)} P_X(X = x)
+    \end{equation*}
+    \item If $X$ is a continuous random variable, the CDF and PDF of $Y = g(X)$ when $g$ is invertible is
+    \begin{align*}
+        &F_y(y) = F_X(g^{-1}(y)) &f_Y(y) = f_X(g^{-1}(y)) \left | \frac{d g^{-1}(y)}{dy} \right |
+    \end{align*}
+\end{itemize}
+
+\boxdefinition{Change of units transformation}{
+    Let $X$ be a continuous random variable. If we change units to $Y = rX + s$ for $r,s \in \mathbb{R}, r>0$ then
+    \begin{align*}
+        &F_Y(y) = F_X \left ( \frac{y - s}{r} \right ) &f_Y(y) = \frac{1}{r} f_X \left ( \frac{y - s}{r} \right )
+    \end{align*}
+}
+\boxdefinition{Convolution of random variables}{
+    Let $X$ adn $Y$ be two independent random variables. If they are discrete with PMFs $p_X(x)$ and $p_Y(y)$, then the PMF of $Z = X + Y$ is
+    \begin{equation*}
+        p_Z(z) = \sum_{y} p_X(c - x) \cdot p_Y(y)
+    \end{equation*}
+    If $X$ and $Y$ are continuous with PDFs $f_X(x)$ and $f_Y(y)$, then the PDF of $Z = X + Y$ is
+    \begin{equation*}
+        f_Z(z) = \int_{-\infty}^{\infty} f_X(c - x) \cdot f_Y(y) \ dx
+    \end{equation*}
+}
+\boxdefinition{Maximum of random variables}{
+    Let $X_1, X_2, \dots, X_n$ be $n$ independent random variables with the same distribution function $F$, and let $Z = \max \{ X_1, X_2, \dots, X_n\}$. Then
+    \begin{equation*}
+        F_Z(a) = (F(a))^n.
+    \end{equation*}
+}
+This is because $F_Z(a) = P(Z \leq a) = \prod_i^n P(X_i \leq a) = P(X_1 \leq a) \cdot P(X_2 \leq a) \cdot \ldots \cdot P(X_n \leq a) = (F(a))^n$.
+\boxdefinition{Minimum of random variables}{
+    Let $X_1, X_2, \dots, X_n$ be $n$ independent random variables with the same distribution function $F$, and let $Z = \min \{ X_1, X_2, \dots, X_n\}$. Then
+    \begin{equation*}
+        F_Z(a) = 1 - (1 - F(a))^n.
+    \end{equation*}
+}
+This is because $F_Z(a) = P(Z \leq a) = 1 - \prod_i^n P(X_i > a) = 1 - (1 - F(a))^n$.
+
+\boxdefinition{Product of independent random variables}{
+    Let $X$ and $Y$ be two independent continuous random variables with PDFs $f_X$ and $f_Y$. Then the PDF of $Z = XY$ is
+    \begin{align*}
+        &f_Z(z) = \int_{-\infty}^{\infty} f_Y \left (\frac{z}{x} \right ) f_X(x) \frac{1}{|x|} \ dx &-\infty < z < \infty
+    \end{align*}
+}
+
+\boxdefinition{Quotient of independent random variables}{
+    Let $X$ and $Y$ be two independent continuous random variables with PDFs $f_X$ and $f_Y$. Then the PDF of $Z = X/Y$ is
+    \begin{align*}
+        &f_Z(z) = \int_{-\infty}^{\infty} f_X (zx) f_Y(x) |x| \ dx &-\infty < z < \infty
+    \end{align*}
+}
+\boxdefinition{Propagation of independence}{
+    Let $X_1, X_2, \dots, X_n$ be independent random variables. For each $i$, let $h_i : \mathbb{R} \rightarrow \mathbb{R}$ be a function, and define the r.v.s
+    \[
+        Y_i = h_i(X_i)
+    \]
+    Then $Y_1, Y_2, \dots, Y_n$ are also independent.
+}

@@ -1,0 +1,69 @@
+\documentclass[11pt]{article}
+\usepackage{graphicx} % Required for inserting images
+\linespread{1.2}
+\usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm, centering]{geometry}
+\usepackage[]{hyperref}
+\usepackage{tabularx}
+\usepackage{tabularray}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{bbm}
+\usepackage{svg}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{tikz}
+\usepackage[breakable]{tcolorbox}
+\appto{\bibsetup}{\raggedright}
+
+\tikzstyle{mybox} = [draw=NavyBlue, ultra thick, rectangle, rounded corners, inner sep=10pt, inner ysep=10pt, text width=0.90\textwidth, align=left] 
+\tikzstyle{boxtitle} = [fill=NavyBlue, text=white, ultra thick, rectangle, rounded corners, inner sep=10pt, inner ysep=8pt, text width=0.90\textwidth]
+\tikzstyle{boxsubtitle} = [fill=NavyBlue!80, text=white, ultra thick, rectangle, outer ysep=-2.5pt, inner sep=10pt, inner ysep=5pt, text width=0.90\textwidth,
+path picture={
+    \draw[NavyBlue, ultra thick] 
+        (path picture bounding box.north west) -- (path picture bounding box.south west)
+        (path picture bounding box.north east) -- (path picture bounding box.south east);
+}]
+
+\newcommand{\distribution}[3]{%
+\noindent
+
+\begin{center}
+\begin{tikzpicture}
+    \node[mybox](box){\rule{0pt}{50pt}\ignorespaces#3\unskip};
+    \node (t) [boxtitle, anchor=north west] at (box.north west) {\textbf{#1}};
+    \node[boxsubtitle, anchor=north west] at (t.south west) {\textbf{#2}};
+\end{tikzpicture}
+\end{center}
+\vspace{-8pt}
+}
+
+\newcommand{\boxdefinition}[2]{%
+\vspace*{1.0px}
+\noindent
+
+\begin{center}
+\begin{tikzpicture}
+    \node[mybox](box){\rule{0pt}{30pt}\ignorespaces#2\unskip};
+    \node[boxtitle, anchor=north west] at (box.north west) {\textbf{#1}};
+\end{tikzpicture}
+\end{center}
+\vspace{-2pt}
+}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\indep}{\perp \!\!\! \perp}
+
+\begin{document}
+\input{basics.tex}\clearpage
+\input{distributions.tex}\clearpage
+\input{exp_var.tex}\clearpage
+\input{zipf.tex}\clearpage
+\input{correlation.tex}\clearpage
+\input{computations.tex}\clearpage
+\input{moments.tex}\clearpage
+\input{distances.tex}\clearpage
+\input{lln_clthm.tex}\clearpage
+\input{summaries.tex}
+\end{document}

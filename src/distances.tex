@@ -1,0 +1,117 @@
+\section*{Distances between distributions}
+
+\boxdefinition{Distances and metrics}{
+    A distance over a set $\mathcal{A}$ is a function $d : \mathcal{A} \times \mathcal{A} \rightarrow \mathbb{R}$ such that:
+    \begin{itemize}[itemsep=-1pt]
+        \item $d(x,y) \geq 0$ (non-negativity)
+        \item $d(x,y) = 0 \text{ iff } x=y$ (identity of indiscernibles)
+        \item $d(x,y) = d(y,x)$ (symmetry)
+    \end{itemize}
+    Also, $d$ is a metric if it also satisfies the triangle inequality: $d(x,z) \leq d(x,y) + d(y,z)$.
+}
+Distances and metrics over probability distributions are used to measure how far apart two distributions are. Calculating distances is very useful in statistics and machine learning: for example, after a dataset has been split into training and test sets, we can compare the distribution of the two to make sure they are similar (or, alternatively, to make sure they are different and study how well the model generalizes). This section will overview the most common distances used in statistics.
+\boxdefinition{Total Variation (TV) distance}{
+    \vspace{-15pt}
+    \begin{align*}
+        &d_{TV}(X,Y) = \frac{1}{2} \sum_i |p_X(a_i) - p_y(a_i)| &\text{(discrete case)}\\
+        &d_{TV}(X,Y) = \frac{1}{2} \int |f_X(x) - f_Y(x)| dx &\text{(continuous case)}
+    \end{align*}
+}
+\boxdefinition{Kolmogorov-Smirnof (KS) distance}{
+    \vspace{-15pt}    
+    \begin{equation*}
+        d_{KS}(X,Y) = \sup_x |F_X(x) - F_Y(x)| 
+    \end{equation*}
+}
+Both are metrics. They have no closed forms, but they can be approximated from samples of the distributions.
+
+\boxdefinition{Shannon's information entropy (H)}{
+    \vspace{-15pt}
+    \begin{align*}
+        &H(X) = \E[-\log(p(X))] = -\sum_i p(a_i) \log(p(a_i)) &\text{(discrete case)} \\
+        &H(X) = \E[-\log(f(X))] = -\int_{-\infty}^{\infty} f(x) \log(f(x)) dx &\text{(continuous case)}
+    \end{align*}
+}
+Entropy measures the average level of information (or ``surprise'', ``uncertainty'') of a random variable. Information is inversely proportional to probability: the more unlikely an event is, the more information it carries. So, for example, a random variable that only takes a single value has zero entropy, because there is no uncertainty about its value. In contrast, a random variable that takes many values with equal probability has high entropy, because there is a lot of uncertainty about its value.
+
+Let $X$ be a discrete random variable with a finite domain of $n$ elements. Per corollary of Jensen's inequality, since $log(x)$ is a concave function, we have:
+\begin{equation*}
+    H(X) = \E[-\log(p(X))] = \E\left [\log \left (\frac{1}{p(X)} \right ) \right ] \leq \log\left (\E \left [\frac{1}{p(X)} \right ] \right )
+\end{equation*}
+Then, by change of variable:
+\begin{equation*}
+    \E\left [ \frac{1}{p(X)} \right ] = \sum_i \frac{p(a_i)}{p(a_i)} = n
+\end{equation*}
+So we can derive the following bound for the entropy:
+\begin{equation*}
+    H(X) \leq \log(n)
+\end{equation*}
+\boxdefinition{Cross entropy (H)}{
+    \vspace{-15pt}
+    \begin{align*}
+        &H(X;Y) = \E_X[- \log p_Y(Y)] = -\sum_i p_X(a_i) \log(p_Y(a_i)) &\text{(discrete case)} \\
+        &H(X;Y) = \E_X[- \log f_Y(Y)] = -\int_{-\infty}^{\infty} f_X(x) \log(f_Y(x)) dx &\text{(continuous case)}
+    \end{align*}
+}
+Cross entropy measures the number of bits needed to encode values from $X$ using a code based on $Y$. If the two have exactly the same distribution, the cross entropy is minimal: it is exactly equal to the entropy of $X$. The more the two are different, the more extra bits will be needed to encode the differences between the two.
+\boxdefinition{Joint entropy (H)}{
+    \vspace{-15pt}
+    \begin{align*}
+        &H(X,Y) = \E[-\log(p(X,Y))] = -\sum_{i,j} p(a_i,a_j) \log(p(a_i,a_j)) &\text{(discrete case)} \\
+        &H(X,Y) = \E[-\log(f(X,Y))] = -\int_{-\infty}^{\infty} f(x,y) \log(f(x,y)) dx dy &\text{(continuous case)}
+    \end{align*}
+}
+Joint entropy is simply the entropy of the joint distribution of two random variables $X$ and $Y$. If the two are independent, then $p_{XY}(x,y) = p_X(x) \cdot p_Y(y)$ (and similarly for PDFs), so the above sum/integral can be split, making it so that $H(X,Y) = H(X) + H(Y)$.
+\boxdefinition{Kullback-Leibler (KL) divergence}{
+    \vspace{-15pt}
+    \begin{align*}
+        &D_{KL}(X||Y) = \sum_i P_X(a_i) \log \left ( \frac{p_X(a_i)}{p_y(a_i)} \right ) = H(X;Y) - H(X) &\text{(discrete case)} \\
+        &D_{KL}(X||Y) = \int_{-\infty}^{\infty} f_X(x) \log \left ( \frac{f_X(x)}{f_Y(x)} \right ) dx = H(X;Y) - H(X) &\text{(continuous case)}
+    \end{align*}
+}
+KL divergence is also sometimes called relative entropy of $X$ w.r.t. $Y$; it measures how well the distribution of the model $Y$ can reconstruct the distribution of the data $X$. Since it can be expressed in terms of cross-entropy and entropy, it is easy to see that
+\begin{itemize}[itemsep=0pt]
+    \item It is always non-negative, since the cross-entropy between two distributions can only be greater than or equal to the entropy of one of them.
+    \item It is exactly 0 if the two distributions are the same.
+    \item It is asymmetric.
+\end{itemize}
+Note that since it is not symmetric, it is not an actual distance.
+\boxdefinition{Mutual information}{
+    \vspace{-18pt}
+    \begin{align*}
+        &\text{Discrete case:}\\
+        &I(X,Y) = D_{KL}(p_{XY} || p_X p_Y) = \sum_{i,j} p_{XY}(a_i, a_j) \log \left ( \frac{p_{XY}(a_i, a_j)}{p_X(a_i)p_y(a_j)} \right ) = H(X) + H(Y) - H(X,Y)\\
+        &\text{Continuous case:}\\
+        &I(X,Y) = D_{KL}(f_{XY} || f_X f_Y) = \int_{-\infty}^{\infty} f_{XY}(x,y) \log \left ( \frac{f_{XY}(x,y)}{f_X(x)f_Y(y)} \right ) dx dy = H(X) + H(Y) - H(X,Y)
+    \end{align*}
+}
+Mutual information measures how dependent the two distributions are. It quantifies how much the product of the marginals can reconstruct the joint distribution.
+\begin{itemize}[itemsep=0pt]
+    \item It is always non-negative, since the sum of the individual entropies is always greater than or equal to the joint entropy.
+    \item It is exactly 0 if $X \indep Y$.
+    \item It is symmetric.
+\end{itemize}
+In some cases, it may be useful to have a normalized measure of dependence. The \textbf{normalized mutual information} is defined as:
+\begin{equation*}
+    NMI(X,Y) = \frac{I(X,Y)}{\min\{H(X), H(Y)\}} \in [0,1]
+\end{equation*}
+Suppose we have an unknown variable $X$, and we observe a noisy function of it, called $Y$. Let $Z = f(Y)$, i.e., a processing of the noisy observations. Intuitively, $Z$ cannot contain more information about $X$ than $Y$ does. This is known as the \textbf{data processing inequality}:
+\begin{equation*}
+    I(X,Y) \geq I(X,Z)
+\end{equation*}
+If they happen to be equal, and $Z$ is a summary of $Y$, then $Z$ is a sufficient statistic for $X$: it means that we can reconstruct $X$ from $Z$ with the same accuracy as from $Y$.
+\boxdefinition{Earth mover's distance (Wasserstein metric)}{
+    \vspace{-15pt}
+    \begin{align*}
+        &EMD(X,Y) = \frac{\sum_{i,j} F_{i,j} \cdot |a_i - a_j|}{\sum_{i,j} F_{i,j}}
+    \end{align*}
+}
+Earth's mover distance measures the minimum cost required to transform one distribution into another; the $F$ in the formulas is the \textbf{flow} which minimizes the numerator (the cost). In practice, for pairs of univariate random vairables $X$ and $Y$, is is calculated as follows:
+\begin{align*}
+    &EMD(X,Y) = \sum_i |F_X(a_i) - F_Y(a_i)| &\text{(discrete case)}\\
+    &EMD(X,Y) = \int_{-\infty}^{\infty} |F_X(x) - F_Y(x)| \ dx &\text{(continuous case)}
+\end{align*}
+For empirical distributions, assuming the samples are sorted in increasing order:
+\begin{equation*}
+    EMD(X,Y) = \frac{1}{n} \sum_i |x_i - y_i|
+\end{equation*}

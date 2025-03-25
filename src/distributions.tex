@@ -1,0 +1,262 @@
+\section*{Random variables}
+A \textbf{discrete random variable} takes a finite number of values, or a countably infinite number of values. Each discrete r.v. is described by a probability mass function and a cumumlative distribution function.
+\boxdefinition{Probability mass function (PMF)}{
+    The PMF $p$ of a discrete random variable $X$ is a function $p: \mathbb{R} \rightarrow [0,1]$, defined by
+    \begin{equation*}
+        p(a) = P(X = a) \text{ for } -\infty < a < \infty
+    \end{equation*}
+}
+A \textbf{continuous random variable} takes any value in a continuous range (finite or infinite). Each continuous r.v. is described by a probability density function and a cumulative distribution function.
+\boxdefinition{Probability density function (PDF)}{
+    A random variable $X$ is countinuous if for some function $f: \mathbb{R} \rightarrow \mathbb{R}$ and any numbers $a, b$, with $a < b$,
+    \begin{equation*}
+        P(a \leq X \leq b) = \int_a^b f(x) dx
+    \end{equation*}
+    where $f(x) \geq 0$ for all $x$ and $\int_{-\infty}^{\infty} f(x) dx = 1$. $f$ is called probability density function (PDF) of $X$.
+}
+\boxdefinition{Cumulative distribution function (CDF)}{
+    The CDF of a discrete random variable $X$ is a function $F: \mathbb{R} \rightarrow [0,1]$, defined by
+    \begin{equation*}
+        F(a) = P(X \leq a) = \sum_{x \leq a} p(x) \quad \text{ for } -\infty < a < \infty
+    \end{equation*}
+    The CDF of a continuous random variable $X$ is a function $F: \mathbb{R} \rightarrow [0,1]$, defined by
+    \begin{equation*}
+        F(a) = P(X \leq a) = \int_{-\infty}^a f(x) dx \quad \text{ for } -\infty < a < \infty
+    \end{equation*}
+}
+The \textbf{complementary cumulative distribution function} (CCDF) of a random variable is defined as $1 - F(a) = P(X > a)$.
+
+Given two discrete random variables, we can define their \textbf{joint probability mass function} $p: \mathbb{R}^2 \in [0,1]$, defined as
+\begin{equation*}
+    p(a,b) = P(X = a, Y = b) \text{ for } -\infty < a,b < \infty
+\end{equation*}
+For continuous random variables, we can similarly define the \textbf{joint probability density function} $f: \mathbb{R}^2 \rightarrow \mathbb{R}$, defined as
+\begin{equation*}
+    P(a_1 \leq X \leq b_1, a_2 \leq Y \leq b_2) = \int_{a_1}^{b_1} \int_{a_2}^{b_2} f(x,y) \ dy \ dx
+\end{equation*}
+The \textbf{joint cummulative distribution function} is defined as $F(a,b) = P(X \leq a, Y \leq b)$. For discrete random variables, this is calculated as
+\begin{equation*}
+    F(a,b) = P(X \leq a, Y \leq b) = \sum_{x \leq a} \sum_{y \leq b} p(x,y)
+\end{equation*}
+For continuous random variables, this is calculated as
+\begin{equation*}
+    F(a,b) = P(X \leq a, Y \leq b) = \int_{-\infty}^a \int_{-\infty}^b f(x,y) \ dy \ dx
+\end{equation*}
+The \textbf{marginal PMF} of a discrete r.v. $X$ is
+\begin{equation*}
+    p_X(a) = P(X = a) = \sum_{y} p(a,y)
+\end{equation*}
+while the \textbf{marginal PDF} of a continuous r.v. $X$ is
+\begin{equation*}
+    f_X(a) = \int_{-\infty}^{\infty} f(a,y) \ dy
+\end{equation*}
+In both cases, the \textbf{marginal distribution function} of $X$ is
+\begin{equation*}
+    F_X(a) = P(X \leq a) = \lim_{b \to \infty} F_{XY}(a,b)
+\end{equation*}
+
+\boxdefinition{Conditional distribution of random variables}{
+    Let $X$ and $Y$ be two random variables, and $P_{XY}$ their joint distribution. The conditional distribution of $X$ given $Y \in B$, where $P(Y \in B) > 0$, is defined as
+    \begin{equation*}
+        F_{X|Y \in B} (a) = P_{X|Y} (X \leq a | Y \in B) = \frac{P_{XY}(X \leq A, Y \in B)}{P_Y(Y \in B)} 
+    \end{equation*}
+}
+Two random variables $X$ and $Y$ are \textbf{independent} ($X \indep Y$) if
+\begin{itemize}
+    \item $P_{X|Y} (X \leq a | Y \leq b) = P_X(X \leq a)$ for $a \in \mathbb{R}$, and for all $b$ such that $P_Y(Y \leq b) > 0$, or, equivalently,
+    \item $p_{XY} (x,y) = p_X(x) \cdot p_Y(y)$ (if discrete) or $f_{XY} (x,y) = f_X(x) \cdot f_Y(y)$ (if continuous).
+\end{itemize}
+Two random variables $X$ and $Y$ are said \textbf{identically distributed} ($X \sim Y$) if $F_X = F_Y$, i.e., $F_X(a) = F_Y(a)$ for $a \in \mathbb{R}$. If two random variables are both independent and identically distributed, they are said to be \textbf{independent and identically distributed} (i.i.d.).
+
+\boxdefinition{Quantiles (percentiles)}{
+    Let $X$ be a continuous random variable, and let $p$ be a number in the interval $[0,1]$. The $p^{th}$ quantile (or 100$p^{th}$ percentile) of the distribution of $X$ is the smallest number $q_p$ such that
+    \begin{equation*}
+        F(q_p) = P(X \leq q_p) = p
+    \end{equation*}
+}
+The \textbf{median} of a distribution is the $50^{th}$ percentile. The \textbf{interquartile range} (IQR) is the difference between the $75^{th}$ and the $25^{th}$ percentiles. A more general definition, which holds also for discrete random variables, is
+\begin{equation*}
+    q_p = \inf_x \{ P(X \leq x) \geq p \}
+\end{equation*}
+
+
+\section*{Probability distributions}
+\subsection*{Discrete distributions} 
+\distribution{Uniform distribution}{$X \sim U(m,M)$}{
+    Models some experiment with $M-m+1$ outcomes with the same probability of occurring. A random variable has uniform distribution if its PMF is given by
+    \begin{align*}
+        &p(a) = P(X = a) = \frac{1}{M - m + 1} &\text{for } a = m, m+1, \ldots, M \\
+        &F(a) = \frac{\lfloor a \rfloor - m + 1}{M - m + 1} &\text{for } m \leq a \leq M
+    \end{align*}
+    \hrule
+    \begin{align*}
+        &\E[X] = \frac{m + M}{2} &Var(X) = \frac{(M - m + 1)^2 - 1}{12}
+    \end{align*}
+}
+\distribution{Bernoulli distribution}{$X \sim Ber(p)$}{
+    Models an experiment with two outcomes, success and failure, with probability $0 \leq p \leq 1$ of success. A random variable has the Bernoulli distribution if its PMF is given by
+    \begin{align*}
+        &p(a) = P(X = a) = p^a (1-p)^{1-a} &\text{for } a = 0, 1
+    \end{align*}
+    \hrule
+    \begin{align*}
+        &\E[X] = p &Var(X) = p(1-p)
+    \end{align*}
+}
+\distribution{Binomial distribution}{$X \sim Bin(n,p)$}{
+    Models the number of successes in a sequence of $n$ independent Bernoulli trials, each with probability $0 \leq p \leq 1$ of success. A random variable has the Binomial distribution if its PMF is given by
+    \begin{align*}
+        &p(a) = P(X = a) = \binom{n}{a} p^a (1-p)^{n-a} &\text{for } a = 0, 1, \ldots, n
+    \end{align*}
+    The sum of $n$ independent Bernoulli r.v.s with parameter $p$ is a Binomial r.v. with parameters $n$ and $p$:
+    \begin{align*}
+        &X = \sum_i^n X_i \sim Bin(n,p) &\text{where } X_1, X_2, \dots, X_n \sim Ber(p)
+    \end{align*}
+    \hrule
+    \begin{align*}
+        &\E[X] = n \cdot p &Var(X) = n \cdot p(1-p)
+    \end{align*}
+}
+\distribution{Benford's law}{$X \sim Ben$}{
+    Models the distribution of the leading digits in many real-life numerical datasets. A random variable has the Benford's law distribution if its PMF is given by
+    \begin{align*}
+        &p(a) = P(X = a) = \log_{10}(1 + \frac{1}{a}) - \log_{10}(1 + \frac{1}{a+1}) &\text{for } a = 1, 2, \ldots, 9
+    \end{align*}
+}
+\distribution{Geometric distribution}{$X \sim Geo(p)$}{
+    Models the number of attempts needed to get the first success in a sequence of independent Bernoulli trials, each with probability $0 \leq p \leq 1$ of success. A random variable has the Geometric distribution if its PMF is given by
+    \begin{align*}
+        &p(a) = P(X = a) = (1-p)^{a-1} p &\text{for } a = 1, 2, \ldots \\
+        &F(a) = 1 - (1-p)^a &\text{for } a = 1, 2, \ldots
+    \end{align*}
+    Given an infinite sequence of independent Bernoulli r.v.s with parameter $p$, the minimum number of trials needed to get a success is a Geometric r.v. with parameter $p$:
+    \begin{align*}
+        &X = \min\{i: X_i = 1\} \sim Geo(p) &\text{where } X_1, X_2, \dots \sim Ber(p)
+    \end{align*}
+    \hrule
+    \begin{align*}
+        &\E[X] = \frac{1}{p} &Var(X) = \frac{1-p}{p^2}
+    \end{align*}
+}
+\distribution{Negative binomial (Pascal) distribution}{$X \sim NBin(n,p)$}{
+    Models the number of failures before the $n$-th success in a sequence of independent Bernoulli trials, each with probability $0 \leq p \leq 1$ of success. A random variable has the Negative binomial distribution if its PMF is given by
+    \begin{align*}
+        &p(a) = P(X = a) = \binom{a + n - 1}{a} p^n (1-p)^a &\text{for } a = 0, 1, \ldots
+    \end{align*}
+    Given $n$ i.i.d. Geometric r.v.s, we can obtain a Negative binomial r.v. with parameters $n$ and $p$ as follows:
+    \begin{align*}
+        &X = \sum_i^n X_i - n \sim NBin(n,p) &\text{where } X_1, X_2, \dots, X_n \sim Geo(p)
+    \end{align*}
+    \hrule
+    \begin{align*}
+        &\E[X] = \frac{n \cdot p}{(1-p)} &Var(X) = n \frac{1-p}{p^2}
+    \end{align*}
+}
+\distribution{Poisson distribution}{$X \sim Poi(\mu)$}{
+    Models the number of events occurring within some time interval, knowing the average rate of occurrence in that interval is $\mu$. A random variable has the Poisson distribution if its PMF is given by
+    \begin{align*}
+        &p(a) = P(X = a) = \frac{\mu^a}{a!} e^{-\mu} &\text{for } a = 0, 1, 2, \ldots
+    \end{align*}
+    The Poisson distribution can be approximated from the Binomial distribution:
+    \begin{align*}
+        Bin(n, p) \xrightarrow[n \to \infty]{} Poi(p \cdot n)
+    \end{align*}
+    The approximation works for an experiment with an infinite number of Bernoulli trials, making it so that the mean rate of success is $\mu = p \cdot n$.\\
+    \rule[-2.5pt]{0.90\textwidth}{0.5pt}
+    \begin{align*}
+        &\E[X] = \mu &Var(X) = \mu
+    \end{align*}
+}
+\distribution{Categorical distribution}{$X \sim Cat(\vec{p})$}{
+    A generalization of the Bernoulli distribution to 3 or more possible outcomes, each with its own probability of occurring. A random variable has the Categorical distribution if its PMF is given by
+    \begin{align*}
+        &p(i) = P(X = i) = p_i &i = 1, 2, \ldots, n_C-1 
+    \end{align*}
+    The parameter $\vec{p}$ is a vector of probabilities, such that $\sum_i p_i = 1$.
+}
+\distribution{Multinomial distribution}{$X \sim Mult(n, \vec{p})$}{
+    A generalization of the Binomial distribution to 3 or more possible outcomes, each with its own probability of occurring. A random variable has the Multinomial distribution if its PMF is given by
+    \begin{align*}
+        p(i_0, i_1, \dots, i_{n_C-1}) = P(X = (i_0, i_1, \dots, i_{n_C-1})) = \frac{n!}{i_0! \dots i_{n_C-1}!} p_0^{i_0} p_1^{i_1} \dots p_{n_C-1}^{i_{n_C-1}}
+    \end{align*}
+    The sum of $n$ independent Categorical r.v.s with parameter $\vec{p}$ is a Multinomial r.v. with parameters $n$ and $\vec{p}$:
+    \begin{align*}
+        &X = \sum_i^n X_i \sim Mult(n, \vec{p}) &\text{where } X_1, X_2, \dots, X_n \sim Cat(\vec{p})
+    \end{align*}
+}
+
+\subsection*{Continuous distributions}
+\distribution{Uniform distribution}{$X \sim U(\alpha, \beta)$}{
+    Models some experiment with arbitrary outcomes in the interval $[\alpha, \beta]$. A random variable has the Uniform distribution if its PDF is given by
+    \begin{align*}
+        &f(x) = \frac{1}{\beta - \alpha}&\text{for } \alpha \leq x \leq \beta \\
+        &F(x) = \frac{x - \alpha}{\beta - \alpha}&\text{for } \alpha \leq x \leq \beta
+    \end{align*}
+    \hrule
+    \begin{align*}
+        &\E[X] = \frac{\alpha + \beta}{2} &Var(X) = \frac{(\beta - \alpha)^2}{12}
+    \end{align*}
+}
+\distribution{Exponential distribution}{$X \sim Exp(\lambda)$}{
+    Models the time between subsequent events in a Poisson point process, with average rate of occurrence $\lambda$. A random variable has the Exponential distribution if its PDF is given by
+    \begin{align*}
+        &f(x) = \lambda e^{-\lambda x} &\text{for } x \geq 0 \\
+        &F(x) = 1 - e^{\lambda x}
+    \end{align*}
+    \hrule
+    \begin{align*}
+        &\E[X] = \frac{1}{\lambda} &Var(X) = \frac{1}{\lambda^2}
+    \end{align*}
+}
+\distribution{Normal (Gaussian) distribution}{$X \sim N(\mu, \sigma^2)$}{
+    A random variable has a Normal distribution if its PDF is given by
+    \begin{align*}
+        &f(x) = \frac{1}{\sigma \sqrt{2 \pi}} e^{-\frac{1}{2} (\frac{x - \mu}{\sigma})^2} &\text{for } -\infty < x < \infty
+    \end{align*}
+    The standard Normal distribution has $\mu = 0$ and $\sigma = 1$. \\
+    The Normal distribution can be approximated from the Binomial distribution:
+    \begin{align*}
+        &Bin(n,p) \approx N(n \cdot p, n \cdot p (1 - p)) &\text{for } n \to \infty \text{ and } 0 \ll p \ll 1 
+    \end{align*}
+    There is no closed form of the CDF of the Normal distribution, but any variable can be turned into a standard Normal variable and its probability can be estimated using the right tail probability table of $N(0,1)$.\\
+    \rule[-2.5pt]{0.90\textwidth}{0.5pt}
+    \begin{align*}
+        &\E[X] = \mu &Var(X) = \sigma^2
+    \end{align*}
+}
+\distribution{Erlang distribution}{$X \sim Erl(n, \lambda)$}{
+    Models the time until $n$ events occur in a Poisson point process, with average rate of occurrence $\lambda$. A random variable has the Erlang distribution if its PDF is given by
+    \begin{align*}
+        &f(x) = \frac{\lambda (\lambda x)^{n - 1} e^{\lambda x}}{\Gamma(\alpha)} &\text{for } x \geq 0
+    \end{align*}
+    $\Gamma(\alpha) = (\alpha-1)!$ is called Gamma function, and is a normalization factor ensuring that the integral of the PDF is equal to 1.\\
+    \rule[-2.5pt]{0.90\textwidth}{0.5pt}
+    \begin{align*}
+        &\E[X] = \frac{n}{\lambda} &Var(X) = \frac{n}{\lambda^2}
+    \end{align*}
+}
+\distribution{Gamma distribution}{$X \sim Gam(\alpha, \lambda)$}{
+    Models the time until $\alpha$ quantities of something occur in a Poisson point process, with average rate of occurrence $\lambda$. It is a generalization of the Erlang distributions that also allows the first parameter to be any postive real number instead of a positive integer. A random variable has the Gamma distribution if its PDF is given by
+    \begin{align*}
+        &f(x) = \frac{\lambda (\lambda x)^{\alpha - 1} e^{\lambda x}}{\Gamma(\alpha)} &\text{for } x \geq 0
+    \end{align*}
+    The sum of $n$ i.i.d. Exponential r.v.s. with parameter $\lambda$ is Gamma distributed, with parameters $n$ and $\lambda$:
+    \begin{align*}
+        &X = \sum_i^n X_i \sim Gam(n, \lambda) &\text{where } X_1, X_2, \dots, X_n \sim Exp(\lambda)
+    \end{align*}
+    \hrule
+    \begin{align*}
+        &\E[X] = \frac{n}{\lambda} &Var(X) = \frac{n}{\lambda^2}
+    \end{align*}
+}
+\distribution{Cauchy distribution}{$X \sim Cau(\alpha, \beta)$}{
+    A random variable has the Cauchy distribution if its PDF is given by
+    \begin{align*}
+        &f(x) = \frac{\beta}{\pi (\beta^2 + (x-\alpha)^2)} &\text{for } -\infty < x < \infty
+    \end{align*}
+    A special case of the Cauchy distribution is the standard Cauchy distribution, with $\alpha = 0$ and $\beta = 1$. This distribution is also the same as the ratio between two standard Normal r.v.s.\\
+    \rule[-2.5pt]{0.90\textwidth}{0.5pt}
+    \begin{align*}
+        &\E[X] = \text{undefined} &Var(X) = \text{undefined}
+    \end{align*}
+}

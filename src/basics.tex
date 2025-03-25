@@ -1,0 +1,58 @@
+\section*{Probability}
+\boxdefinition{Probability (on a finite sample space)}
+{
+    A probability function $P$ on a finite sample space assigns to each event $A \in \Omega$ a number $P(A) \in [0,1]$ such that
+    \begin{itemize}
+        \item $P(\Omega) = 1$;
+        \item $P(A \cup B) = P(A) + P(B)$ if $A$ and $B$ are disjoint.
+    \end{itemize}
+    $P(A)$ is called probability that event $A$ occurs.
+}
+\boxdefinition{Probability (on an infinite sample space)}{
+    A probability function $P$ on an infinite sample space assigns to each event $A \in \Omega$ a number $P(A)$ such that
+    \begin{itemize}
+        \item $P(\Omega) = 1$;
+        \item $P(A_1 \cup A_2 \cup A_3 \cup \dots) = P(A_1) + P(A_2) + P(A_3) + \dots$ if $A_1, A_2, A_3, \dots$ are disjoint.
+    \end{itemize}
+}
+Properties:
+\begin{itemize}[itemsep=1pt]
+    \item $P(A^c) = 1 - P(A)$
+    \item $P(\emptyset) = 0$
+    \item $P(A \cup B) = P(A) + P(B) - P(A \cap B)$
+    \item $A \subseteq B \implies P(A) \leq P(B)$
+\end{itemize}
+
+\boxdefinition{Conditional probability}{
+    The conditional probability of $A$ given $C$ is given by
+    \begin{equation*}
+        P(A|C) = \frac{P(A \cap C)} {P(C)}
+    \end{equation*}
+    provided $P(C) > 0$ (it is otherwise undefined).
+}
+A consequence of this definition is the \textbf{multiplication rule}: $P(A \cap C) = P(A|C) \cdot P(C) = P(C|A) \cdot P(A)$.
+\boxdefinition{Law of total probability}{
+    Let $C_1, C_2, \dots, C_n$ be a partition of $\Omega$ (i.e., they are disjoint and their union is $\Omega$). Then, given any event $A \in \Omega$, its probability can be computed as
+    \begin{equation*}
+        P(A) = P(A|C_1) \cdot P(C_1) + P(A|C_2) \cdot P(C_2) + \dots + P(A|C_n) \cdot P(C_n)
+    \end{equation*}
+}
+\boxdefinition{Bayes' rule}{
+    Let $C_1, C_2, \dots, C_n$ be a partition of $\Omega$ and $A$ be an event in $\Omega$. Then, the probability of $C_i$ given $A$ is given by
+    \begin{equation*}
+        P(C_i|A) = \frac{P(A|C_i) \cdot P(C_i)} {P(A|C_1) \cdot P(C_1) + P(A|C_2) \cdot P(C_2) + \dots + P(A|C_n) \cdot P(C_n)}
+    \end{equation*}
+}
+Two events $A$ and $B$ are \textbf{independent} if $P(B) = 0$, or:
+\begin{itemize}[itemsep=1pt]
+    \item $P(A \cap B) = P(A) \cdot P(B)$, or, equivalently,
+    \item $P(A|B) = P(A)$.
+\end{itemize}
+If $A$ and $B$ are independent, also any combination of their complements is independent. \\
+In general, events $A_1, A_2, \dots, A_n$ are independent if for any subset $I \subseteq \{1, 2, \dots, n\}$:
+\begin{equation*}
+    P\left(\bigcap_{i \in I} A_i\right) = \prod_{i \in I} P(A_i)
+\end{equation*}
+This means that any possible subset of events in the collection is independent (since pairwise independence among individual events is not enough).
+
+Two events $A$ and $B$ are \textbf{conditionally independent} given and event $C$ ($P(C) > 0$) if $P(B|C) = 0$, or $P(A|B \cap C) = P(A|C)$. Since conditional probability is a probability, the definition is identical to the one above but conditioned on $C$.

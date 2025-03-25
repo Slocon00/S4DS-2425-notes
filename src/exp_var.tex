@@ -1,0 +1,105 @@
+\section*{Expectation}
+The expectation (or expected value, mean, center of gravity) of a random variable is a number that summarizes the most central value in that variable's distribution.
+\boxdefinition{Expectation}
+{
+    The expectation of a discrete random variable $X$ is calculated as
+    \begin{align*}
+        \E[X] = \sum_i x_i \cdot P(X = x_i) = \sum_i x_i \cdot p(x_i)
+    \end{align*}
+    The expectation of a continuous random variable $X$ is calculated as
+    \begin{align*}
+        \E[X] = \int_{-\infty}^{\infty} x \cdot f(x) dx
+    \end{align*}
+}
+Expected value may be infinite or not exist for certain distributions. Consider the case of a continuous random variable. Its expected value, which is calculated as an integral $I$ over $(-\infty, \infty)$ can be split into two terms, $I = I^- + I^+$, defined as follows:
+\begin{align*}
+    &I^- = \int_{-\infty}^{0} x \cdot f(x) \\
+    &I^+ = \int_{0}^{\infty} x \cdot f(x)
+\end{align*}
+Since $f(x)$ cannot take negative values, $I^-$ is negative, and $I^+$ is positive. If $I^-$ and $I^+$ are both finite, then the expected value exists and is finite. If one of them is infinite, the expected value is infinite. If both are infinite, the expected value does not exist. This can be generalized to discrete random variables, where the expectation is expressed as a sum instead of an integral (but can still similarly diverge or converge).
+
+An example of distribution for which the expected value does not exist is the Cauchy distribution. An example of distribution for which the expected value is infinite is the Pareto distribution.
+\boxdefinition{Change of variable formula (a.k.a. law of the unconscious/lazy statistician)}{
+    Let $X$ be a random variable, and $g: \mathbb{R} \rightarrow \mathbb{R}$ be a function. If $X$ is discrete, then 
+    \begin{equation*}
+        \E[g(X)] = \sum_i g(x_i) \cdot P(X = x_i)
+    \end{equation*}
+    If $X$ is continuous, then
+    \begin{equation*}
+        \E[g(X)] = \int_{-\infty}^{\infty} g(x) \cdot f(x) \ dx
+    \end{equation*}
+}
+\boxdefinition{Change of units theorem (for the expectation)}{
+    $\E[rX + s] = r\E[X] + s$
+}
+The expected value is \textbf{linear}. This means that $\E[aX + bY + c] = a\E[X] + b\E[Y] + c$ for any constants $a, b, c$. More in general, $\E[a_0 + \sum_i^n a_i \cdot X_i] = a_0 + \sum_i^n a_i \E[X_i]$
+\boxdefinition{Jensen's inequality}{
+    Let $g$ be a convex function, and let $X$ be a random variable. Then
+    \begin{equation*}
+        \E[g(X)] \geq g(\E[X])
+    \end{equation*}
+}
+If $g$ is concave, the inequality is reversed. If $g$ is linear, the inequality becomes an equality.
+\boxdefinition{Two-dimensional change of variable formula}{
+    Let $X$ and $Y$ be random variables, and let $g:\mathbb{R}^2 \rightarrow \mathbb{R}$ be a function. If $X$ and $Y$ are discrete, Then
+    \begin{equation*}
+        \E[g(X,Y)] = \sum_i \sum_j g(a_i, b_i) P(X=a_i, Y=b_j)
+    \end{equation*}
+    If $X$ and $Y$ are continuous, then
+    \begin{equation*}
+        \E[g(X,Y)] = \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} g(x,y) f(x,y) \ dx dy
+    \end{equation*}
+    where $f(x,y)$ is their joint PDF.
+}
+If two variables are independent, then $\E[XY] = \E[X] \cdot \E{Y}$. This holds for any set of independent random variables. More in general, given $X_1, X_2, \dots, X_n$ independent random variables, and let $h_i : \mathbb{R} \rightarrow \mathbb{R}$ be a function; define the random variable $Y = h_i(X_i)$. Then, $Y_1, Y_2, \dots, Y_n$ are also independent. \\
+If we take two random variables, $X \indep Y$ such that $Y > 0$, we have $\E[X/Y] \geq \E[X]/\E[Y]$. Let $g(y) = \frac{1}{y}$, the inequality follows from Jensen's inequality and the linearity of expectation.
+
+\boxdefinition{Conditional expectation}{
+    \begin{align*}
+        &\E[X | Y = b] = \sum_i a_i p(a_i|b) &\E[X|Y = y] = \int_{-\infty}^{\infty} x f(x|y) \ dx
+    \end{align*}
+}
+Also, the following theorem holds.
+\boxdefinition{Law of iterated/total expectation}{
+    \begin{equation*}
+        \E_Y[\E[X|Y]] = \E[X]
+    \end{equation*}
+    \textbf{Proof:}
+    \begin{equation*}
+        \E_Y[\E[X|Y]] = \sum_j \sum_i a_i p_{X|Y}(a_i | b_j) \cdot p_Y(b_j) = \sum_j \sum_i a_i p_{X,Y} (a_i, b_j) = \sum_i a_i p_X (a_i) = \E[X]
+    \end{equation*}
+}
+
+\section*{Variance}
+The variance of a random variable is a measure of how much the values of that variable spread around the mean. A low variance means that most values are close to the mean, while a high variance means that the values are more spread out.
+\boxdefinition{Variance}{
+    The variance of a random variable $X$ is defined as
+    \begin{align*}
+        Var(X) = \E[(X - \E[X])^2] = \E[X^2] - \E[X]^2
+    \end{align*}
+}
+Often, the \textbf{standard deviation} ($\sigma = \sqrt{Var(X)}$) is used instead. This is because the variance is in squared units, so the standard deviation is on the same scale as the expectation and is easier to interpret.
+
+Just like expectation, variance may be infinite or not exist. Variance does not exist if the expectation does not exist, but there may be distributions where the expectation exists while the variance does not: an example of such distribution are the Power Laws.
+\boxdefinition{Change of units theorem (for the variance)}{
+    $Var(rX + s) = r^2 Var(X)$
+}
+The variance is \textbf{not linear}. This means that $Var(aX + bY + c) \neq aVar(X) + bVar(Y) + c$ in general. However, if $X$ and $Y$ are independent, then $Var(X + Y) = Var(X) + Var(Y)$.
+
+\section*{Covariance}
+\boxdefinition{Covariance}{
+    The covariance of two random variables $X$ and $Y$ is the number:
+    \begin{equation*}
+        Cov(X,Y) = \E[(X - \E[X])(Y - \E[Y])] = \E[XY] - \E[X] \E[Y]
+    \end{equation*}
+}
+Given two random variables $X$ and $Y$, the variance of their sum is:
+\[
+    Var(X+Y) = Var(X) + Var(Y) + 2Cov(X,Y)
+\]
+If the random variables are independent, their covariance is 0 (and so the variance of the sum is the sum of the variances).\\
+Given $X$ and $Y$ two random variables, and $r,s,t,u \in \mathbb{R}$, then
+\begin{equation*}
+    Cov(rX + s, tY + u) = rt Cov(X,Y)
+\end{equation*}
+Hence, $Var(rX + sY + t) = r^2 Var(X) + s^2 Var(X) + 2rsCov(X,Y)$.

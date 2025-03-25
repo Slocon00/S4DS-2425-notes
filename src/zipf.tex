@@ -1,0 +1,95 @@
+\section*{Power laws and Zipf's law}
+
+Power laws are a family of ``scale free'' distributions. Most distributions have a typical size or scale, so they have some value around which measurements are centered. In contrast, power laws vary over a very large range where it's not possible to identify a typical value around which the distribution peaks.
+
+\distribution{Power law distribution}{$X \sim Pow(x_{min}, \alpha)$}{
+    A random variable has the power law distribution if for some $\alpha > 1$ its PDF is given by
+    \begin{align*}
+        &f(x) = C \cdot x^{-\alpha} &x \geq x_{min}
+    \end{align*}
+}
+$C$ is called \textbf{intercept}, while $\alpha$ is called \textbf{exponent}. If the function is expressed in logarithmic scale, we have
+\[
+    \log(f(x)) = -\alpha \cdot \log(x) + \log(C)
+\]
+i.e., there is a linear relationship between $\log(f(x))$ and $\log(x)$. Graphically, this means that the distribution is a straight line in a log-log plot. The reason parameter $x_{min}$ is included is to specify what is the exact lower bound after which a distribution shows a power law behaviour.
+
+Being scale-free, we can identify some constant $b$ such that $p(bx) = g(b)p(x)$, meaning that even if we multiply the variable by this scaling factor, the form of the distribution remains the same. In this case, we write
+\[
+    p(bx) = b^{-\alpha} C \cdot x^{-\alpha}.
+\]
+Notice how the value of the intercept is not specified in the definition above. This is because after fixing $x_{min}$ and $\alpha$, $C$ is uniquely determined by the condition that the integral of the PDF over the entire range must be 1:
+\begin{align*}
+    1 = \int_{x_{min}}^{\infty} C \cdot x^{-\alpha} \ dx = \frac{C}{-\alpha + 1}[x^{-\alpha + 1}]_{x_{min}}^{\infty} = \frac{C}{\alpha - 1} x_{min}^{-\alpha + 1} \iff \boxed{C = \frac{(\alpha - 1)}{x_{min}^{-\alpha + 1}}}
+\end{align*}
+This integral is finite only if $\alpha > 1$. If $\alpha < 1$, then it simply diverges. If $\alpha = 1$, the denominator becomes 0, and the integral is not defined. By substituting this value in the formula of the PDF, we get
+\begin{equation*}
+    f(x) = \frac{\alpha - 1}{x_{min}} \left ( \frac{x}{x_{min}} \right )^{-\alpha}.
+\end{equation*}
+Using the same calculations we can find a closed formula for the CCDF:
+\begin{equation*}
+    P(X > x) = \int_{x}^{\infty} C \cdot x^{-\alpha} \ dx = \frac{C}{-\alpha + 1}[x^{-\alpha + 1}]_{x_{min}}^{\infty} = \frac{C}{\alpha - 1} x^{-\alpha + 1}.
+\end{equation*}
+Since we calculated $C$ we can substitute it back in the formula to get
+\begin{equation*}
+    P(X > x) = \left ( \frac{x}{x_{min}} \right )^{-\alpha + 1}
+\end{equation*}
+Both the PDF and the CCDF have the same form, but with a different exponent. The CCDF also looks linear when plotted in a log-log scale.
+As for the expectation, we have
+\begin{equation*}
+    \E[X] = \int_{x_{min}}^{\infty} x \cdot C \cdot x^{-\alpha} \ dx = C \int_{x_{min}}^{\infty} x^{\-alpha + 1} \ dx = \frac{C}{-\alpha + 2} \left [ x^{-\alpha + 2} \right ]_{x_{min}}^{\infty} = \frac{C}{\alpha - 2} x_{min}^{-\alpha + 2}.
+\end{equation*}
+Similarly to the calculations done to find $C$, we can observe how this integral is finite only for $\alpha > 2$: if $\alpha < 2$, the integral diverges, while if $\alpha = 2$, the denominator becomes 0 and the integral is not defined. Substituting the value of $C$ back in the formula, we get
+\begin{equation*}
+    \E[X] = \frac{\alpha - 1}{\alpha - 2} x_{min}
+\end{equation*}
+Also for the variance, it is finite only for $\alpha > 3$.
+
+\distribution{Pareto distribution}{$X \sim Par(x_{min}, \beta)$}{
+    A random variable has the Pareto distribution if for some $\beta > 0$ its density function is given by
+    \begin{align*}
+        &f(x) = C \cdot x^{-(\beta + 1)} &x \geq x_{min}
+    \end{align*}
+}
+A Pareto distribution is actually just a power law, but expressed differently: \\
+$Par(x_{min}, \beta) = Pow(x_{min}, \beta + 1)$.
+\distribution{Discrete power law distribution}{$X \sim Pow(\alpha, k_{min})$}{
+    A random variable has the discrete power law distribution if for some $\alpha > 1$ its PMF is given by
+    \begin{align*}
+        &p(k) = C \cdot k^{-\alpha} &k = k_{min}, k_{min}+1, \dots
+    \end{align*}
+}
+Since the sum of probabilities must be 1, C is determined as
+\begin{equation*}
+    C = \frac{1}{sum_{k=k_{min}}^{\infty} k^{-\alpha}} = \frac{1}{\zeta(\alpha, k_{min})}
+\end{equation*}
+$\zeta(\alpha, k_{min})$ is the \textbf{Hurwitz zeta function}. A special case of it is the \textbf{Riemann zeta function}, which is $\zeta(\alpha) = \zeta(\alpha, 1)$
+
+When we are studying a data sample and want to check if it follows a power law, we can plot the frequency of its values in log-log scale and verify if the points are aligned in a straight line. However, since the values in the tail are rarer, the data sample will have few of them. The resulting plot will likely present a lot of noise around the tail of the distribution, and it may not be obvious whether it is a power law or some similar distribution (such as exponential or log-normal). To fix this issue, we can follow two approaches:
+\begin{itemize}
+    \item We estimate and plot the CCDF in log-log scale. As mentioned above, the CCDF of a power law also appears linear when plotted this way, with the advantage of being much more stable in the tail.
+    \item We construct an histogram using logarithmic binning. This means that the bins are not equally spaced, but they grow exponentially. For example, the first bin goes from 1 to 10, the second from 10 to 100, the third from 100 to 1000, and so on. Since bins aggregate values, the effect of noise is reduced.
+\end{itemize}
+
+\distribution{Zipf's law distribution}{$X \sim Zipf(\alpha)$}{
+    A random variable has the Zipf's law distribution if for some $\alpha > 1$ its PMF is given by
+    \begin{align*}
+        &p(r) = C \cdot r^{-\alpha} &r = 1, 2, \dots, N
+    \end{align*}
+}
+In a Zipf's law distribution, probabilities are assigned to the \textbf{ranks} of events; the higher the rank (i.e. closer to 1), the higher the probability. This is different than a power law distribution, where probabilities directly depend on the frequencies. For example: a discrete power law may model the probability of a word with a certain number of accurrences in a text, while Zipf's law may model the probability of a word with a certain rank in a list of words sorted by frequency.
+
+We can try to convert a power-law into a Zipf's law and vice-versa. By comparing the PMF of a Zipf's law and the CCDF of a power law, they have the same form, and are actually representing the same information but with the axes inverted:
+\begin{figure*}[h]
+    \centering
+    \includegraphics*[width=0.8\textwidth]{img/zipf_vs_ccdf.png}
+\end{figure*} \\
+The rank $r$ of a word with frequency $k$ is equal to the number of words with frequency larger than $k$ plus 1. In other words, $r = 1 + N \cdot P(X > k)$. If $X \sim Pow(1, \alpha)$, then $r = 1 + N \cdot P(X > k) \propto k^{-{(\alpha - 1)}}$. By inverting, we get that $k \propto r^{-\frac{1}{\alpha - 1}}$, i.e., the frequencies are Zipf's law distributed with parameter $\frac{1}{\alpha - 1}$.
+\[
+    X \sim Pow(1, \alpha) \iff R \sim Zipf \left (\frac{1}{\alpha - 1} \right )
+\]
+($R$ is a r.v. that models the ranks).\\
+For this distribution, $C$ is calculated as
+\begin{equation*}
+    C = \frac{1}{\sum_{r=1}^{N} r^{-\alpha}} = \frac{1}{\zeta(\alpha) - \zeta(\alpha, N+1)}
+\end{equation*}
