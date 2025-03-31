@@ -52,6 +52,7 @@ path picture={
 \vspace{-2pt}
 }
 
+\newcommand{\separate}{\begin{center}\textcolor{NavyBlue}{\rule{16cm}{1mm}}\end{center}}
 \newcommand{\E}{\mathbb{E}}
 \newcommand{\indep}{\perp \!\!\! \perp}
 
@@ -75,13 +76,15 @@ path picture={
 \tableofcontents
 \clearpage
 
-\input{basics.tex}\clearpage
-\input{distributions.tex}\clearpage
-\input{exp_var.tex}\clearpage
-\input{zipf.tex}\clearpage
-\input{computations.tex}\clearpage
-\input{moments.tex}\clearpage
-\input{distances.tex}\clearpage
-\input{lln_clthm.tex}\clearpage
-\input{summaries.tex}
+\input{basics.tex}
+\separate
+\input{distributions.tex}\separate
+\input{exp_var.tex}\separate
+\input{zipf.tex}\separate
+\input{computations.tex}\separate
+\input{moments.tex}\separate
+\input{distances.tex}\separate
+\input{lln_clthm.tex}\separate
+\input{summaries.tex}\separate
+\input{estimators.tex}
 \end{document}
