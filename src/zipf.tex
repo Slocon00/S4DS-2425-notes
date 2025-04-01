@@ -80,10 +80,11 @@ When we are studying a data sample and want to check if it follows a power law, 
 In a Zipf's law distribution, probabilities are assigned to the \textbf{ranks} of events; the higher the rank (i.e. closer to 1), the higher the probability. This is different than a power law distribution, where probabilities directly depend on the frequencies. For example: a discrete power law may model the probability of a word with a certain number of accurrences in a text, while Zipf's law may model the probability of a word with a certain rank in a list of words sorted by frequency.
 
 We can try to convert a power-law into a Zipf's law and vice-versa. By comparing the PMF of a Zipf's law and the CCDF of a power law, they have the same form, and are actually representing the same information but with the axes inverted:
-\begin{figure*}[h]
+
+\begin{figure*}[ht]
     \centering
     \includegraphics*[width=0.8\textwidth]{img/zipf_vs_ccdf.png}
-\end{figure*} \\
+\end{figure*}
 The rank $r$ of a word with frequency $k$ is equal to the number of words with frequency larger than $k$ plus 1. In other words, $r = 1 + N \cdot P(X > k)$. If $X \sim Pow(1, \alpha)$, then $r = 1 + N \cdot P(X > k) \propto k^{-{(\alpha - 1)}}$. By inverting, we get that $k \propto r^{-\frac{1}{\alpha - 1}}$, i.e., the frequencies are Zipf's law distributed with parameter $\frac{1}{\alpha - 1}$.
 \[
     X \sim Pow(1, \alpha) \iff R \sim Zipf \left (\frac{1}{\alpha - 1} \right )
