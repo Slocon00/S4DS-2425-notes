@@ -17,6 +17,8 @@
 \usepackage[breakable]{tcolorbox}
 \appto{\bibsetup}{\raggedright}
 
+\setlength\jot{10pt} % to increase space between equations
+
 \tikzstyle{mybox} = [draw=NavyBlue, ultra thick, rectangle, rounded corners, inner sep=10pt, inner ysep=10pt, text width=0.90\textwidth, align=left] 
 \tikzstyle{boxtitle} = [fill=NavyBlue, text=white, ultra thick, rectangle, rounded corners, inner sep=10pt, inner ysep=8pt, text width=0.90\textwidth]
 \tikzstyle{boxsubtitle} = [fill=NavyBlue!80, text=white, ultra thick, rectangle, outer ysep=-2.5pt, inner sep=10pt, inner ysep=5pt, text width=0.90\textwidth,
@@ -88,4 +90,5 @@ path picture={
 \input{summaries.tex}\separate
 \input{estimators.tex}\separate
 \input{mle.tex}\separate
+\input{regression.tex}\separate
 \end{document}

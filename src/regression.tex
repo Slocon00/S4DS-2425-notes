@@ -1,0 +1,144 @@
+\section{Regression}
+
+Regression analysis is a set of statistical processes used to estimate the relationship between one or more dependent variables, and one or more independent variables. This relationship may be linear or non-linear, and regression analysis can be used for both cases. This section will start with the simplest case (univariate simple linear regression), and gradually introduce more complex cases.
+
+\subsection{Simple linear regression}
+
+In a simple linear regression model for a bivariate dataset $(x_1, y_1), (x_2, y_2), \ldots, (x_n, y_n)$, we assume the $x_i$ are non-random, and the $y_i$ are realizations of random variables $Y_i$ satisfying the following equation:
+\begin{align*}
+    &Y_i = \alpha + \beta x_i + U_i &\quad i = 1, 2, \ldots, n
+\end{align*} 
+where $U_1, U_2, \ldots, U_n$ are independent random variables with 0 expectation and constant variance $\sigma^2$. \\
+The equalities above describe a regression line, $y = \alpha + \beta x$, where $\alpha$ is the \textbf{intercept}, and $\beta$ is the \textbf{slope} of the line. $x$ is called \textbf{independent} (or \textit{explanatory}) variable, while $y$ is the \textbf{dependent} (or \textit{response}) variable. Since the $U_i$ are independent, and each $Y_i$ is a function of the respective $U_i$, the $Y_i$ are also independent (per the propagation of indipendence rule). They are not identically distributed, however, since each $Y_i$ depends on a different $x_i$. All the $Y_i$ have the same variance $\sigma^2$ (same as the $U_i$). This property is called \textbf{homoscedasticity}.
+
+\paragraph{Least Squares Estimation}
+To estimate the values of $\alpha$ and $\beta$, an initial idea is to use MLE. However, MLE is a parametric method, meaning that we need to know the distribution of the $U_i$ beforehand. The alternative is to use the \textbf{Least Squares} method: let
+\[
+    y_i - \alpha - \beta x_i
+\]
+be the \textbf{residual} of the $i^{th}$ observation, which is the realization of $U_i = Y_i - \alpha - \beta x_i$. The least squares method aims to minimize the sum of squares of residuals across all observations:
+\[
+    \hat{\alpha}, \hat{\beta} = \arg \min_{\alpha, \beta} S(\alpha, \beta) = \arg \min_{\alpha, \beta} \sum_{i=1}^n (y_i - \alpha - \beta x_i)^2
+\]
+$S(\alpha, \beta)$ is called \textbf{Sum of Squares of Errors} (\textbf{SSE}) or Residual Sum of Squares (RSS). To minimize the function, we need to calculate the partial derivatives with respect to $\alpha$ and $\beta$, and set them to 0. The partial derivatives are:
+\begin{align*}
+    &\frac{\partial}{\partial \alpha} S(\alpha, \beta) = - 2 \sum_{i=1}^n (y_i - \alpha - \beta x_i) &\frac{\partial}{\partial \beta} S(\alpha, \beta) = - 2 \sum_{i_1}^n x_i (y_i - \alpha - \beta x_i)
+\end{align*}
+By setting both to 0, we get the estimates
+\begin{align*}
+    &\hat{\alpha} = \bar{y}_n - \hat{\beta} \bar{x}_n &\hat{\beta} = \frac{n \sum_{i=1}^n x_i y_i - (\sum_{i=1}^n x_i)(\sum_{i=1}^n y_i)}{n \sum_{i=1}^n x_i^2 - (\sum_{i=1}^n x_i)^2}
+\end{align*}
+The $\hat{y}_i = \hat{\alpha} + \hat{\beta} x_i$ are called \textbf{fitted values}. The difference between the fitted value and the observed value is called residual: $y_i - \hat{y}_i$. \\
+An equivalent form of $\hat{\beta}$ is the following:
+\[
+    \hat{\beta} = \frac{\sum_{i=1}^n (x_i - \bar{x}_n)(y_i - \bar{y}_n)}{SXX} = r_{xy} \frac{s_y}{s_x}
+\]
+where:
+\begin{itemize}[itemsep=0pt]
+    \item $SXX = \sum_{i=1}^n (x_i - \bar{x}_n)^2$;
+    \item $r_{xy}$ is the Pearson's correlation coefficient between $x$ and $y$;
+    \item $s_x$ and $s_y$ are the sample standard deviations of $x$ and $y$, respectively.
+\end{itemize}
+The line described by the equation $y = \hat{\alpha} + \hat{\beta}x$ always passes through the center of gravity $(\bar{x}_n, \bar{y}_n)$:
+\[
+    \hat{\alpha} = \bar{y}_n - \hat{\beta} \bar{x}_n \implies \hat{\alpha} + \hat{\beta} \bar{x}_n = \bar{y}_n - \hat{\beta} \bar{x}_n + \hat{\beta} \bar{x}_n = \bar{y}_n
+\]
+
+\paragraph{Unbiasedness of LS estimators}
+Both LS estimators of slope and interept are unbiased, and the following is the proof. Starting with the estimator of $\hat{\beta}$, it can be rewritten as:
+\[
+    \hat{\beta} = \frac{\sum_{i=1}^n (x_i - \bar{x}_n) (Y_i - \bar{Y}_n)}{SXX} = \frac{\sum_{i=1}^n (x_i - \bar{x}_n) Y_i - \sum_{i_1}^n (x_i - \bar{x}_n) \bar{Y}_n}{SXX} = \frac{\sum_{i=1}^n (x_i - \bar{x}_n) Y_i}{SXX}
+\]
+(this is because $\sum_{i=1}^n (x_i - \bar{x}_n) = 0$). We can now calculate its expectation, which is:
+\begin{gather*}
+    \E[\hat{\beta}] = \frac{\sum_{i=1}^n (x_i - \bar{x}_n) \E[Y_i]}{SXX} = \frac{\sum_{i=1}^n (x_i - \bar{x}_n) (\alpha + \beta x_i)}{SXX} = \\
+    \alpha \underset{\textit{this it 0 as above}}{\underbrace{\frac{\sum_{i=1}^n (x_i - \bar{x}_n)}{SXX}}} + \beta \frac{\sum_{i=1}^n (x_i - \bar{x}_n) x_i}{SXX} = \beta \frac{\sum_{i=1}^n (x_i - \bar{x}_n) x_i}{SXX} = \beta
+\end{gather*}
+Moreover, its variance is:
+\[
+    Var(\hat{\beta}) = \frac{\sum_{i=1}^n (x_i - \bar{x}_n)^2 Var(Y_i)}{SXX^2} = \sigma^2 \frac{\sum_{i=1}^n (x_i - \bar{x}_n)^2}{SXX^2} = \frac{\sigma^2}{SXX}
+\]
+Now, we calculate the expectation of $\hat{\alpha}$:
+\begin{gather*}
+    \E[\hat{\alpha}] = \E[\bar{Y}_n] - \bar{x}_n \E[\hat{\beta}] = \frac{1}{n} \sum_{i=1}^n \E[Y_i] - \bar{x}_n \beta = \\
+    = \frac{1}{n} \sum_{i=1}^n (\alpha + \beta x_i) - \bar{x}_n \beta = \frac{n \alpha}{n} + \frac{\beta}{n} \sum_{i=1}^n x_i - \bar{x}_n \beta = \\
+    = \alpha + \bar{x}_n \beta - \bar{x}_n \beta = \alpha 
+\end{gather*}
+Moreover, its variance is:
+\begin{gather*}
+    Var(\hat{\alpha}) = Var(\bar{Y}_n - \hat{\beta} \bar{x}_n) = Var(\bar{Y}_n) + \bar{x}_n^2 Var(\hat{\beta}) - 2 Cov(\bar{Y}_n, \beta \bar{x}_n) = \\
+    = \frac{\sigma^2}{n} + \bar{x}_n^2 \frac{\sigma^2}{SXX} - 2 \bar{x}_n \underset{\textit{this is 0}}{\underbrace{Cov(\bar{Y}_n, \hat{\beta})}} = \sigma^2 \left( \frac{1}{n} + \frac{\bar{x}_n^2}{SXX}\right)
+\end{gather*}
+
+Both variances of the two estimators use $\sigma^2$, which is unknown. We cannot estimate it using the unbiased estimator $\hat{\sigma}^2 = \sum_{i=1}^n (Y_i - \bar{Y}_n)^2/(n-1)$, because the $Y_i$ all have a different expectation. In this case, an unbiased estimator for the variance is
+\[
+    \hat{\sigma}^2 = \frac{\sum_{i=1}^n (y_i - \hat{\alpha} - \hat{\beta} x_i)^2}{n-2}
+\]
+$\hat{\sigma}$ is called \textbf{residual standard error}. The standard errors of the coefficient estimators are defined as estimates of their respective standard deviations:
+\begin{align*}
+    &se(\hat{\alpha}) = \hat{\sigma} \sqrt{\left( \frac{1}{n} + \frac{\bar{x}_n^2}{SXX} \right)} &se(\hat{\beta}) = \frac{\sigma}{\sqrt{SXX}}
+\end{align*}
+A measure close to the residual standard error is the \textbf{Root Mean Squared Error}, defined as:
+\[
+    RMSE = \sqrt{\frac{1}{n} \sum_{i=1}^n (y_i - \hat{a} - \hat{\beta}x_i)^2}
+\]
+
+\paragraph{LSE and MLE}
+MLE and LSE are equivalent in a special case: when the $U_i$ random variables are normally distributed with mean 0 and variance $\sigma^2$. The $Y_i$ then are also normally distributed; specifically, $Y_i \sim N(\alpha + \beta x_i, \sigma^2)$. \\
+The log-likelihood function is:
+\[
+    l(\alpha, \beta) = \sum_{i=1}^n \log \left( \frac{1}{\sigma \sqrt{2 \pi}} e^{-\frac{1}{2} \left(\frac{y_i - \alpha - \beta x_i}{\sigma}\right)^2}\right) = -n \log(\sigma \sqrt{2 \pi}) - \frac{1}{2} \left(\frac{\sum_{i=1}^n (y_i - \alpha - \beta x_i)}{\sigma}\right)^2
+\]
+It turns out that $\arg \max_{\alpha, \beta} l(\alpha, \beta) = \hat{\alpha}, \hat{\beta}$ as found for LSE.
+
+\paragraph{Total variability and $R^2$}
+The total variability of the observed data is calculated as the \textbf{Sum of Squares Total} (\textbf{SST}):
+\[
+    SST = \sum_{i=1}^n (y_i - \bar{y}_n)^2
+\]
+It is the sum of the squared differences between each observation $y_i$ and their mean.\\
+The total variability of the fitted data is instead calculated as the \textbf{Sum of Squares of Regression} (\textbf{SSR}):
+\[
+    SSR = \sum_{i=1}^n (\hat{y_i} - \bar{\hat{y}}_n)^2
+\]
+It is identical to the above, but uses the fitted values instead of those in the dataset.\\
+The total variablity of the residuals, which is the unexplained variability, is calculatd as the aforementioned \textbf{Sum of Squares of Errors} (\textbf{SSE}):
+\[
+    SSE = \sum_{i=1}^n (y_i - \hat{y}_i)^2
+\]
+The three quantities are related by the following equation:
+\[
+    SST = SSR + SSE
+\]
+
+Also, $1 - SSE/SST$ (or $SSR/SST$) is the \textit{fraction of explained variability over total variability}. We can now express the variances of the observations, of the residuals, and of the fitted values using the three quantities above:
+\begin{align*}
+    &\sigma_y^2 = \frac{\sum_{i=1}^n (y_i - \bar{y}_n)^2}{n-1} = \frac{SST}{n-1} &(\text{Variance of the } y)\\
+    &\sigma_{res}^2 = \frac{\sum_{i=1}^n (y_i - \hat{y}_i)}{n-1} = \frac{SSE}{n-1} &\text{(Variance of the residuals)}\\
+    &\sigma_{\hat{y}}^2 = \frac{\sum_{i=1}^n (\hat{y}_i - \bar{\hat{y}}_n)^2}{n-1} = \frac{SSR}{n-1} &\text{(Variance of the fitted values)}
+\end{align*}
+These quantities are used to define the \textbf{coefficient of determination} $R^2$:
+\[
+    R^2 = 1 - \frac{\sigma_{res}^2}{\sigma_y^2} = \frac{\sigma_{\hat{y}}^2}{\sigma_y^2}
+\]
+It is a measure of how well the regression line fits the data. For simple linear regression, it is equal to the square of the Pearson's correlation coefficient between $y$ and $\hat{y}$:
+\[
+    R^2 = r_{y\hat{y}}^2 = \frac{[\sum_{i=1}^n (y_i - \bar{y}_n) \cdot (\hat{y}_i - \bar{\hat{y}}_n)]^2}{\sum_{i=1}^n (y_i - \bar{y}_n)^2 \cdot \sum_{i=1}^n (\hat{y}_i - \bar{\hat{y}}_n)^2}
+\]
+When we take the adjusted sample variance of the residuals:
+\[
+    \hat{\sigma}_{res}^2 = \frac{\sum_{i=1}^n (y_i - \hat{y}_i)^2}{n-2} = \frac{SSE}{n-2}
+\]
+we can then define the \textbf{adjusted coefficient of determination} $\textit{adj}{R}^2$:
+\[
+    \textit{adj}{R}^2 = 1 - \frac{\hat{\sigma}_{res}^2}{\sigma_y^2} = 1 - \frac{SSE/(n-2)}{SST/(n-1)} = 1 - \frac{SSE}{SST} \cdot \frac{n-1}{n-2}
+\]
+
+
+
+\subsection{Non-linear simple regression}
+
+\subsection{Multiple linear regression}
+
+\subsection{Multivariate multiple linear regression}
+
