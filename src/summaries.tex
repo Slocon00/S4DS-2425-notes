@@ -75,9 +75,9 @@ The idea behind this method is to mix kernel functions (which can take different
 The last requirement is not strictly necessary, actually; for example, the Normal kernel has unbounded support.
 
 Each kernel function is characterized by a center (the observation), and a \textbf{bandwidth} $h$, which is a scaling factor over the support of the kernel from $[-1, 1]$ to $[-h, h]$. In other words, the badwidth determines how tall-thin or short-wide the kernel is around its center. We can then write
-\[
+\begin{equation*}
     X \sim K(t) \implies h \cdot X + x_i \sim \frac{1}{h} K \left ( \frac{t - x_i}{h} \right )
-\]
+\end{equation*}   
 because of the change-of-units transformation formulas. The final kernel density estimate is the result of the \textbf{mixture} of all the scaled and shifted kernel densities:
 \begin{equation*}
     f_{n,h} (t) = \frac{1}{nh} \sum_{i=1}^n K\left ( \frac{t-x_i}{h}\right )
@@ -127,9 +127,9 @@ Another issue that may arise is when the support of the random variable is bound
 \end{itemize}
 
 \paragraph{Order statistics} Let $x_1, x_2, \ldots, x_n$ be the ordered sequence of values in a sample. $x_{\langle i \rangle}$ is the $i^{th}$ order statistic. Order statistics are used to calculate empirical quantiles. Formally, the $p^{th}$ quantile is the value $q_p$ such that $q_p = \inf_x \{ P(X \leq x) \geq p \} = \inf_x \{F(x) \geq p\}$ (to be read as: ``the smallest number $x$ such that the probability of $X$ being less or equal than $x$ is greater or equal than $p$''). To find the empirical quantiles, we use the empirical approximation of the CDF in place of the true CDF:
-\[
+\begin{equation*}
     q_p = \inf_x \{ F_n(x) \geq p \} = \inf_x \left\{\frac{|\{i | x_i \leq x \}|}{n} \geq p \right\}
-\]
+\end{equation*}   
 There are actually many ways to find the quantiles of a distribution. In \texttt{R}, there are 9 variants. The default one is type 7:
 \begin{equation*}
     p = \frac{i-1}{n-1} \implies q_p = x_{\langle p\cdot(n-1) + 1 \rangle}

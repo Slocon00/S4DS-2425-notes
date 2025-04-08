@@ -13,13 +13,13 @@ The equalities above describe a regression line, $y = \alpha + \beta x$, where $
 
 \paragraph{Least Squares Estimation}
 To estimate the values of $\alpha$ and $\beta$, an initial idea is to use MLE. However, MLE is a parametric method, meaning that we need to know the distribution of the $U_i$ beforehand. The alternative is to use the \textbf{Least Squares} method: let
-\[
+\begin{equation*}
     y_i - \alpha - \beta x_i
-\]
+\end{equation*}   
 be the \textbf{residual} of the $i^{th}$ observation, which is the realization of $U_i = Y_i - \alpha - \beta x_i$. The least squares method aims to minimize the sum of squares of residuals across all observations:
-\[
+\begin{equation*}
     \hat{\alpha}, \hat{\beta} = \arg \min_{\alpha, \beta} S(\alpha, \beta) = \arg \min_{\alpha, \beta} \sum_{i=1}^n (y_i - \alpha - \beta x_i)^2
-\]
+\end{equation*}   
 $S(\alpha, \beta)$ is called \textbf{Sum of Squares of Errors} (\textbf{SSE}) or Residual Sum of Squares (RSS). To minimize the function, we need to calculate the partial derivatives with respect to $\alpha$ and $\beta$, and set them to 0. The partial derivatives are:
 \begin{align*}
     &\frac{\partial}{\partial \alpha} S(\alpha, \beta) = - 2 \sum_{i=1}^n (y_i - \alpha - \beta x_i) &\frac{\partial}{\partial \beta} S(\alpha, \beta) = - 2 \sum_{i_1}^n x_i (y_i - \alpha - \beta x_i)
@@ -30,9 +30,9 @@ By setting both to 0, we get the estimates
 \end{align*}
 The $\hat{y}_i = \hat{\alpha} + \hat{\beta} x_i$ are called \textbf{fitted values}. The difference between the fitted value and the observed value is called residual: $y_i - \hat{y}_i$. \\
 An equivalent form of $\hat{\beta}$ is the following:
-\[
+\begin{equation*}
     \hat{\beta} = \frac{\sum_{i=1}^n (x_i - \bar{x}_n)(y_i - \bar{y}_n)}{SXX} = r_{xy} \frac{s_y}{s_x}
-\]
+\end{equation*}   
 where:
 \begin{itemize}[itemsep=0pt]
     \item $SXX = \sum_{i=1}^n (x_i - \bar{x}_n)^2$;
@@ -40,24 +40,28 @@ where:
     \item $s_x$ and $s_y$ are the sample standard deviations of $x$ and $y$, respectively.
 \end{itemize}
 The line described by the equation $y = \hat{\alpha} + \hat{\beta}x$ always passes through the center of gravity $(\bar{x}_n, \bar{y}_n)$:
-\[
+\begin{equation*}
     \hat{\alpha} = \bar{y}_n - \hat{\beta} \bar{x}_n \implies \hat{\alpha} + \hat{\beta} \bar{x}_n = \bar{y}_n - \hat{\beta} \bar{x}_n + \hat{\beta} \bar{x}_n = \bar{y}_n
-\]
+\end{equation*}   
+Finally, we can define the estimator of the $Y_i$:
+\begin{equation*}
+    \hat{Y_i} = \hat{\alpha} + \hat{\beta} x_i
+\end{equation*}   
 
 \paragraph{Unbiasedness of LS estimators}
 Both LS estimators of slope and interept are unbiased, and the following is the proof. Starting with the estimator of $\hat{\beta}$, it can be rewritten as:
-\[
+\begin{equation*}
     \hat{\beta} = \frac{\sum_{i=1}^n (x_i - \bar{x}_n) (Y_i - \bar{Y}_n)}{SXX} = \frac{\sum_{i=1}^n (x_i - \bar{x}_n) Y_i - \sum_{i_1}^n (x_i - \bar{x}_n) \bar{Y}_n}{SXX} = \frac{\sum_{i=1}^n (x_i - \bar{x}_n) Y_i}{SXX}
-\]
+\end{equation*}   
 (this is because $\sum_{i=1}^n (x_i - \bar{x}_n) = 0$). We can now calculate its expectation, which is:
 \begin{gather*}
     \E[\hat{\beta}] = \frac{\sum_{i=1}^n (x_i - \bar{x}_n) \E[Y_i]}{SXX} = \frac{\sum_{i=1}^n (x_i - \bar{x}_n) (\alpha + \beta x_i)}{SXX} = \\
     \alpha \underset{\textit{this it 0 as above}}{\underbrace{\frac{\sum_{i=1}^n (x_i - \bar{x}_n)}{SXX}}} + \beta \frac{\sum_{i=1}^n (x_i - \bar{x}_n) x_i}{SXX} = \beta \frac{\sum_{i=1}^n (x_i - \bar{x}_n) x_i}{SXX} = \beta
 \end{gather*}
 Moreover, its variance is:
-\[
+\begin{equation*}
     Var(\hat{\beta}) = \frac{\sum_{i=1}^n (x_i - \bar{x}_n)^2 Var(Y_i)}{SXX^2} = \sigma^2 \frac{\sum_{i=1}^n (x_i - \bar{x}_n)^2}{SXX^2} = \frac{\sigma^2}{SXX}
-\]
+\end{equation*}   
 Now, we calculate the expectation of $\hat{\alpha}$:
 \begin{gather*}
     \E[\hat{\alpha}] = \E[\bar{Y}_n] - \bar{x}_n \E[\hat{\beta}] = \frac{1}{n} \sum_{i=1}^n \E[Y_i] - \bar{x}_n \beta = \\
@@ -71,45 +75,50 @@ Moreover, its variance is:
 \end{gather*}
 
 Both variances of the two estimators use $\sigma^2$, which is unknown. We cannot estimate it using the unbiased estimator $\hat{\sigma}^2 = \sum_{i=1}^n (Y_i - \bar{Y}_n)^2/(n-1)$, because the $Y_i$ all have a different expectation. In this case, an unbiased estimator for the variance is
-\[
+\begin{equation*}
     \hat{\sigma}^2 = \frac{\sum_{i=1}^n (y_i - \hat{\alpha} - \hat{\beta} x_i)^2}{n-2}
-\]
-$\hat{\sigma}$ is called \textbf{residual standard error}. The standard errors of the coefficient estimators are defined as estimates of their respective standard deviations:
+\end{equation*}   
+Its square root, $\hat{\sigma}$, is called \textbf{residual standard error}. The standard errors of the coefficient estimators are defined as estimates of their respective standard deviations:
 \begin{align*}
     &se(\hat{\alpha}) = \hat{\sigma} \sqrt{\left( \frac{1}{n} + \frac{\bar{x}_n^2}{SXX} \right)} &se(\hat{\beta}) = \frac{\sigma}{\sqrt{SXX}}
 \end{align*}
 A measure close to the residual standard error is the \textbf{Root Mean Squared Error}, defined as:
-\[
+\begin{equation*}
     RMSE = \sqrt{\frac{1}{n} \sum_{i=1}^n (y_i - \hat{a} - \hat{\beta}x_i)^2}
-\]
+\end{equation*}   
+The estimators of the $Y_i$ are also unbiased:
+\begin{equation*}
+    \E[\hat{Y}_i] = \E[\hat{\alpha}] + \E[\hat{\beta}] x_i = \alpha + \beta x_i
+\end{equation*}   
+Its variance is the same as the estimate for the variance of the $Y_i$. The prediction uncertainty at a $x_i$ is reported as $\hat{y} \pm se(\hat{y})$.
 
 \paragraph{LSE and MLE}
 MLE and LSE are equivalent in a special case: when the $U_i$ random variables are normally distributed with mean 0 and variance $\sigma^2$. The $Y_i$ then are also normally distributed; specifically, $Y_i \sim N(\alpha + \beta x_i, \sigma^2)$. \\
 The log-likelihood function is:
-\[
+\begin{equation*}
     l(\alpha, \beta) = \sum_{i=1}^n \log \left( \frac{1}{\sigma \sqrt{2 \pi}} e^{-\frac{1}{2} \left(\frac{y_i - \alpha - \beta x_i}{\sigma}\right)^2}\right) = -n \log(\sigma \sqrt{2 \pi}) - \frac{1}{2} \left(\frac{\sum_{i=1}^n (y_i - \alpha - \beta x_i)}{\sigma}\right)^2
-\]
+\end{equation*}   
 It turns out that $\arg \max_{\alpha, \beta} l(\alpha, \beta) = \hat{\alpha}, \hat{\beta}$ as found for LSE.
 
 \paragraph{Total variability and $R^2$}
 The total variability of the observed data is calculated as the \textbf{Sum of Squares Total} (\textbf{SST}):
-\[
+\begin{equation*}
     SST = \sum_{i=1}^n (y_i - \bar{y}_n)^2
-\]
+\end{equation*}   
 It is the sum of the squared differences between each observation $y_i$ and their mean.\\
 The total variability of the fitted data is instead calculated as the \textbf{Sum of Squares of Regression} (\textbf{SSR}):
-\[
+\begin{equation*}
     SSR = \sum_{i=1}^n (\hat{y_i} - \bar{\hat{y}}_n)^2
-\]
+\end{equation*}   
 It is identical to the above, but uses the fitted values instead of those in the dataset.\\
 The total variablity of the residuals, which is the unexplained variability, is calculatd as the aforementioned \textbf{Sum of Squares of Errors} (\textbf{SSE}):
-\[
+\begin{equation*}
     SSE = \sum_{i=1}^n (y_i - \hat{y}_i)^2
-\]
+\end{equation*}   
 The three quantities are related by the following equation:
-\[
+\begin{equation*}
     SST = SSR + SSE
-\]
+\end{equation*}   
 
 Also, $1 - SSE/SST$ (or $SSR/SST$) is the \textit{fraction of explained variability over total variability}. We can now express the variances of the observations, of the residuals, and of the fitted values using the three quantities above:
 \begin{align*}
@@ -118,27 +127,133 @@ Also, $1 - SSE/SST$ (or $SSR/SST$) is the \textit{fraction of explained variabil
     &\sigma_{\hat{y}}^2 = \frac{\sum_{i=1}^n (\hat{y}_i - \bar{\hat{y}}_n)^2}{n-1} = \frac{SSR}{n-1} &\text{(Variance of the fitted values)}
 \end{align*}
 These quantities are used to define the \textbf{coefficient of determination} $R^2$:
-\[
+\begin{equation*}
     R^2 = 1 - \frac{\sigma_{res}^2}{\sigma_y^2} = \frac{\sigma_{\hat{y}}^2}{\sigma_y^2}
-\]
+\end{equation*}   
 It is a measure of how well the regression line fits the data. For simple linear regression, it is equal to the square of the Pearson's correlation coefficient between $y$ and $\hat{y}$:
-\[
+\begin{equation*}
     R^2 = r_{y\hat{y}}^2 = \frac{[\sum_{i=1}^n (y_i - \bar{y}_n) \cdot (\hat{y}_i - \bar{\hat{y}}_n)]^2}{\sum_{i=1}^n (y_i - \bar{y}_n)^2 \cdot \sum_{i=1}^n (\hat{y}_i - \bar{\hat{y}}_n)^2}
-\]
+\end{equation*}   
 When we take the adjusted sample variance of the residuals:
-\[
+\begin{equation*}
     \hat{\sigma}_{res}^2 = \frac{\sum_{i=1}^n (y_i - \hat{y}_i)^2}{n-2} = \frac{SSE}{n-2}
-\]
+\end{equation*}   
 we can then define the \textbf{adjusted coefficient of determination} $\textit{adj}{R}^2$:
-\[
+\begin{equation*}
     \textit{adj}{R}^2 = 1 - \frac{\hat{\sigma}_{res}^2}{\sigma_y^2} = 1 - \frac{SSE/(n-2)}{SST/(n-1)} = 1 - \frac{SSE}{SST} \cdot \frac{n-1}{n-2}
-\]
+\end{equation*}   
 
+\subsection{Weighted simple regression}
+Weighted simple regression is a variant of linear simple regression where each observation is associated to a weight $w_i$ that indicates how important that observation is to the estimation of the regression line parameters. The error function that is maximized is
+\begin{equation*}
+    S(\alpha, \beta) = \sum_{i=1}^n (y_i - \alpha - \beta x_i)^2 w_i
+\end{equation*}   
+For natural number weights, the resulting effect is the same as replicating the same observation $w_i$ times.
 
+\subsection{Polynomial simple regression}
+Polynomial simple regression is another variant where the relationship between the indipendent and dependent variables is modeled as a polynomial of degree $k$. The error function is
+\begin{equation*}
+    S(\alpha, \beta) = \sum_{i=1}^n (y_i - \alpha - \beta x_i - \beta_2 x_i^2 - \ldots - \beta_k x_i^k)^2
+\end{equation*}   
+It may suffer from collinearity (explained later).
 
 \subsection{Non-linear simple regression}
+Non-linear simple regression models the relationship between independent and dependent as:
+\begin{equation*}
+    Y_i = f(\alpha, \beta, x_i) + U_i
+\end{equation*}   
+where $f()$ is a non-linear function. The error function to minimize is then
+\begin{equation*}
+    S(\alpha, \beta) = \sum_{i=1}^n (y_i - f(\alpha, \beta, x_i))^2
+\end{equation*}   
+$\arg\min_{\alpha, \beta} S(\alpha, \beta)$ may not have a closed form, so numerical methods are used to find the minimum: a typical example of such method is gradient descent, which iteratively updates the parameters $\alpha$ and $\beta$ in the direction of the negative gradient of the error function.\\
+In some cases, the non-linear function can be transformed in an equivalent linear function. For example, recall the PDF of Power Laws: $f(\alpha, \beta, x_i) = \alpha x_i^{\beta}$. We can solve it by taking the logarithm of both sides: $\log Y_i = \log \alpha + \beta \log x_i + U_i$. After finding the LSE estimators of the parameters, $\log \hat{\alpha}$ and $\hat{beta}$, we can rewrite the equation:
+\begin{equation*}
+    Y_i = \hat{\alpha} x_i^{\hat{\beta}} e^{U_i}
+\end{equation*}   
+Notice how in this example the error term becomes a multiplicative factor instead of an additive one.
 
 \subsection{Multiple linear regression}
+In multiple linear regression, the dataset of observations is multivariate, meaning that each observation is a vector of $k$ independent variables and one dependent variable:
+\begin{equation*}
+    (x_1^1, x_1^2, \ldots, x_1^k, y_1), (x_2^1, x_2^2, \ldots, x_2^k, y_2), \ldots, (x_n^1, x_n^2, \ldots, x_n^k, y_n)
+\end{equation*}   
+The relationship between the $i^{th}$ dependent variable and the $i^{th}$ observation is:
+\begin{equation*}
+    Y_i = \alpha + \beta_1 x_i^1 + \ldots + \beta_k x_i^k + U_i
+\end{equation*}   
+Or, in vector terms:
+\begin{align*}
+    &Y_i = x_i \cdot \beta^T + U_i &\text{where } \beta = (\alpha, \beta_1, \ldots, \beta_k) \text{ and } x_i = (1, x_i^1, \ldots, x_i^k)
+\end{align*}
+Using this vector notation, we can then express the model as:
+\begin{gather*}
+    \mathbf{Y} = \mathbf{X} \cdot \beta^T + \mathbf{U} \\
+    \begin{pmatrix}
+        Y_1 \\
+        Y_2 \\
+        \vdots \\
+        Y_n
+    \end{pmatrix} =
+    \begin{pmatrix}
+        1 & x_1^1 & x_1^2 & \dots & x_1^k \\
+        1 & x_2^1 & x_2^2 & \dots & x_2^k \\
+        \vdots & \vdots & \vdots & \vdots & \vdots \\
+        1 & x_n^1 & x_n^2 & \dots & x_n^k
+    \end{pmatrix}
+    \begin{pmatrix}
+        \alpha \\
+        \beta_1 \\
+        \vdots \\
+        \beta_k
+    \end{pmatrix} +
+    \begin{pmatrix}
+        U_1 \\
+        U_2 \\
+        \vdots \\
+        U_n
+    \end{pmatrix}
+\end{gather*}
+Estimators for the parameters of the model are found through the same method as for simple linear regression, but here we can reformulate the sum of the squares of the residuals as the squared euclidean norm of the residuals:
+\begin{equation*}
+    \hat{\beta} = \arg \min_{\beta} S(\beta) = \arg \min_{\beta} \sum_{i=1}^n (y_i - x_i \cdot \beta^T)^2 = \arg \min_{\beta} ||\mathbf{y} - \mathbf{X} \cdot \beta^T||^2
+\end{equation*}
+And the solution is
+\begin{equation*}
+    \hat{\beta} = (\mathbf{X}^T \cdot \mathbf{X})^{-1} \cdot \mathbf{X}^T \cdot \mathbf{y}
+\end{equation*}
+Here $\alpha$ is treated as the first element of $\beta$. The element $\beta_i$ can be interpreted as the change of the dependent variable $Y$ for a unit change of the $i^{th}$ independent variable, while keeping all the other independent variables constant. The estimator above is a MVUE.
 
 \subsection{Multivariate multiple linear regression}
 
+Multivariate multiple linear regression models the relationship between two or mode dependent variables and two or more independent variables. In vector notation, we can express the model as:
+\begin{gather*}
+    \mathbf{Y} = \mathbf{X} \cdot \beta^T + \mathbf{U} \\
+    \begin{pmatrix}
+        Y_1^1 & \dots & Y_1^m \\
+        Y_2^1 & \dots & Y_2^m \\
+        \vdots & \vdots & \vdots \\
+        Y_n^1 & \dots & Y_n^m
+    \end{pmatrix} =
+    \begin{pmatrix}
+        1 & x_1^1 & x_1^2 & \dots & x_1^k \\
+        1 & x_2^1 & x_2^2 & \dots & x_2^k \\
+        \vdots & \vdots & \vdots & \vdots & \vdots \\
+        1 & x_n^1 & x_n^2 & \dots & x_n^k
+    \end{pmatrix}
+    \begin{pmatrix}
+        \alpha^1 & \alpha^2 & \dots & \alpha^m \\
+        \beta_1^1 & \beta_1^2 & \dots & \beta_1^m \\
+        \vdots & \vdots & \vdots & \vdots & \vdots \\
+        \beta_k^1 & \beta_k^2 & \dots & \beta_k^m
+    \end{pmatrix} +
+    \begin{pmatrix}
+        U_1^1 & U_1^2 & \dots & U_1^m \\
+        U_2^1 & U_2^2 & \dots & U_2^m \\
+        \vdots & \vdots & \vdots & \vdots & \vdots \\
+        U_n^1 & U_n^2 & \dots & U_n^m
+    \end{pmatrix}
+\end{gather*}
+The dataset contains $n$ observations, each with $k$ independent variables and $m$ dependent variables. The resulting model is not simply a collection of $m$ multiple linear regression models. The error terms in the same column of $\mathbf{U}$ are independent (like in single multiple linear regression), but the error terms in the same row may be correlated, so coefficients for different dependent variables may covary.
+
+\subsection{Issues with linear regression}

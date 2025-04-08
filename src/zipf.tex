@@ -9,15 +9,15 @@ Power laws are a family of ``scale free'' distributions. Most distributions have
     \end{align*}
 }
 $C$ is called \textbf{intercept}, while $\alpha$ is called \textbf{exponent}. If the function is expressed in logarithmic scale, we have
-\[
+\begin{equation*}
     \log(f(x)) = -\alpha \cdot \log(x) + \log(C)
-\]
+\end{equation*}   
 i.e., there is a linear relationship between $\log(f(x))$ and $\log(x)$. Graphically, this means that the distribution is a straight line in a log-log plot. The reason parameter $x_{min}$ is included is to specify what is the exact lower bound after which a distribution shows a power law behaviour.
 
 Being scale-free, we can identify some constant $b$ such that $p(bx) = g(b)p(x)$, meaning that even if we multiply the variable by this scaling factor, the form of the distribution remains the same. In this case, we write
-\[
+\begin{equation*}
     p(bx) = b^{-\alpha} C \cdot x^{-\alpha}.
-\]
+\end{equation*}   
 Notice how the value of the intercept is not specified in the definition above. This is because after fixing $x_{min}$ and $\alpha$, $C$ is uniquely determined by the condition that the integral of the PDF over the entire range must be 1:
 \begin{align*}
     1 = \int_{x_{min}}^{\infty} C \cdot x^{-\alpha} \ dx = \frac{C}{-\alpha + 1}[x^{-\alpha + 1}]_{x_{min}}^{\infty} = \frac{C}{\alpha - 1} x_{min}^{-\alpha + 1} \iff \boxed{C = \frac{(\alpha - 1)}{x_{min}^{-\alpha + 1}}}
@@ -86,11 +86,11 @@ We can try to convert a power-law into a Zipf's law and vice-versa. By comparing
     \includegraphics*[width=0.8\textwidth]{img/zipf_vs_ccdf.png}
 \end{figure*}
 The rank $r$ of a word with frequency $k$ is equal to the number of words with frequency larger than $k$ plus 1. In other words, $r = 1 + N \cdot P(X > k)$. If $X \sim Pow(1, \alpha)$, then $r = 1 + N \cdot P(X > k) \propto k^{-{(\alpha - 1)}}$. By inverting, we get that $k \propto r^{-\frac{1}{\alpha - 1}}$, i.e., the frequencies are Zipf's law distributed with parameter $\frac{1}{\alpha - 1}$.
-\[
+\begin{equation*}
     X \sim Pow(1, \alpha) \iff R \sim Zipf \left (\frac{1}{\alpha - 1} \right )
-\]
+\end{equation*}   
 ($R$ is a r.v. that models the ranks).\\
 For this distribution, $C$ is calculated as
 \begin{equation*}
     C = \frac{1}{\sum_{r=1}^{N} r^{-\alpha}} = \frac{1}{\zeta(\alpha) - \zeta(\alpha, N+1)}
-\end{equation*}
+\end{equation*}   

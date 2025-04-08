@@ -17,30 +17,38 @@ A classic example is the approximation of the speed of light by physicist A. A. 
     An estimator of a parameter $\theta$ is a statistics $T_n = h(X_1, \ldots, X_n)$ intended to provide information about $\theta$.
 }
 Using the speed of light example, we can model is as follows: the dataset of measurements is the realization of a random sample of random variables. Each random variable is defined as:
-\[X_i = c + \epsilon_i\]
+\begin{equation*}
+    X_i = c + \epsilon_i
+\end{equation*}   
 where $c$ is the speed of light, and $\epsilon_i$ is a measurement error, assumed to be normally distributed with mean 0 ad variance $\sigma^2$. The \textbf{estimand} is the expected value of one of these variables: $\theta = \E[X_i]$. We can define an \textbf{estimator} as the average of the sample:
-\[T_n = \bar{X}_n = \sum_{i=1}^n \frac{X_1 + X_2, \ldots, + X_n}{n}\]
+\begin{equation*}
+    T_n = \bar{X}_n = \sum_{i=1}^n \frac{X_1 + X_2, \ldots, + X_n}{n}
+\end{equation*}   
 Finally, the \textbf{estimate} is the actual value we get by plugging the values collected in the dataset to the estimator.
 
 \boxdefinition{Unbiased estimator}{
     An estimator $T_n = h(X_1, \ldots, X_n)$ of a parameter $\theta$ is unbiased if
-    \[\E[T_n] = \theta\]
+    \begin{equation*}
+        \E[T_n] = \theta
+    \end{equation*}
     If $\E[T_n] - \theta \not = 0$, the estimator is biased.
 }
 Bias, if present, can be either positive or negative. An estimator may be \textbf{asymptotically unbiased} if it its unbiased as the sample size $n$ approaches infinity:
-\[\lim_{n \to \infty} \E[T_n] = \theta\]
+\begin{equation*}
+    \lim_{n \to \infty} \E[T_n] = \theta
+\end{equation*}
 Sometimes, the estimator is indicated with the same symbol as the estimand, but with a hat on top: $\hat{\theta}$ (e.g., $\hat{\mu}$ is an estimator for the mean, $\hat{sigma}$ is an estimator for the standard deviation).
 
 Bias can be thought of as a measure of how well the estimator can approsimate the parameter of interest. If it is unbiased, it means it has the capacity to estimate the parameter correctly. Estimators are also characterized by their variance. \textbf{Variance} is a measure of how much the estimate can sway from the true value of the parameter, regardless of bias. An estimator can have low bias, but high variance, meaning that it can approximate the parameter, but the response is not necessarily reliable. When the same estimand has multiple unbiased estimators, variance is a measure of their efficiency. Let $T_1$ and $T_2$ be unbiased estimators of $\theta$; $T_1$ is \textbf{more efficient} than $T_1$ if $Var(T_2) < Var(T_1)$. The \textbf{relative efficiency} of $T_2$ w.r.t. $T_1$ is $Var(T_1)/Var(T_2)$. The standard deviation of the estimator is called \textbf{standard error} (\textbf{SE}).
 \boxdefinition{Unbiased estimators for expectation and variance}{
     Let $X_1, X_2, \ldots, X_n$ be a random sample from a distribution with finite expectation $\mu$ and finite variance $\sigma$. Then
-    \[
-        \bar{X}_n = \frac{X_1 + X_2 + \ldots + X_n}{n}
-    \]
+    \begin{equation*}
+    \bar{X}_n = \frac{X_1 + X_2 + \ldots + X_n}{n}
+\end{equation*}   
     is an unbiased estimator for $\mu$, and
-    \[
-        S^2 = \frac{1}{n-1} \sum_{i=1}^n (X_i - \bar{X}_n)^2
-    \]
+    \begin{equation*}
+    S^2 = \frac{1}{n-1} \sum_{i=1}^n (X_i - \bar{X}_n)^2
+\end{equation*}   
     is an unbiased estimator for $\sigma^2$.
 }
 We've already seen how the expected value of the mean is also the mean of the distribution. Also, per the central limit theorem, the variance of the mean goes to 0 as $n$ goes to infinity.
@@ -51,9 +59,9 @@ Why is the estimator of the variance divided by $n-1$ instead of $n$? This is ca
     &(2)\quad Var(X_i - \bar{X}_n) = \E[(X_i - \bar{X}_n)^2] - E[X_i - \bar{X}_n]^2 = \E[(X_i - \bar{X}_n)^2] = \sigma^2
 \end{align*}
 $X_i$ and $\bar{X}_n$ are not independent, because the latter is a function of the former. However, we can split the mean, removing $X_i$ from it, getting two independent terms:
-\[
+\begin{equation*}
     X_i - \bar{X}_n = X_i - \frac{1}{n} \sum_{j=1}^n X_j = X_i - \frac{1}{n} X_i - \frac{1}{n} \sum_{j=1, j \not = i} X_j = \frac{n - 1}{n} X_i - \frac{1}{n} \sum_{j=1, j \not = i} X_j
-\]
+\end{equation*}   
 We can now easily calculate the variance, since it is the sum of the variances of the two terms:
 \begin{gather*}
     Var(X_i - \bar{X}_n) = Var\left(\frac{n - 1}{n} X_i - \frac{1}{n} \sum_{j=1, j \not = i} X_j\right) = Var\left(\frac{n - 1}{n} X_i\right) + Var\left(\frac{1}{n} \sum_{j=1, j \not = i} X_j\right) =\\
@@ -65,72 +73,72 @@ Finally, we apply the above calculations to find the expected value of the estim
     = \frac{1}{n-1} \sum_{i=1}^n Var(X_i - \bar{X}_n) = \frac{1}{n-1} n \frac{n-1}{n} \sigma^2 = \sigma^2
 \end{gather*}
 Additionally,
-\[
+\begin{equation*}
     Var(S_n)^2 = \frac{1}{n}(\mu_4 - \frac{n-3}{n-1}\sigma^4)
-\]
+\end{equation*}   
 which goes to 0 as $n$ goes to infinity.\\
 Intuitively, the need for this correction can be explained by the fact that the $X_i$ and the mean $\bar{X}_n$ are not independent; if we know $n-1$ random variables and the mean, we can always deduce the $n^{th}$ random variable. In this sense, the estimator has $n-1$ \textbf{degrees of freedom}: in general, the degrees of freedom of any estimator is the number of observations minus the number of parameters already estimated.
 
 What about the standard deviation? Unfortunately, the square root of the estimator of the variance is not an unbiased estimator for the standard deviation. By Jensen's inequality, since the square root is a concave function, we have:
-\[
+\begin{equation*}
     \E[\sqrt{S_n^2}] = \E[S_n] < \sqrt{\E[S_n^2]} = \sigma 
-\]
+\end{equation*}   
 This is true for most estimators: if $T$ is unbiased for $\theta$, $g(T)$ is not necessarily unbiased for $g(\theta)$; the only exception is when $g()$ is a linear transformation (since by Jensen's inequality the strict equality holds). A non-parametric unbiased estimator for the standard deviation does not exist: we need to know the distribution to estimate it unbiasedly.
 
 \boxdefinition{Unbiased estimator for the median}{
     Let $X_1, \ldots, X_n$ be a random sample from a distribution with PDF $f(x)$. Let $m = F^{-1}(0.5)$ be the true median of the distribution. Let
-    \[
+    \begin{equation*}
         T = Med(X_1, \ldots, X_n).
-    \]
+\end{equation*}   
     Then
-    \[
+    \begin{equation*}
         T \sim N\left(m, \frac{1}{4n f(m)^2}\right) \quad \text{as} \quad n \to \infty
-    \]
+\end{equation*}   
     and $T$ is an unbiased estimator for the median as $n$ goes to infinity.
 }
 \boxdefinition{Unbiased estimator for quantiles}{
     Let $X_1, \ldots, X_n$ be a random sample from a distribution with PDF $f(x)$. Let $q_p$ the the true $p^{th}$ quantile of the distribution. Let
-    \[
+    \begin{equation*}
         T = q_{X_1, \ldots, X_n}(p)
-    \]
+\end{equation*}   
     Then
-    \[
+    \begin{equation*}
         T \sim N\left(q_p, \frac{p(1-p)}{n f(q_p)^2}\right) \quad \text{as} \quad n \to \infty
-    \]
+\end{equation*}   
     and $T$ is an unbiased estimator for the $p^{th}$ quantile as $n$ goes to infinity.
 }
 \boxdefinition{Unbiased estimator for the Median of Absolute Deviations (MAD)}{
     Let $X_1, \ldots, X_n$ be a random sample from a distribution. Let $Md$ be the true median of absolute deviations of the distribution. Let
-    \[
+    \begin{equation*}
         T = MAD(X_1, \ldots, X_n) = Med(|X_1 - Med(X_1, \ldots, X_n)|, \ldots, |X_n - Med(X_1, \ldots, X_n)|)
-    \]
+    \end{equation*}   
     Then
-    \[
+    \begin{equation*}
         T \sim N\left( Md, \frac{\sigma_1^2}{n} \right)
-    \]
+    \end{equation*}   
     (where $\sigma_1^2$ is defined in terms of $Md$, median, and CDF of the distribution) and $T$ is an unbiased estimator for the MAD as $n$ goes to infinity.  
 }
 All the above estimators are found by applying the corresponding version of the central limit theorem (CLT for medians, CLT for quantiles, CLT for MAD).
 
 For correlation, the various coefficients seen in the previous section are estimators of the true correlation coefficient between two random variables. Pearson's $r$ is an estimator for $\rho$, but the distribution of $r$ is highly skewed. To fix this issue, the \textbf{Fisher transformation} can be applied, defined as follows: $\textit{FisherZ}(r) = \frac{1}{2} \log\frac{1+r}{1-r}$. The distribution of the Fisher-transformed coefficient is approximately normal:
-\[
+\begin{equation*}
     \textit{FisherZ}(r) \sim N\left(\textit{FisherZ}(\rho), \frac{1}{n-3}\right)
-\]
+\end{equation*}   
 Hence, if we apply the inverse transformation to its expected value we get
-\[
+\begin{equation*}
     \textit{FisherZ}^{-1} (\E[\textit{FisherZ(r)}]) = \rho
-\]
+\end{equation*}   
 This is also true for Spearman's $\rho$, sicne it is a special case of Pearson's $r$. \\
 For Kendall's $\tau_a$, we have, for $n > 10$, that
-\[
+\begin{equation*}
     \tau_a (X,Y) \sim N\left(\theta, \frac{2(2n + 5)}{9n(n-1)}\right)
-\]
+\end{equation*}   
 where $\theta = \E_{X_1,X_2 \sim F_X, Y_1, Y_2 \sim F_Y}[sign(X_1 - X_2) \cdot \textit{sign}(Y_1 - Y_2)]$. Hence $\tau_a$ is an unbiased estimator for $\theta$.
 \boxdefinition{Mean Squared Error (MSE)}{
     The Mean Squared Error of an estimator $T$ for a parameter $\theta$ is defined as
-    \[
+    \begin{equation*}
         MSE(T) = \E[(T - \theta)^2]
-    \]
+\end{equation*}   
 }
 The MSE can be used to compare different estimators by considering both their bias and variance. The lower the MSE, the better the estimator. The MSE can be decomposed into the sum of the variance and the square of the bias:
 \begin{gather*}
@@ -141,16 +149,16 @@ A biased estimator with low variance may be better than an unbiased estimator wi
 
 \boxdefinition{Consistent estimator}{
     An estimator $T_n$ is a squared error consistent estimator if 
-    \[
+    \begin{equation*}
         \lim_{n \to \infty} MSE(T_n) = 0
-    \]
+\end{equation*}   
 }
 A consistent estimator has both bias and variance go to 0 as $n$ goes to 0. For example, $\bar{X}_n$ is a squared error consistent estimator of $\mu$.
 \boxdefinition{Minimum Variance Unbiased Estimator (MVUE)}{
     An unbiased estimator $T_n$ of $\theta$ is a Minimum Variance Unbiased Estimator if
-    \[
+    \begin{equation*}
         Var(T_n) \leq Var(S_n)
-    \]
+\end{equation*}   
     for all unbiased estimators $S_n$ of $\theta$.
 }
 As a corollary, if $T_n$ is a MVUE, then $MSE(T_n) \leq MSE(S_n)$. $\bar{X}_n$ is also a MVUE of $\mu$ when the random sample is normally distributed with parameters $\mu$ and $\sigma^2$.

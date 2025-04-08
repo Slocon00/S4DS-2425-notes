@@ -4,20 +4,20 @@ The previous sections showed different ways to derive parameter estimators using
 
 \boxdefinition{Likelihood, Log-likelihood}{
     Let $x_1, \ldots, x_n$ be a dataset, realization of a random sample $X_1, \ldots, X_n$, where the PMF/PDF of $X_i$ is $f_{\theta}()$, parametric on $\theta$. The likelihood function is defined as
-    \[
+    \begin{equation*}
         L(\theta) = \prod_{i=1}^n f_{\theta}(x_i)
-    \]
+\end{equation*}   
     and the log likelihood function is defined as
-    \[
+    \begin{equation*}
         l(\theta) = \log L(\theta) = \sum_{i=1}^n \log f_{\theta}(x_i)
-    \]
+\end{equation*}   
 }
 The goal of MLE is to find the parameter value(s) that maximize the likelihood of the data. Since finding the maximum (in practice, derivating) a product is difficult, the logarithm of it is used instead, since it is a monotonic function (so the maximum remains the same) and the original likelihood can be converted to a sum of terms. Another issue to consider when using products is that when it is computed, the result can become very small, leading to numerical instability.
 \boxdefinition{Maximum Likelihood estimates}{
     The maximum likelihood estimates of $\theta$ is the value $t = \arg\max_{\theta} L(\theta) = \arg\max_{\theta} l(\theta)$. The statistics over the random sample
-    \[
+    \begin{equation*}
         \hat{\theta}_{ML} = \arg\max_{\theta} L(\theta) = \arg\max_{\theta} l(\theta)
-    \]
+\end{equation*}   
     is called maximum likelihood estimator for $\theta$.
 }
 Often, loss functions are used to evaluate the quality of the estimator. Some examples are:
@@ -31,45 +31,45 @@ The last two can be used to compare models with different number of parameters s
 MLE estimators can be biased, but under mild assumptions, they are always asymtotically unbiased, and (also asymptotically) they always have the smallest variance among unbiased estimators. Additionally, if $\hat{\theta}$ is the MLE estimator of $\theta$ and $g()$ is an invertible function, $g(\hat{\theta})$ is the MLE estimator of $g(\theta)$.
 
 \paragraph{Cross entropy and negative log likelihood} There is a connection between the cross entropy and the negative log likelihood functions. Assume we have the random variables $X,Y$ with PMF $p_x$ and $p_y$. The cross entropy of $X$ with respect to $Y$ is defined as
-\[
+\begin{equation*}
     H(X;Y) = - \sum_i p_x(a_i) \log p_y(a_i).
-\]
+\end{equation*}   
 The negative log-likelihood is
-\[
+\begin{equation*}
     nLL(\theta) = - \sum_i \underset{\textit{This is } \log p_y(a_i)}{\underbrace{\log(f_{\theta}(x_i))}} = H(X;Y)
-\]
+\end{equation*}   
 where $X \sim F_n$ and $Y \sim F_{\theta}$. Minimizing the cross entropy (or the KL-divergence) between empirical and theoretical distributions is equivalent to maximizing the likelihood of the data.
 
 \paragraph{Score function and Fisher Information}
 The entropy of a random variable is the mean information carried by it. Then, the partial derivative (w.r.t. $\theta$) of the logarithm of $f_{\theta}$ represents the change in information as $\theta$ varies. It turns out that
-\[
+\begin{equation*}
     \E\left[\frac{\partial}{\partial \theta} \log f_{\theta}(X)\right] = 0
-\]
+\end{equation*}   
 for any $X$. Instead of studying the expectation, we consider the variance. Formally, we define the score function and the Fisher information as follows:
 \boxdefinition{Score function}{
     The score function is the random variable
-    \[
+    \begin{equation*}
         S(\theta) = \frac{\partial}{\partial \theta} l(\theta) = \sum_{i=1}^n \frac{\partial}{\partial \theta} \log f_{\theta}(X_i)
-    \]
+\end{equation*}   
 }
 \boxdefinition{Fisher information}{
     The Fisher information is the variance of th score function:
-    \[
+    \begin{equation*}
         I(\theta) = Var(S(\theta)) = \E[S(\theta^2)]
-    \]
+\end{equation*}   
 }
 The Fisher information measures the sensitivity of $X$ with respect to $\theta$. If small changes in $\theta$ cause large changes in the density function, the Fisher information is high: this means that the data provides information on the correct $\theta$.
 
 For unbiased estimators, the \textbf{Cramér-Rao bound} holds, stating that for any unbiased estimator $T$:
-\[
+\begin{equation*}
     Var(T) \geq \frac{1}{I(\theta)}
-\]
+\end{equation*}   
 An unbiased estimator for which the equality holds is a Minimum Variance Unbiased Estimator. The \textbf{absolute efficiency} of an estimator can be then calculated as
-\[
+\begin{equation*}
     e(T) = \frac{1}{I(\theta) \cdot Var(T)} \in [0,1]
-\]
+\end{equation*}   
 Recall that a MLE estimator is always asymptotically unbiased and has asymptotic minimum variance. Also by Cramér-Rao, asymptotically we have that
-\[
+\begin{equation*}
     se(\hat{\theta}_{ML}) = \sqrt{Var(\hat{\theta}_{ML})} = \frac{1}{\sqrt{n \cdot I(\theta)}}
-\]
+\end{equation*}   
 where $se$ is the standard error of the estimator.
