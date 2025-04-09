@@ -9,22 +9,22 @@ The previous sections showed different ways to derive parameter estimators using
 \end{equation*}   
     and the log likelihood function is defined as
     \begin{equation*}
-        l(\theta) = \log L(\theta) = \sum_{i=1}^n \log f_{\theta}(x_i)
+        \ell(\theta) = \log L(\theta) = \sum_{i=1}^n \log f_{\theta}(x_i)
 \end{equation*}   
 }
 The goal of MLE is to find the parameter value(s) that maximize the likelihood of the data. Since finding the maximum (in practice, derivating) a product is difficult, the logarithm of it is used instead, since it is a monotonic function (so the maximum remains the same) and the original likelihood can be converted to a sum of terms. Another issue to consider when using products is that when it is computed, the result can become very small, leading to numerical instability.
 \boxdefinition{Maximum Likelihood estimates}{
-    The maximum likelihood estimates of $\theta$ is the value $t = \arg\max_{\theta} L(\theta) = \arg\max_{\theta} l(\theta)$. The statistics over the random sample
+    The maximum likelihood estimates of $\theta$ is the value $t = \arg\max_{\theta} L(\theta) = \arg\max_{\theta} \ell(\theta)$. The statistics over the random sample
     \begin{equation*}
-        \hat{\theta}_{ML} = \arg\max_{\theta} L(\theta) = \arg\max_{\theta} l(\theta)
+        \hat{\theta}_{ML} = \arg\max_{\theta} L(\theta) = \arg\max_{\theta} \ell(\theta)
 \end{equation*}   
     is called maximum likelihood estimator for $\theta$.
 }
 Often, loss functions are used to evaluate the quality of the estimator. Some examples are:
 \begin{itemize}
-    \item \textbf{Negative log-likelihood}: $nLL(\theta) = -l(\theta)$
-    \item \textbf{Akaike Information Criterion} (\textbf{AIC}): $AIC = 2 |\theta| - 2 l(\theta)$. This function balances model fit (in the second term) with model simplicity (in the first term).
-    \item \textbf{Bayesian Information Criterion} (\textbf{BIC}): $BIC = |\theta| \log(\theta) - 2 l(\theta)$. It has a stronger penalty for model complexity compared to AIC.
+    \item \textbf{Negative log-likelihood}: $nLL(\theta) = -\ell(\theta)$
+    \item \textbf{Akaike Information Criterion} (\textbf{AIC}): $AIC = 2 |\theta| - 2 \ell(\theta)$. This function balances model fit (in the second term) with model simplicity (in the first term).
+    \item \textbf{Bayesian Information Criterion} (\textbf{BIC}): $BIC = |\theta| \log(\theta) - 2 \ell(\theta)$. It has a stronger penalty for model complexity compared to AIC.
 \end{itemize}
 The last two can be used to compare models with different number of parameters since they consider complexity as well as fit.
 
@@ -49,7 +49,7 @@ for any $X$. Instead of studying the expectation, we consider the variance. Form
 \boxdefinition{Score function}{
     The score function is the random variable
     \begin{equation*}
-        S(\theta) = \frac{\partial}{\partial \theta} l(\theta) = \sum_{i=1}^n \frac{\partial}{\partial \theta} \log f_{\theta}(X_i)
+        S(\theta) = \frac{\partial}{\partial \theta} \ell(\theta) = \sum_{i=1}^n \frac{\partial}{\partial \theta} \log f_{\theta}(X_i)
 \end{equation*}   
 }
 \boxdefinition{Fisher information}{

@@ -96,9 +96,9 @@ Its variance is the same as the estimate for the variance of the $Y_i$. The pred
 MLE and LSE are equivalent in a special case: when the $U_i$ random variables are normally distributed with mean 0 and variance $\sigma^2$. The $Y_i$ then are also normally distributed; specifically, $Y_i \sim N(\alpha + \beta x_i, \sigma^2)$. \\
 The log-likelihood function is:
 \begin{equation*}
-    l(\alpha, \beta) = \sum_{i=1}^n \log \left( \frac{1}{\sigma \sqrt{2 \pi}} e^{-\frac{1}{2} \left(\frac{y_i - \alpha - \beta x_i}{\sigma}\right)^2}\right) = -n \log(\sigma \sqrt{2 \pi}) - \frac{1}{2} \left(\frac{\sum_{i=1}^n (y_i - \alpha - \beta x_i)}{\sigma}\right)^2
+    \ell(\alpha, \beta) = \sum_{i=1}^n \log \left( \frac{1}{\sigma \sqrt{2 \pi}} e^{-\frac{1}{2} \left(\frac{y_i - \alpha - \beta x_i}{\sigma}\right)^2}\right) = -n \log(\sigma \sqrt{2 \pi}) - \frac{1}{2} \left(\frac{\sum_{i=1}^n (y_i - \alpha - \beta x_i)}{\sigma}\right)^2
 \end{equation*}   
-It turns out that $\arg \max_{\alpha, \beta} l(\alpha, \beta) = \hat{\alpha}, \hat{\beta}$ as found for LSE.
+It turns out that $\arg \max_{\alpha, \beta} \ell(\alpha, \beta) = \hat{\alpha}, \hat{\beta}$ as found for LSE.
 
 \paragraph{Total variability and $R^2$}
 The total variability of the observed data is calculated as the \textbf{Sum of Squares Total} (\textbf{SST}):
@@ -184,11 +184,11 @@ The relationship between the $i^{th}$ dependent variable and the $i^{th}$ observ
 \end{equation*}   
 Or, in vector terms:
 \begin{align*}
-    &Y_i = x_i \cdot \beta^T + U_i &\text{where } \beta = (\alpha, \beta_1, \ldots, \beta_k) \text{ and } x_i = (1, x_i^1, \ldots, x_i^k)
+    &Y_i = x_i \cdot \boldsymbol{\beta}^T + U_i &\text{where } \beta = (\alpha, \beta_1, \ldots, \beta_k) \text{ and } x_i = (1, x_i^1, \ldots, x_i^k)
 \end{align*}
 Using this vector notation, we can then express the model as:
 \begin{gather*}
-    \mathbf{Y} = \mathbf{X} \cdot \beta^T + \mathbf{U} \\
+    \mathbf{Y} = \mathbf{X} \cdot \boldsymbol{\beta}^T + \mathbf{U} \\
     \begin{pmatrix}
         Y_1 \\
         Y_2 \\
@@ -216,11 +216,11 @@ Using this vector notation, we can then express the model as:
 \end{gather*}
 Estimators for the parameters of the model are found through the same method as for simple linear regression, but here we can reformulate the sum of the squares of the residuals as the squared euclidean norm of the residuals:
 \begin{equation*}
-    \hat{\beta} = \arg \min_{\beta} S(\beta) = \arg \min_{\beta} \sum_{i=1}^n (y_i - x_i \cdot \beta^T)^2 = \arg \min_{\beta} ||\mathbf{y} - \mathbf{X} \cdot \beta^T||^2
+    \hat{\boldsymbol{\beta}} = \arg \min_{\beta} S(\beta) = \arg \min_{\beta} \sum_{i=1}^n (y_i - x_i \cdot \boldsymbol{\beta}^T)^2 = \arg \min_{\beta} ||\mathbf{y} - \mathbf{X} \cdot \beta^T||^2
 \end{equation*}
 And the solution is
 \begin{equation*}
-    \hat{\beta} = (\mathbf{X}^T \cdot \mathbf{X})^{-1} \cdot \mathbf{X}^T \cdot \mathbf{y}
+    \hat{\boldsymbol{\beta}} = (\mathbf{X}^T \cdot \mathbf{X})^{-1} \cdot \mathbf{X}^T \cdot \mathbf{y}
 \end{equation*}
 Here $\alpha$ is treated as the first element of $\beta$. The element $\beta_i$ can be interpreted as the change of the dependent variable $Y$ for a unit change of the $i^{th}$ independent variable, while keeping all the other independent variables constant. The estimator above is a MVUE.
 
@@ -228,7 +228,7 @@ Here $\alpha$ is treated as the first element of $\beta$. The element $\beta_i$ 
 
 Multivariate multiple linear regression models the relationship between two or mode dependent variables and two or more independent variables. In vector notation, we can express the model as:
 \begin{gather*}
-    \mathbf{Y} = \mathbf{X} \cdot \beta^T + \mathbf{U} \\
+    \mathbf{Y} = \mathbf{X} \cdot \boldsymbol{\beta}^T + \mathbf{U} \\
     \begin{pmatrix}
         Y_1^1 & \dots & Y_1^m \\
         Y_2^1 & \dots & Y_2^m \\
@@ -257,3 +257,78 @@ Multivariate multiple linear regression models the relationship between two or m
 The dataset contains $n$ observations, each with $k$ independent variables and $m$ dependent variables. The resulting model is not simply a collection of $m$ multiple linear regression models. The error terms in the same column of $\mathbf{U}$ are independent (like in single multiple linear regression), but the error terms in the same row may be correlated, so coefficients for different dependent variables may covary.
 
 \subsection{Issues with linear regression}
+\paragraph{Omitted variable bias}
+Suppose the real model involves two independent variables, $x$ and $z$:
+\begin{equation*}
+    Y_i = \alpha + \beta_1 x_i + \beta_2 z_i + U_i
+\end{equation*}
+with $\beta_2 \not = 0$, meaning that $Y$ is determined by $Z$. We may omit this variable for a multitude of reasons: for example, we don't know the variable exists, or we're aware of it but we cannot collect data for it. In this case, we would fit a model of the form:
+\begin{equation*}
+    Y_i = \alpha + \beta_1 x_i + U_i'
+\end{equation*}
+where $U_i' = \beta_2 z_i + U_i$. Clearly, the expected value of this ``new'' error term is not 0: $\E[U_i'] = \E[\beta_2 z_i] + \E[U_i] = \beta_2 z_i \not = 0$. The consequence of this is that the estimator for $\beta$ is biased:
+\begin{align*}
+    &\E[\hat{\beta_1}] = \beta_1 + \beta_2 \delta
+\end{align*}
+i.e., it has a bias equal to the coefficient of the omitted variable, times the slope coefficient of the regression line of $Z$ with respect to $X$: $Z_i = \gamma + \delta x_i + U_i''$. This slope is then
+\begin{equation*}
+    \delta = r_{xz} \frac{s_z}{s_x}
+\end{equation*}
+So, if the two are uncorrelated, the bias is 0. If they are correlated, the bias is non-zero, and may be positive or negative depending on the direction of the correlation. We can interpret this to say that if we omit an independent variable that is correlated with another, the coefficient of the included variable will ``absorb'' the effect of the omitted variable, proportionally to the correlation between the two.
+
+\paragraph{Multi-collinearity}
+Multi-collinearity is a phenomenon that occurs when two or more independent variables are highly correlated. Imagine our model is build using two independent variables, such that
+\begin{equation*}
+    Y_i = \alpha + \beta_1 x_i^1 + \beta_2 x_i^2 + U_i
+\end{equation*}
+It can be shown that for $j \in {1,2}$:
+\begin{equation*}
+    Var(\hat{\beta}_j) = \frac{1}{(1 - r^2)} \cdot \frac{\sigma^2}{SXX_j}
+\end{equation*}
+where $r$ is the correlation between $x^1$ and $x^2$, $\sigma^2$ is the variance of the error term, and $SXX_j = \sum_{i=1}^n (x_i^j - \bar{x}_n^j)^2$. This means that the more the independent variables are correlated, the higher the variance of the estimator of the model parameters. In general, for more than two variables, the variance is
+\begin{equation*}
+    Var(\hat{\beta}_j) = \frac{1}{(1 - R_j^2)} \cdot \frac{\sigma^2}{SXX_j}
+\end{equation*}
+where $R_j^2$ is the coefficient of determination in the regression of $x_j$ from all other $x_i$. The term $1/(1-R_j^2)$ is called \textbf{variance inflation factor}. If this factor is 1, it means $x_j$ is not at all correlated with the other independent variables, and th variance of the estimator is the same as the one for simple linear regression. If the $R_j^2$ is 1, the VIF goes to infinity, so the variance of the estimator is also infinite.
+
+\paragraph{Variable selection}
+Recall that when the distribution of the error terms is $N(0, \sigma^2)$, the distribution of the $Y_i$ is also normal ($N(x_i \cdot \beta), \sigma^2$), so LSE and MLE applied to find the estimators of slope and intercept are equivalent. The log-likelihood function is $\ell(\beta) = \sum_{i=1}^n \log(\phi(y_i))$. We can use the Akaike Information Criterion (AIC) to evaluate the goodness of the current model and choose which combination of variables produces the best result. The AIC balances model fit against simplicity, so minimizing it is equivalent to finding the simplest model that best fits the data. \texttt{stepAIC()} is an \texttt{R} function that performs this task. The pseudocode is as follows:
+\begin{algorithm}
+    \begin{algorithmic}
+        \Function{stepAIC}{$S = \{ x^1 , \ldots, x^k\}$}
+            \State $b = AIC(S)$
+            \While{$S$ does not change}
+                \State $x = \arg\min_{x \in S} AIC(S \backslash \{x\})$
+                \State $v = AIC(S \backslash \{x\})$
+                \If{$v < b$}
+                    \State $S = S \backslash \{x\}$
+                    \State $b = v$
+                \EndIf
+            \EndWhile
+            \State\Return $S$
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+The variant presented above is the ``backward'' selection method, which starts with a model that uses all variables and each iteration of the loop removes the one that produces the best improvement in AIC, until no more improvements can be found. The other variant, ``forward'', starts with an empty model and adds the variable that produces the least increase in AIC.
+
+\paragraph{Overfitting}
+If a linear model is trained as is, it may become too complex and fit the noise in the data instead of the trend. This phenomenon is called overfitting, and it can be mitigated using regularization techniques that penalize model complexity. The most common techniques are Ridge Regression (Tikhonov regularization) and Lasso (Least Absolute Shrinkage and Selection Operator) Regression (L1 regularization). They can also be used together in penalized regression. All of them consist in adding one or more penalization terms to the SSE function. Below are the equations for each technique:
+\begin{itemize}
+    \item \textbf{Ridge regression}:
+    \begin{equation*}
+        S(\boldsymbol{\beta}) = \| \mathbf{y} - \mathbf{X} \cdot \boldsymbol{\beta}^T \|^2 + \lambda \| \boldsymbol{\beta} \|^2
+    \end{equation*}
+    The penalty term depends on the square of the norm 2 of the coefficients vector. $\lambda$ is a hyperparameter that controls how strong the penalization acts. The result of this regularization is that the coefficients of the independent variables are kept small, but not exactly 0 (so no vatiable is excluded from the model).
+    \item \textbf{Lasso}:
+    \begin{equation*}
+        S(\boldsymbol{\beta}) = \| \mathbf{y} - \mathbf{X} \cdot \boldsymbol{\beta}^T \|^2 + \lambda \| \boldsymbol{\beta} \|_1
+    \end{equation*}
+    Similar to the one above, but the penalty term is calculated on the norm 1 of the coefficients vector. The result of this regularization is that variables with minor contribution to the model will have the corresponding coefficient set to 0, effectively removing them.
+    \item \textbf{Penalized linear regression}:
+    \begin{equation*}
+        S(\boldsymbol{\beta}) = \| \mathbf{y} - \mathbf{X} \cdot \boldsymbol{\beta}^T \|^2 + \lambda_1 \| \boldsymbol{\beta} \|_1 + \lambda_2 \| \boldsymbol{\beta} \|^2 
+    \end{equation*}
+    A simple combination of Ridge regression and Lasso.
+\end{itemize}
+
+
