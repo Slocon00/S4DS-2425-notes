@@ -1,2 +1,301 @@
 \section{Statistical decision theory}
 
+Statistical decision theory is concerned with making decisions based on statistical knowledge. An example of a decision problem is the following: given a set of hypotheses, which one is the most probable given the observed data? We've already introduced Maximum Likelihood Estimation, which assumes a specific distribution and maximizes the likelihood function of the data with respect to the parameters of the distribution. This method is \textbf{frequentist}, in that it interprets probability as the frequency of a certain event occurring in a large number of trials. \textbf{Bayesian} methods, instead, interpret probability as a measure of belief, and require the prior distribution of the parameters to be estimated. A Bayesian method is \textbf{Maximum a Posteriori} (\textbf{MAP}), which finds the parameters that maximize the posterior probability of the parameters given the data:
+\begin{equation*}
+    \theta_{MAP} = \arg \max_{\theta} P(\theta | X_1 = x_1, \ldots, X_n = x_n) = \arg \max_{\theta} P(X_1 = x_1, \ldots, X_n = x_n| \theta) P(\theta)
+\end{equation*}
+MAP and MLE are equivalent when the prior distribution is uniform, since in that case the prior becomes a multiplicative constant and can be ignored.
+
+\subsection{Learning and prediction} The problem above is called \textbf{classification} (or \textbf{concept learning}) \textbf{problem}. Given: 
+\begin{itemize}[noitemsep]
+    \item A dataset $X = (W,C)$, where $W$ are the predictive features and $C$ the class, with $sup(C) = \{0,1,2,\ldots,n_c - 1\}$;
+    \item A training set of observations $x_1, \ldots, x_n$, with $x_i = (w_i, c_i)$ for $i = 1,\ldots,n$;
+    \item $\Theta$, the hypothesis space of functions that represent th joint density $f_{\theta}$ of $W$ and $C$;
+\end{itemize}
+which $\theta \in \Theta$ is the most probable given the set of observations? With MLE, we write
+\begin{gather*}
+    \theta_{MLE} = \arg \min_{\theta} \sum_{i=1}^n - \ell(\theta) = \arg \min_{\theta} \sum_{i=1}^n - \log (f_{\theta}(x_i)) = \arg \max_{\theta} \sum_{i=1}^n - \log (f_{\theta}(w_i, c_i)) = \\
+    = \arg \min_{\theta} \sum_{i=1}^n - \log (f_{\theta}(c_i | w_i) f_{\theta}(w_i)) = \arg \min_{\theta} \sum_{i=1}^n - \log (f_{\theta}(c_i | w_i)) - \sum_{i=1}^n - \log (f_{\theta}(w_i)) = \\
+    = \arg \min_{\theta} \sum_{i=1}^n - \log (f_{\theta}(c_i | w_i))
+\end{gather*}
+The reason we can exclude $\log(f_{\theta}(w_i))$ from the function is because we assume the distribution of $W$ is independent from that of $\theta$, thus it is a constant with respect to $\theta$. The function $f_{\theta}(c|w) = P(C = c|W = w, \theta)$ is called \textbf{probabilistic classifier} trained from $x_1, \ldots, x_n$. 
+
+Minimizing the MLE is, in fact, equivalent to minimizing the Kullback-Leibler divergence between the true distribution $f_{\theta _{\textit{TRUE}}}$ and the estimated distribution $f_{\theta}$:
+\begin{equation*}
+    \theta_{MLE} = \arg \min_{\theta} \sum_{i=1}^n - \log (f_{\theta}(c_i | w_i)) + \log (f_{\theta _{\textit{TRUE}}}(c_i|w_i)) = \arg \min_{\theta} \frac{1}{n} \sum_{i=1}^n \log \left (\frac{f_{\theta_{\textit{TRUE}}}(c_i|w_i)}{f_{\theta}(c_i|w_i)} \right )
+\end{equation*}
+(here we simply added and multiplied by constant terms). Then, by the law of large numbers, as $n$ goes to infinity, this is equivalent to
+\begin{equation*}
+    \xrightarrow{n \to \infty}_{LLN} \arg \min_{\theta} \E_{(W,C) \sim f_{\theta_{\textit{TRUE}}}}\left[\log \frac{f_{\theta_{\textit{TRUE}}}(C|W)}{f_{\theta}(C|W)}\right] = \arg \min_{\theta} D_{KL}(\theta_{\textit{TRUE}} || \theta) = \arg \min_{\theta} H(\theta_{\textit{TRUE}}; \theta)
+\end{equation*}
+
+Another problem of statistical decision theory is the \textbf{classification} (or \textbf{concept prediction}) \textbf{problem}. Given $\theta \in \Theta$ and $W = w$, what is the most probable class $c$? This is equivalent to finding
+\begin{gather*}
+    c = \arg \max_c P(C = c, W = w | \theta) = \\
+    = \arg \max_c P(C = c | W = w, \theta) \cdot P(W = w | \theta) = \arg \max_c f_{\theta}(c|w)
+\end{gather*}
+The best possible decision is the one obtained from the hypothesis called Bayes decision rule.
+\boxdefinition{Bayes decision rule}{
+    Fix $\theta \in \Theta$. The Bayes decision rule is
+    \begin{equation*}
+        y_{\theta}^*(w) = \arg \max_c f_{\theta} (c|w)
+    \end{equation*}
+    and for any decision rule $y_{\theta}^+ : \mathbb{R}^{|W|} \to \{0,1,\ldots,n_c-1\}$:
+    \begin{equation*}
+        P(y_{\theta}^*(W) \not = C) \leq P(y_{\theta}^+(W) \not = C)
+    \end{equation*} 
+}
+The proof is as follows. We can write the probability of the Bayes decision rule being right using an indicator function:
+\begin{equation*}
+    P(y_{\theta}^*(W) = C) = \E[\mathds{1}_{y_{\theta}^*(W) = C}] = \E[\E_C[\mathds{1}_{y_{\theta}^*(W)=C}|W = w]]
+\end{equation*}
+Then we can compare the two probabilities:
+\begin{equation*}
+    \E[\E_C[\mathds{1}_{y_{\theta}^*(W)=C}|W = w]] \geq \E[\E_C[\mathds{1}_{y_{\theta}^+(W) = C}| W = W]] = \E[\mathds{1}_{y_{\theta}^+(W) = C}] = P(y_{\theta}^+(W) = C)
+\end{equation*}
+Each decision rule corresponds to a \textbf{decision boundary}, which is the region $w \in \mathbb{R}^{|W|}$ such that $y_{\theta}^+(w)$ can admit as possible answers two or more classes. The decision boundary of the Bayes decision rule is the region of the feature space where there are multiple classes that correspond to the maximum posterior probability.
+
+Assume we do not fit any parameter in the hypothesis. Which is, in general, the most probable class given only the predictive features $w$? A possible answer may be to find the most probable model with MAP, and use its prediction, i.e.,
+\begin{equation*}
+    c = \arg \max_c P(C = c | W = w, \theta_{MAP})
+\end{equation*}
+However, MAP finds the most probable model, not necessarily the best. Let's make an example. Let $\Theta = \{\theta_1, \theta_2, \theta_3\}$, and assume the posterior probabilities are:
+\begin{itemize}[itemsep=0pt]
+    \item[-] $P(\theta_1 | x_1, \ldots, x_n) = 0.4$ and $f_{\theta_1}(1|w) = 1$,
+    \item[-] $P(\theta_2 | x_1, \ldots, x_n) = P(\theta_3 | x_1, \ldots, x_n) = 0.3$ and $f_{\theta_2} (0|w) = f_{\theta_3}(0|w) = 1$.
+\end{itemize}
+According to MAP, the most probable model is $\theta_1$. Yet, class 0 has the largest probability over the hypothesis space, while the hypothesis that uses $\theta_1$ always predicts class 1. The solution is to use the Bayes optimal prediction.
+\boxdefinition{Bayes optimal prediction}{
+    Given a set of observations $x_1, \ldots, x_n$, the Bayes optimal prediction is
+    \begin{equation*}
+        c = \arg\max_c \sum_{\theta \in \Theta} f_{\theta}(c|w) P(\theta | x_1, \ldots, x_n)
+    \end{equation*}
+}
+
+A \textbf{learner} is a computable function that maps a training set to a decision rule.
+\boxdefinition{No-Free-Lunch theorem}{
+    Consider a binary classification problem, and a finite domain $dom(W) < \infty$. For any learner $\mathcal{A}$, there exists a distribution $F$ with $(W,C) \sim F$ such that:
+    \begin{enumerate}[noitemsep]
+        \item For at least $\frac{1}{7}$ of the training sets (realizations of $F^n$), with $n < |dom(W)| / 2$, the decision rule $y_{\theta}^+$ produced by $\mathcal{A}$ has an error of at least $\frac{1}{8}$:
+        \begin{equation*}
+            P_F(y_{\theta}^+(W) \not = C) \geq \frac{1}{8}
+        \end{equation*}
+        \item There exists an error-free decision rule $y_{\theta}^*$ such that
+        \begin{equation*}
+            P_F(y_{\theta}^*(W) \not = C) = 0.
+        \end{equation*}
+    \end{enumerate}
+}
+This theorem states that there is no ``universal learner'', i.e., a learner that can always map a training set to a decision rule with 0 error.
+
+\subsection{Probabilistic classifiers}
+A \textbf{probabilistic classifier} is a function that maps each instance to the probability of belonging to each class:
+\begin{align*}
+    &f_{\theta}(c|w) \in [0,1] &\sum_c f_{\theta}(c|w) = 1
+\end{align*}
+The predicted class of an instance is the one that corresponds to the highest probability given that instance. The probability itself is a measure of the confidence of the classifier in its answer. \\
+An \textbf{unnormalized classifier} is a function that maps each instance to a vector of real numbers:
+\begin{equation*}
+    f_{\theta}(c|w) \in \mathbb{R}
+\end{equation*}
+Each value in the vector represents the confidence of belonging to each class, but they are not actual probabilities. They can be normalized to obtain a probabilistic classifier using the \textbf{softmax function}:
+\begin{equation*}
+    \textit{softmax}((v_0, v_1, \ldots, v_{n_c - 1})) = \left( \frac{e^{v_0}}{\sum_i e^{v_i}}, \frac{e^{v_1}}{\sum_i e^{v_i}}, \dots, \frac{e^{v_{n_c - 1}}}{\sum_i e^{v_i}} \right)
+\end{equation*}
+In a binary classification problem, the softmax function can be expressed in terms of the sigmoid function:
+\begin{align*}
+    &\textit{softmax}((0,v_1)) = (1-z, z) &\text{where }z = \textit{sigmoid}(v_1) = \frac{1}{1 + e^{-v_1}}
+\end{align*}
+Some useful properties of the softmax function are:
+\begin{itemize}[noitemsep]
+    \item It is invariant to the sum of a constant to all the elements of the vector:
+    \begin{equation*}
+        \textit{softmax}(v + c) = \textit{softmax}(v)
+    \end{equation*}
+    \item Its derivative is:
+    \begin{equation*}
+        \frac{\partial}{\partial v} \textit{softmax}(v) = \textit{softmax}(v) (1 - \textit{softmax}(v))
+    \end{equation*}
+\end{itemize}
+Normally, we're mostly interested in the probability of the positive class. We then use a \textbf{score function}, defined as
+\begin{equation*}
+    s_{\theta}(w) = f_{\theta} (1|w) = P(C = 1 | W = w, \theta)
+\end{equation*}
+such that the confidence of the most probable class is
+\begin{equation*}
+    \max \{ 1-s_{\theta}(w), s_{\theta}(w) \}
+\end{equation*}
+Using the score function, we can express the classifier with a single function:
+\begin{equation*}
+    f_{\theta}(c_i|w_i) = s_{\theta}(w_i)^{c_i} (1 - s_{\theta}(w_i))^{(1-c_i)}
+\end{equation*}
+Using this form of the classifier, MLE can be applied to find the parameters of the model. Maximizing the likelihood is equivalent to minimizing the \textbf{cross-entropy loss} (or \textbf{log-loss}):
+\begin{gather*}
+    \theta_{MLE} = \arg \min_{\theta} \sum_{i=1}^n - log (f_{\theta}(c_i|w_i)) = \arg \min_{\theta} \frac{1}{n} \sum_{i=1}^n - c_i \log (s_{\theta}(w_i)) - (1-c_i) \log (1 - s_{\theta}(w_i)) \\
+    \ell_{\theta}(c,w) = \begin{cases}
+        -\log (s_{\theta}(w)) & \text{if } c = 1 \\
+        -\log (1 - s_{\theta}(w)) & \text{if } c = 0
+    \end{cases}\\
+    \text{Then: } \theta_{MLE} = \arg \min_{\theta} \frac{1}{n} \sum_{i=1}^n \ell_{\theta}(c_i,w_i)
+\end{gather*}
+Formally, this minimization is known as empirical risk minimization.
+\boxdefinition{Empirical risk minimization}{
+    Let $\ell:\{0, \ldots, n_c-1\} \times \mathbb{R}^{|W|} \to \mathbb{R}_{\geq 0}$ be a loss function. Empirical risk minimization is the problem of finding the parameters $\theta$ that minimize the empirical risk, represented as the average of the loss function over the training set:
+    \begin{equation*}
+        \theta_{ERM} = \arg \min_{\theta} \frac{1}{n} \sum_{i=1}^n \ell_{\theta}(c_i,w_i)
+    \end{equation*}
+}
+MLE with log-loss is a special case of ERM. There are various other loss functions that can be used; for example, the 0-1 loss function, which is defined as $\ell_{\theta}(c,w) = \mathds{1}_{y_{\theta}^+(w) \not = c}$. However, this function is not convex, and not differentiable, making the corresponding optimization problem NP-hard. Other examples are the $L_p$ error losses, which are defined as $\ell_{\theta}(c,w) = |s_{\theta}(w) - c|^p$. Common choices are
+\begin{align*}
+    &\ell_{\theta}(c,w) = |s_{\theta}(w) - c| &\text{(Absolute error (L1) loss)}\\
+    &\ell_{\theta}(c,w) = (s_{\theta}(w) - c)^2 &\text{(Squared error (L2, Brier score) loss)}
+\end{align*}
+When using the squared error loss, ERM is equivalent to minimizing the \textbf{mean squared error} (\textbf{MSE}), which is simply the average of the squared differences (L2 loss) between the predicted and actual values:
+\begin{equation*}
+    \textit{MSE} = \frac{1}{n}\sum_{i=1}^n (s_{\theta}(w_i) - c_i)^2
+\end{equation*}
+For the law of large numbers, as $n$ goes to infinity, the MSE converges exactly to the expected value of the squared error:
+\begin{equation*}
+    MSE \xrightarrow{n \to \infty}_{\textit{LLN}} \E_{(W,C) \sim f_{\theta_{\textit{TRUE}}}}[(s_{\theta}(W) - C)^2],
+\end{equation*}
+meaning that the MSE approximates the mean squared error over the whole population. MSE was already introduced in the context of estimators, but there the second term is a constant (the parameter to estimate). We can similarly decompose the MSE into the three terms that contribute to the error, assuming that $C = D + \epsilon$ with $\E[\epsilon] = 0$:
+\begin{equation*}
+    \E_{(W,C) \sim f_{\theta_{\textit{TRUE}}}} [(s_{\theta}(W) - C)^2] = Var(s_{\theta}(W)) + \E[s_{\theta}(W) - C]^2 + Var(\epsilon)
+\end{equation*}
+The first term is the variance of the scores; it is minimized by a constant score, but this increases the bias. The second term is the squared bias; it is minimized by interpolating the training data, but this increases the variance. The third term is the irreducible error, inherent to the data.
+\boxdefinition{Risk (Expected Prediction Error EPE)}{
+    The risk w.r.t. a loss function $\ell_{\theta}$ is
+    \begin{equation*}
+        R(\theta_{\textit{TRUE}}, \theta) = \E_{(W,C) \sim f_{\theta_{\textit{TRUE}}}}[\ell_{\theta}(C,W)]
+    \end{equation*}
+}
+\boxdefinition{Proper scoring rule}{
+    A loss function is a proper scoring rule if
+    \begin{equation*}
+        \theta_{\textit{TRUE}} = \arg \min_{\theta} R(\theta_{\textit{TRUE}}, \theta)
+    \end{equation*}
+}
+Log-loss, squared error loss, and 0-1 loss are all proper scoring rules, while absolute error loss is not. Still, 0-1 loss is discountinuous. For proper scoring rules, the parameters found by ERM are asymptotically unbiased: $\theta_{ERM} \xrightarrow{n \to \infty} \theta_{\textit{TRUE}}$. For the log-loss, the risk is equivalent to the KL-divergence:
+\begin{equation*}
+    R(\theta_{\textit{TRUE}}, \theta) = D_{KL}(\theta_{\textit{TRUE}} || \theta) \geq 0
+\end{equation*}
+Risk is defined with respect to a specific true parameter set. The \textbf{maximum risk} is
+\begin{equation*}
+    \bar{R}(\theta) = \sup_{\theta} R(\theta_{\textit{TRUE}}, \theta)
+\end{equation*}
+\boxdefinition{Minmax rule}{
+    A classifier $f_{\theta'}$ such that $\bar{R}(\theta) = \inf_{\theta} \bar{R}(\theta)$ is called a minmax rule.
+}
+In other words, a minmax rule is a classifier whose maximum risk is the minimum risk possible across all true parameters.
+\boxdefinition{Bayes risk, Bayes rule}{
+    Let $f(\theta_\textit{TRUE})$ be the prior of $\theta_\textit{TRUE}$. The Bayes risk is
+    \begin{equation*}
+        r(\theta) = \int R(\theta_\textit{TRUE}, \theta) f(\theta_\textit{TRUE}) \ d\theta_\textit{TRUE}
+    \end{equation*}
+    A classifier $f_{\theta'}$ such that $r(\theta') = \inf_{\theta} r(\theta)$ is called a Bayes rule. 
+}
+
+\paragraph{Best classifier for 0-1 loss}
+Assume 0-1 risk is being used to evaluate the classifier. The risk is
+\begin{equation*}
+    \arg \min_{y_{\theta}^+} \E_{(W,C) \sim f_{\theta_{\textit{TRUE}}}}[\mathds{1}_{y_{\theta}^+ (W) \not = C}]
+\end{equation*}
+Then, the binary class Bayes optimal classifier is
+\begin{gather*}
+    y_{\theta_{\textit{TRUE}}}^*(w) = \begin{cases}
+        1 & \text{if } \eta(w) \geq 0.5 \\
+        0 & \text{if } \eta(w) < 0.5
+    \end{cases} \\
+    \eta(w) = P_{\theta_{\textit{TRUE}}}(C = 1 | W = w)
+\end{gather*}
+We can compare the expected risk of the Bayes optimal classifier with that of a generic classifier $y_{\theta}^+$, and prove that it is always smaller or equal than the latter:
+\begin{align*}
+    \E_{(W,C) \sim f_{\theta_{\textit{TRUE}}}}[\mathds{1}_{y_{\theta}^+(W) \not = C}] &\stackrel{\text{(Law of iter. exp.)}}{=} \E_W[\E_C[\mathds{1}_{y_{\theta}^+(W) \not = C} | W]] = \\
+    &= \E_W[P(C=1|W) \cdot \mathds{1}_{y_{\theta}^+(W) \not = 1} + P(C=0|W) \cdot \mathds{1}_{y_{\theta}^+(W) \not = 0}] =\\
+    &= \E_W[\eta(W) \cdot \mathds{1}_{y_{\theta}^+(W) = 0} + (1 - \eta(W)) \cdot \mathds{1}_{y_{\theta}^+(W) = 1}] = \\
+    &\geq \E_W[\min \{ \eta(W), 1-\eta(W) \}] = \\
+    &= \E_W[\eta(W) \cdot \mathds{1}_{y_{\theta_\textit{TRUE}}^*(W) = 0} + (1 - \eta(W)) \cdot \mathds{1}_{y_{\theta_\textit{TRUE}}^*(W) = 1}] = \\
+    &= E_{(W,C) \sim f_{\theta_\textit{TRUE}}}[\mathds{1}_{y_{\theta_\textit{TRUE}}^*(W) \not = C}]
+\end{align*}
+It is important to note that the Bayes optimal classifier is only a theoretical concept, and cannot be built in practice since it would require us to know the function $\eta(W)$; that is, the real distribution of the data. Using the plug-in rule, we can approximate this function with the empirical distribution of the data to build a classifier:
+\begin{equation*}
+    \hat{\eta}(w) = f_{\theta}(c|w) = P_{\theta}(C=1|W=w)
+\end{equation*}
+
+\paragraph{Loss functions and margin}
+
+Assume a classifier trained on a dataset with binary classes $C = \{-1,1\}$, and which produces unnormalized scores via a function $s_{\theta}(w)$. The corresponding Bayes decision rule is
+\begin{equation*}
+    y_{\theta}^* = \textit{sign}(s_{\theta}(w))
+\end{equation*}
+i.e., the classifier should return 1 when the score is positive, -1 when the score is negative. We can then define the \textbf{margin} for the dataset $(w,c)$ as
+\begin{equation*}
+    m = c \cdot s_{\theta}(w)
+\end{equation*}
+The margin is positive if the prediction is correct (so if both $c$ and $s_{\theta}(w)$ have the same sign), otherwise it is negative. Minimizing the loss is equivalent to maximizing the margin, because the more the classifier is correct, the larger is the margin. Loss functions themselves can be rewritten in terms of the margin $m$:
+\begin{itemize}[noitemsep]
+    \item \textbf{0-1 loss}: $\phi(m) = \mathds{1}_{m \leq 0}$
+    \item \textbf{Logistic log-loss}: $\phi(m) = \log_2 (1 + e^{-m})$
+    \item \textbf{Squared error loss}: $\phi(m) = (1 - m)^2$
+    \item \textbf{SVM/Hinge loss}: $\phi(m) = \max\{0, 1 - m\}$
+    \item \textbf{AdaBoost/Exponential loss}: $\phi(m) = e^{-m}$
+\end{itemize}
+Various methods exist for margin maximization for convex margin-based loss, which also provide bounds for 0-1 loss.
+
+\subsection{Rejection option}
+
+The output of a binary probabilistic classifier is the probability of belonging to the positive class. Based on that probability, we can assign a certain input to the negative or positive class with a given confidence; $s(w)$ for the positive class, $1-s(w)$ for the negative class (where the score is normalized). Sometimes, the classifier may return a score that is very close to $1/2$, so it is not strongly in favor of one or the other class. It may be useful to introduce a reject option for the classifier, so that if the score falls within some distance to $1/2$ the classifier abstains from deciding at all. In real applications, a reject option can be used to highlight and understand cases where a classifier performs poorly, or when the decision to be taken is ethically or socially sensitive (e.g., credit scoring, disease prediction).
+
+Formally, the Bayes optimal classifier with the reject option can be written as the following case-based function:
+\begin{equation*}
+    y_{\theta_\textit{TRUE}}^{*,d}(w) = 
+    \begin{cases}
+        1 & \text{if } \eta(w) > 1 - d \\
+        0 & \text{if } \eta(w) < d \\
+        \textit{abstain} & \text{if } d \leq \min\{\eta(w), 1-\eta(w)\}
+    \end{cases}
+\end{equation*}
+where $d \in [0, 1/2]$ is the \textbf{reject cost}. It represents the upper bound on the misclassification error of the classifier, since when it does not abstain, then $d > \min\{\eta(w), 1-\eta(w)\} = P_{\theta_\textit{TRUE}}(y_{\theta}^* (w) \not = c)$. Also, the following theorem holds:
+\begin{equation*}
+    \arg \min_{y_{\theta}^+} \E_{(W,C) \sim f_{\theta_\textit{TRUE}}}[d \cdot \mathds{1}_{y_{\theta}^+(W)=\textit{abstain}} + \mathds{1}_{y_{\theta}^+ (W) \not = C, y_{\theta}^+ (W) \not = \textit{abstain}}] = y_{\theta_\textit{TRUE}}^{*,d}
+\end{equation*}
+This theorem states that the Bayes optimal classifier with reject cost $d$ is also the classifier that minimizes the risk (which considers both the cases in which the classifier makes a mistake, and those in which it rejects in instance).
+
+A \textbf{selective binary classifier} is a pair $(s_{\theta}, g_{\theta})$, where $s_{\theta}()$ is a classifier, and $g:\mathbb{R}^{|W|} \to \{0,1\}$ is a selection function, which returns 1 if the input instance can be confidently classified, or 0 if the instance must be rejected:
+\begin{equation*}
+    (s_{\theta}, g_{\theta})(w) =
+    \begin{cases}
+        s_{\theta}(w) &\text{if } g_{\theta}(w) = 1 \\
+        \textit{abstain} &\text{otherwise} 
+    \end{cases}
+\end{equation*}
+\boxdefinition{Coverage (support) and risk}{
+    The coverage of a selective classifier is
+    \begin{equation*}
+        \phi(g_{\theta}) = \E_{(W,C) \sim f_{\theta_\textit{TRUE}}}[g_{\theta}(W)]
+    \end{equation*}
+    which is the expected probability of the accepted region.\\
+    The risk with respect to a loss function $\ell_{\theta}$ is 
+    \begin{equation*}
+        R(s_{\theta}, g_{\theta}) = \E_{(W,C) \sim f_{\theta_\textit{TRUE}}}[\ell_{\theta}(C,W)]/\phi(g_{\theta})
+    \end{equation*}
+}
+Coverage and risk of a selective classifier require the true distribution to be known. They can be estimated empirically:
+\begin{align*}
+    &\hat{\phi}(g_{\theta}) = \frac{\sum_{i=1}^n g_{\theta}(w_i)}{n} &\hat{r}(s_{\theta}, g_{\theta}) = \frac{1}{n}\frac{\sum_{i=1}^n \ell_{\theta}(c_i, w_i) g_{\theta}(w_i)}{\hat{\phi(g_{\theta})}}
+\end{align*}
+The \textbf{selective classification problem} is to minimize the risk while guaranteeing a certain minimum coverage $c$:
+\begin{equation*}
+    \arg \min_{\theta} R(s_{\theta}, g_{\theta}), \text{such that }\phi(g_{\theta}) \geq c
+\end{equation*}
+A \textbf{soft selective binary classifier} is a variant of selective binary classifiers that is defined by the pair $(s_{\theta}, k_{\theta})$, where $k_{\theta}$ is a confidence function:
+\begin{equation*}
+    (s_{\theta}, g_{\theta})(w) =
+    \begin{cases}
+        s_{\theta}(w) &\text{if } k_{\theta}(w) \geq \tau \\
+        \textit{abstain} &\text{otherwise} 
+    \end{cases}
+\end{equation*}
+where $\tau \in [1/2, 1]$. A good confidence function should rank instances based on descending loss: if $k(w) \leq k(w')$, then $\E[\ell_{\theta}(C,w)] \geq \E[\ell_{\theta}(C, w')]$.
+
+The inherent trade-off between risk and coverage is summarized by the \textbf{risk-coverage curve}, which tracks how changes in coverage affect the overall risk of the classifier. If the coverage is high, the risk is also high, because we ``admit'' more classifications even when the confidence is low. If the coverage is low, the risk is also lower, because we only classify instances associated with a high confidence (so they are more likely to be correct).
