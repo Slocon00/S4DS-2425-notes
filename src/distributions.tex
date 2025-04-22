@@ -78,8 +78,7 @@ The \textbf{median} of a distribution is the $50^{th}$ percentile. The \textbf{i
 \begin{equation*}
     q_p = \inf_x \{ P(X \leq x) \geq p \}
 \end{equation*}
-
-
+\clearpage
 \section{Probability distributions}
 \subsection{Discrete distributions} 
 \distribution{Uniform distribution}{$X \sim U(m,M)$}{
@@ -162,7 +161,7 @@ The \textbf{median} of a distribution is the $50^{th}$ percentile. The \textbf{i
         Bin(n, p) \xrightarrow[n \to \infty]{} Poi(p \cdot n)
     \end{align*}
     The approximation works for an experiment with an infinite number of Bernoulli trials, making it so that the mean rate of success is $\mu = p \cdot n$.\\
-    \rule[-2.5pt]{0.90\textwidth}{0.5pt}
+    \rule[-2.5pt]{\textwidth}{0.5pt}
     \begin{align*}
         &\E[X] = \mu &Var(X) = \mu
     \end{align*}
@@ -184,7 +183,7 @@ The \textbf{median} of a distribution is the $50^{th}$ percentile. The \textbf{i
         &X = \sum_i^n X_i \sim Mult(n, \vec{p}) &\text{where } X_1, X_2, \dots, X_n \sim Cat(\vec{p})
     \end{align*}
 }
-
+\clearpage
 \subsection{Continuous distributions}
 \distribution{Uniform distribution}{$X \sim U(\alpha, \beta)$}{
     Models some experiment with arbitrary outcomes in the interval $[\alpha, \beta]$. A random variable has the Uniform distribution if its PDF is given by
@@ -208,7 +207,7 @@ The \textbf{median} of a distribution is the $50^{th}$ percentile. The \textbf{i
         &\E[X] = \frac{1}{\lambda} &Var(X) = \frac{1}{\lambda^2}
     \end{align*}
 }
-\distribution{Normal (Gaussian) distribution}{$X \sim N(\mu, \sigma^2)$}{
+\distribution{Normal (Gaussian) distribution}{$X \sim \mathcal{N}(\mu, \sigma^2)$}{
     A random variable has a Normal distribution if its PDF is given by
     \begin{align*}
         &f(x) = \frac{1}{\sigma \sqrt{2 \pi}} e^{-\frac{1}{2} (\frac{x - \mu}{\sigma})^2} &\text{for } -\infty < x < \infty
@@ -219,7 +218,7 @@ The \textbf{median} of a distribution is the $50^{th}$ percentile. The \textbf{i
         &Bin(n,p) \approx N(n \cdot p, n \cdot p (1 - p)) &\text{for } n \to \infty \text{ and } 0 \ll p \ll 1 
     \end{align*}
     There is no closed form of the CDF of the Normal distribution, but any variable can be turned into a standard Normal variable and its probability can be estimated using the right tail probability table of $N(0,1)$.\\
-    \rule[-2.5pt]{0.90\textwidth}{0.5pt}
+    \rule[-2.5pt]{\textwidth}{0.5pt}
     \begin{align*}
         &\E[X] = \mu &Var(X) = \sigma^2
     \end{align*}
@@ -230,7 +229,7 @@ The \textbf{median} of a distribution is the $50^{th}$ percentile. The \textbf{i
         &f(x) = \frac{\lambda (\lambda x)^{n - 1} e^{\lambda x}}{\Gamma(\alpha)} &\text{for } x \geq 0
     \end{align*}
     $\Gamma(\alpha) = (\alpha-1)!$ is called Gamma function, and is a normalization factor ensuring that the integral of the PDF is equal to 1.\\
-    \rule[-2.5pt]{0.90\textwidth}{0.5pt}
+    \rule[-2.5pt]{\textwidth}{0.5pt}
     \begin{align*}
         &\E[X] = \frac{n}{\lambda} &Var(X) = \frac{n}{\lambda^2}
     \end{align*}
@@ -255,7 +254,7 @@ The \textbf{median} of a distribution is the $50^{th}$ percentile. The \textbf{i
         &f(x) = \frac{\beta}{\pi (\beta^2 + (x-\alpha)^2)} &\text{for } -\infty < x < \infty
     \end{align*}
     A special case of the Cauchy distribution is the standard Cauchy distribution, with $\alpha = 0$ and $\beta = 1$. This distribution is also the same as the ratio between two standard Normal r.v.s.\\
-    \rule[-2.5pt]{0.90\textwidth}{0.5pt}
+    \rule[-2.5pt]{\textwidth}{0.5pt}
     \begin{align*}
         &\E[X] = \text{undefined} &Var(X) = \text{undefined}
     \end{align*}

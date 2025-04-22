@@ -22,23 +22,15 @@
 
 \setlength\jot{10pt} % to increase space between equations
 
-\tikzstyle{mybox} = [draw=NavyBlue, ultra thick, rectangle, rounded corners, inner sep=10pt, inner ysep=10pt, text width=0.90\textwidth, align=left] 
+\tikzstyle{mybox} = [draw=NavyBlue, fill=NavyBlue!5, ultra thick, rectangle, rounded corners, inner sep=10pt, inner ysep=10pt, text width=0.90\textwidth, align=left] 
 \tikzstyle{boxtitle} = [fill=NavyBlue, text=white, ultra thick, rectangle, rounded corners, inner sep=10pt, inner ysep=8pt, text width=0.90\textwidth]
-\tikzstyle{boxsubtitle} = [fill=NavyBlue!80, text=white, ultra thick, rectangle, outer ysep=-2.5pt, inner sep=10pt, inner ysep=5pt, text width=0.90\textwidth,
-path picture={
-    \draw[NavyBlue, ultra thick] 
-        (path picture bounding box.north west) -- (path picture bounding box.south west)
-        (path picture bounding box.north east) -- (path picture bounding box.south east);
-}]
 
 \newcommand{\distribution}[3]{%
 \noindent
-
 \begin{center}
 \begin{tikzpicture}
-    \node[mybox](box){\rule{0pt}{50pt}\ignorespaces#3\unskip};
-    \node (t) [boxtitle, anchor=north west] at (box.north west) {\textbf{#1}};
-    \node[boxsubtitle, anchor=north west] at (t.south west) {\textbf{#2}};
+    \node[mybox](box){\rule{0pt}{33pt}\ignorespaces#3\unskip};
+    \node (t) [boxtitle, anchor=north west] at (box.north west) {\textbf{#1}\hfill{#2}};
 \end{tikzpicture}
 \end{center}
 \vspace{-8pt}
@@ -47,10 +39,9 @@ path picture={
 \newcommand{\boxdefinition}[2]{%
 \vspace*{1.0px}
 \noindent
-
 \begin{center}
 \begin{tikzpicture}
-    \node[mybox](box){\rule{0pt}{30pt}\ignorespaces#2\unskip};
+    \node[mybox](box){\rule{0pt}{33pt}\ignorespaces#2\unskip};
     \node[boxtitle, anchor=north west] at (box.north west) {\textbf{#1}};
 \end{tikzpicture}
 \end{center}
@@ -96,4 +87,5 @@ path picture={
 \input{regression.tex}\separate
 \input{logreg.tex}\separate
 \input{sdt.tex}\separate
+\input{confidence_intervals.tex}\separate
 \end{document}

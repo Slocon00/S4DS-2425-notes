@@ -1,0 +1,197 @@
+\section{Confidence intervals}
+
+Previous sections focused on point estimates of the parameters of a distribution. This section will focus on confidence intervals, which are ranges of plausible values for the parameters of a distribution, as opposed to point estimates, which are single values. A confidence interval can be thought as a \textit{interval} of values $[l,u]$ for which we can be \textit{confident} the unknown parameters falls in with a specific probability, called confidence level.
+
+\boxdefinition{Confidence intervals}{
+    Suppose a dataset $x_1, \ldots, x_n$ is given, modeled as a realization of random variables $X_1, \ldots, X_n$. Let $\theta$ be the parameter of interest, and $\gamma \in [0,1]$. If there exist sample statistics $L_n = g(X_1, \ldots, X_n)$ and $U_n = h(X_1, \ldots, X_n)$ such that
+    \begin{equation*}
+        P(L_n \leq \theta \leq U_n) = \gamma
+    \end{equation*}
+    for every value of $\theta$, then
+    \begin{equation*}
+        (l_n, u_n)
+    \end{equation*}
+    where $l_n = g(x_1, \ldots, x_n)$ and $u_n = h(x_1, \ldots, x_n)$ is called a 100$\gamma$\% confidence interval for $\theta$. $\gamma$ is called the confidence level.
+}
+Sometimes, the confidence interval is \textbf{conservative}, i.e., the interval is built from the fact that $P(L_n < \theta < U_n) \geq \gamma$. There is no way of knowing for certain if the interval is correct or not, only that the parameter is within that interval with a certain probability $\gamma$. While $\gamma$ is called confidence level, $\alpha = 1 - \gamma$ is called \textbf{significance level}. So a 95\% confidence interval corresponds to a significance level of 5\%.
+
+\subsection{Confidence intervals for the mean}
+
+We can define some general methods for two cases, each with a number of subcases: normally distributed data with known or unknown variance, and general data with unknown variance.
+
+\subsubsection{Normal data}
+
+\boxdefinition{Critical values}{
+    The (right) critical value $z_p$ of $Z \sim \mathcal{N}(0,1)$ is the number with right tail probability $p$:
+    \begin{equation*}
+        P(Z \geq z_p) = p
+    \end{equation*}
+}
+For an $x >0$, the right tail probability of a standard normal distribution $\Phi(x)$ is equal to $1 - \Phi(x)$: this value can be approximated by referencing a table of the standard normal distribution and interpolating between values as needed. If $z_p$ is the right critical value, it is also the $(1-p)^{th}$ quantile of the standard normal distribution:
+\begin{equation*}
+    1 - \Phi(z_p) = p \implies \Phi(z_p) = 1 - p
+\end{equation*}
+By symmetry of the normal distribution:
+\begin{equation*}
+    1 - \Phi(z_p) = \Phi(-z_p) = p \implies z_{1-p} = -z_p
+\end{equation*}
+
+\paragraph{Known variance}
+
+Given a dataset $x_1, \ldots, x_n$, realization of a random sample $X_1, \ldots, X_n$, with $X_i \sim \mathcal(\mu, \sigma^2)$, we want to estimate $\mu$ with a confidence interval, knowing what $\sigma^2$ is. The average of the random sample $\bar{X}_n$ has distribution $\mathcal{N}(\mu, \sigma^2/n)$. We also know that, by the central limit theorem,
+\begin{equation*}
+    Z = \sqrt{n} \cdot \frac{\bar{X}_n - \mu}{\sigma} \sim \mathcal{N}(0,1)
+\end{equation*}
+We can exploit this fact to build the confidence interval with confidence level $\gamma$ for $\mu$. The confidence interval may be \textbf{two-sided}, \textbf{one-sided upper} or \textbf{one-sided lower}. The two-sided confidence interval is the most common, and is defined from:
+\begin{gather*}
+    P(c_l \leq Z \leq c_u) = \gamma \text{ or } P(Z \leq c_l) + P(Z \geq c_u) = 1 - \gamma = \alpha \\
+    P(Z \leq c_l) = P(Z \geq c_u) = \frac{\alpha}{2}
+\end{gather*}
+Since the distribution is symmetric, $c_u = - c_l = z_{\alpha/2}$. Then, to isolate the mean, we can write:
+\begin{gather*}
+    P(c_l \leq Z \leq c_u) = P(-z_{\alpha/2} \leq \sqrt{n} \cdot \frac{\bar{X}_n - \mu}{\sigma} \leq z_{\alpha/2}) =\\
+    = P(-z_{\alpha/2} \frac{\sigma}{\sqrt{n}} \leq \bar{X}_n - \mu \leq z_{\alpha/2} \frac{\sigma}{\sqrt{n}}) = \\
+    = P(\bar{X}_n - z_{\alpha/2} \frac{\sigma}{\sqrt{n}} \leq \mu \leq \bar{X}_n + z_{\alpha/2} \frac{\sigma}{\sqrt{n}}) = \gamma
+\end{gather*}
+Ergo, $(\bar{x}_n - z_{\alpha/2} \cdot \sigma / \sqrt{n}, \bar{x}_n + z_{\alpha/2} \cdot \sigma / \sqrt{n})$ is a 100$\gamma$\% confidence interval for $\mu$. 
+
+To build a one-sided confidence interval, we apply the same idea. The left interval is defined from the fact that:
+\begin{equation*}
+    P(c_l \leq Z) = \gamma
+\end{equation*}
+so $c_l$ is the critical value $z_{\gamma} = -z_{1-\gamma} = -z_{\alpha}$ of the standard normal distribution. Then, as above, we obtain the confidence interval:
+\begin{equation*}
+    P(c_l \leq Z) = P(\bar{X}_n - z_{\alpha} \frac{\sigma}{\sqrt{n}} \leq \mu) = \gamma
+\end{equation*}
+Then $(\bar{x}_n - z_{\alpha}\cdot\sigma/\sqrt{n}, \infty)$ is a 100$\gamma$\% confidence interval for $\mu$. The right interval is defined from the fact that:
+\begin{equation*}
+    P(Z \leq c_u) = \gamma \text{ or } P(Z \geq c_u) = 1 - \gamma = \alpha
+\end{equation*}
+so $c_u$ is the critical value $z_{\alpha}$. Then, as above, we obtain the confidence interval $(-\infty, \bar{x}_n + z_{\alpha} \cdot \sigma/\sqrt{n})$.
+
+\paragraph{Unknown variance}
+
+The procedure is almost identical to that above, but we need to estimate the variance. We know that an unbiased estimator of the variance is:
+\begin{equation*}
+    S^2 = \frac{1}{n-1} \sum_{i=1}^n (X_i - \bar{X}_n)^2
+\end{equation*}
+and also $S_n^2/n$ is an unbiased estimator of $Var(\bar{X}_n)$. The key difference is that the distribution of $T = \frac{\bar{X}_n - \mu}{S-n / \sqrt{n}}$ is not normal, but follows a Student's t-distribution with $n-1$ degrees of freedom.
+\distribution{Student's t-distribution}{$X \sim t(m)$}{
+    A continuous random variable has a t-distribution with parameter $m \geq 1$, where $m$ is an integer, if its PDF is given by:
+    \begin{align*}
+        &f(x) = k_m \left(1 + \frac{x^2}{m}\right)^{-\frac{m+1}{2}} &\text{for } -\infty < x < \infty 
+    \end{align*}
+    where
+    \begin{equation*}
+        k_m = \frac{\Gamma(\frac{m+1}{2})}{\left(\Gamma(\frac{m}{2}) \sqrt{(m \pi)}\right)} \ .
+    \end{equation*}
+    This distribution is referred to as the t-distribution with $m$ degrees of freedom. \\
+    For $m \to \infty$, the t-distribution converges to the standard normal distribution. \\
+    \rule[-2.5pt]{\textwidth}{0.5pt}
+    \begin{align*}
+        &\E[X] = 0 \text{ for }m \geq 2 &Var(X) = \frac{m}{m-2} \text{ for } m \geq 3
+    \end{align*}
+}
+Critical values for the t-distribution are defined in the same way as for the normal distribution, and have the same properties.
+\boxdefinition{Critical value}{
+    The (right) critical value $t_{m,p}$ of $T \sim t(m)$ is the number with right tail probability $p$:
+    \begin{equation*}
+        P(T \geq t_{m,p}) = p
+    \end{equation*}
+}
+The approach to to build the confidence interval is the same as above. The two-sided confidence interval is defined from:
+\begin{equation*}
+    P(\bar{X}_n - t_{n-1, \alpha/2} \frac{S_n}{\sqrt{n}} \leq \mu \leq \bar{X}_n + t_{n-1, \alpha/2} \frac{S_n}{\sqrt{n}}) = \gamma
+\end{equation*}
+such that $(\bar{x}_n - t_{n-1, \alpha/2} \cdot s_n/\sqrt{n}, \bar{x}_n + t_{n-1, \alpha/2} \cdot s_n/\sqrt{n})$ is a 100$\gamma$\% confidence interval for $\mu$. The one-sided confidence intervals are defined from:
+\begin{gather*}
+    P(\bar{X}_n - t_{n-1, \alpha} \frac{S_n}{\sqrt{n}} \leq \mu) = \gamma \\
+    P(\mu \leq \bar{X}_n + t_{n-1, \alpha} \frac{S_n}{\sqrt{n}}) = \gamma
+\end{gather*}
+such that $(\bar{x}_n - t_{n-1, \alpha} \cdot s_n/\sqrt{n}, \infty)$ and $(-\infty, \bar{x}_n + t_{n-1, \alpha} \cdot s_n/\sqrt{n})$ are respectively left- and right-sided 100$\gamma$\% confidence intervals for $\mu$.
+
+\subsubsection{General data}
+
+This method is used when the distribution of the data is not normal, and the variance is unknown. The variance can be estimated with the sample variance $S^2$. Then, for a variant of the central limit theorem, for $n$ that goes to infinity, the following holds:
+\begin{equation*}
+    T = \sqrt{n} \cdot \frac{\bar{X}_n - \mu}{S_n} \to \mathcal{N}(0,1)
+\end{equation*}
+So, if the sample size is large enough, we can approximate the distribution of $T$ with a normal distribution, and use the same method for normal distribution with unknown variance. For example, the two-sided confidence interval is defined from:
+\begin{equation*}
+    P(\bar{X}_n - z_{\alpha/2} \frac{S_n}{\sqrt{n}} \leq \mu \leq \bar{X}_n + z_{\alpha/2} \frac{S_n}{\sqrt{n}}) \approx \gamma
+\end{equation*}
+such that $(\bar{x}_n - z_{\alpha/2} \cdot s_n/\sqrt{n}, \bar{x}_n + z_{\alpha/2} \cdot s_n/\sqrt{n})$ is a 100$\gamma$\% confidence interval for $\mu$.
+
+\paragraph{Determining the sample size}
+If we fix the significance level $\alpha$, the narrower the confidence interval, the better the estimate, since there is a smaller range of possible values for that parameter, lowering the variance of the estimate. Sometimes, confidence intervals are built by fixing some accuracy requirements, such as the maximum width $w$ of the interval (i.e., find a 100$\gamma$\% C.I. $(l_n, u_n)$ such that $u_n - l_n \leq w$). To satisfy the requirement, we need to find the optimal sample size $n$. Let's consider the case of normal data with known variance: the C.I. is estimated by $(l_n, u_n) = (\bar{X}_n - z_{\alpha/2} \cdot \sigma/\sqrt{n}, \bar{X}_n + z_{\alpha/2} \cdot \sigma/\sqrt{n})$. Then, the bound on the width of the interval is:
+\begin{gather*}
+    u_n - l_n = 2 \cdot z_{\alpha/2} \cdot \frac{\sigma}{\sqrt{n}} \leq w \\
+    n \geq \left(\frac{2 \cdot z_{\alpha/2} \cdot \sigma}{w}\right)^2
+\end{gather*}
+
+\paragraph{Wald confidence intervals}
+The confidence intervals above can be generalized in the from
+\begin{equation*}
+    \theta \in \hat{\theta} \pm z_{\alpha/2} \cdot \frac{\sigma}{\sqrt{n}} \text{ or } \theta \in \hat{\theta} \pm t_{n-1, \alpha/2} \cdot \frac{S_n}{\sqrt{n}}
+\end{equation*}
+where $\hat{\theta}$ is the point estimate of the parameter $\theta$. These intervals originate from the \textbf{Wald test statistics}, which is used to test the null hypothesis that the parameter $\theta$ is equal to a specific value $\theta_0$ (hypothesis testing will be introduced later). The test statistic is defined as:
+\begin{equation*}
+    T = \frac{\hat{\theta} - \theta}{\sqrt{Var(\hat{\theta})}} = \frac{\hat{\theta} - \theta}{se(\hat{\theta})}
+\end{equation*}
+A limitation of this method is that it can only be applied to symmetric intervals, and it is not valid for small sample sizes (it follows an asymptotic distribution).
+
+\subsection{Confidence intervals for proportions}
+
+Proportions are ratios of counts, like classifier accuracy. Accuracy can also be used to estimate the mean of a Bernoulli distribution. Assume we have a dataset $x_1, \ldots, x_n$, realization of a random sample $X_1, \ldots, X_n \sim Ber(p)$. Then each $x_i = \mathds{1}_{y_{\theta}^+(w_i)=c_i}$ is 1 if the classifier is correctly classifying $w_i$ as $c_i$, and 0 otherwise. $p$ is the unknown misclassification error of the classifier. Let $B = \sum_{i=1}^n X_i \sim Bin(n,p)$, and let $b = \sum_{i=1}^n x_i$ be the number of correct classifications. Depending on the sample size, two methods can be used:
+\begin{itemize}
+    \item \textbf{Small sample size}: we build the exact confidence interval $(l_B, u_B)$ such that:
+    \begin{align*}
+        &l_B = \min_{\theta} \left\{ \sum_{x=B}^n \binom{n}{x} \theta^x (1-\theta)^{n-x} \geq \alpha/2 \right\} &u_B = \max_{\theta} \left\{ \sum_{x=B}^n \binom{n}{x} \theta^x (1-\theta)^{n-x} \geq \alpha/2 \right\}
+    \end{align*}
+    The found $l_B$ is the left critical value, the smallest value of $\theta$ for which $P(B \leq X) \geq \alpha/2$ for $X \sim Bin(n, \theta)$. Similarly, $u_B$ is the right critical value, for which $P(B \geq X) \geq \alpha/2$. The interval $(l_B, u_B)$ is a 100$\gamma$\% confidence interval for $p$.
+
+    \item \textbf{Large sample size}: when $n$ is large, the Binomial distribution can be approximated with a normal one. Let $B = \sum_{i=1}^n X_i \sim Bin(n,p)$ and $\bar{X}_n = B/n$. For the De Moivre-Laplace theorem, $B \sim Bin(n,p) \approx \mathcal{N}(np, np(1-p))$. Then, the average $\bar{X}_n$ is also normally distributed with the following parameters: $\bar{X}_n \sim \mathcal{N}(p, p(1-p)/n)$.
+    
+    The standard error of the average is
+    \begin{equation*}
+        se(\bar{X}_n) = \sqrt{np(1-p)} \approx \sqrt{\bar{X}_n (1-\bar{X}_n)/n}
+    \end{equation*}
+    The approximation is done because we do not know $p$. Exploiting the central limit theorem, the variable
+    \begin{equation*}
+        T = \frac{(\bar{X}_n - p)}{se(\bar{X}_n)}
+    \end{equation*}
+    is approximately normally distributed with mean 0 and variance 1, and we can use the methods for the normal distribution. The two-sided confidence interval is defined from:
+    \begin{equation*}
+        P\left(\bar{X}_n - z_{\alpha/2} \sqrt{\frac{\bar{X}_n (1-\bar{X}_n)}{n}} \leq p \leq \bar{X}_n + z_{\alpha/2} \sqrt{\frac{\bar{X}_n (1-\bar{X}_n)}{n}}\right) = \gamma
+    \end{equation*}
+    such that $(\bar{x}_n - z_{\alpha/2} \cdot \sqrt{\bar{x}_n (1-\bar{x}_n)/n}, \bar{x}_n + z_{\alpha/2} \cdot \sqrt{\bar{x}_n (1-\bar{x}_n)/n})$ is a 100$\gamma$\% confidence interval for $p$. This is also a Wald confidence interval, since it is determined from the point estimate of the mean. It has the same limitations as the Wald confidence intervals mentioned before.
+\end{itemize}
+
+\subsection{Confidence intervals for simple linear regression}
+
+\subsubsection{Regression coefficients}
+
+Simple linear regression models the relationship between the dependent vairable $Y$ and the independent variable $X$ as a linear function: $Y_i = \alpha + \beta x_i + U_i$, where $U_i \sim \mathcal{N}(0,\sigma^2)$. We also have $\hat{\beta} \sim \mathcal{N}(\beta, Var(\hat{\beta}))$, where $Var(\hat{\beta}) = \frac{\sigma^2}{SXX}$ is unknown. The Wald statistic is $t(n-2)$ distributed:
+\begin{equation*}
+    T = \frac{\hat{\beta} - \beta}{se(\hat{\beta})} \sim t(n-2)
+\end{equation*}
+We can then use $T$ to isolate $\beta$ and build the confidence interval. The critical values are estimated from the t-distribution with $n-2$ degrees of freedom. \\
+The same procedure can be applied to get a confidence interval for the intercept $\alpha$.
+
+\subsubsection{Fitted values}
+
+Also for the fitted values a Wald confidence interval can be built. The estimator of the fitted value $y$ is $\hat{y} = \hat{\alpha} + \hat{\beta} x_0$ at $x_0$, with standard error:
+\begin{equation*}
+    se(\hat{y}) = \hat{\sigma} \sqrt{\frac{1}{n} + \frac{(\bar{x} - x_0)^2}{SXX}}
+\end{equation*}
+Then, the interval is in the form $y \in \hat{y} \pm t_{n-2,\alpha} se(\hat{y})$. This interval is for the \textit{expected value} of $Y$ at $x_0$, i.e., the average of the predicted values for that input.
+
+Other than confidence intervals, we can also find \textbf{prediction intervals}, which predicts the specific predicted value of $Y$ at $x_0$ and considers the error term as well. Let
+\begin{equation*}
+    \hat{V} = \hat{\alpha} + \hat{\beta} x_0 + U
+\end{equation*}
+be the estimator of the predicted value. Assuming the error term $U$ is normally distributed, the variance of the predicted value is:
+\begin{equation*}
+    Var(\hat{V}) = \sigma^2 \left(1 + \frac{1}{n} + \frac{(\bar{x}_n - x_0)^2}{SXX} \right)
+\end{equation*}
+The prediction interval is $y \in \hat{y} \pm t_{n-2, \alpha} se(\hat{v})$. This interval lets us conclude that the specific predicted value of $Y$ at $x_0$ is between $\hat{y} - t_{n-2, \alpha}se(\hat{v})$ and $\hat{y} + t_{n-2, \alpha}se(\hat{v})$.

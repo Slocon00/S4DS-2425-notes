@@ -90,10 +90,13 @@ The estimators of the $Y_i$ are also unbiased:
 \begin{equation*}
     \E[\hat{Y}_i] = \E[\hat{\alpha}] + \E[\hat{\beta}] x_i = \alpha + \beta x_i
 \end{equation*}   
-Its variance is the same as the estimate for the variance of the $Y_i$. The prediction uncertainty at a $x_i$ is reported as $\hat{y} \pm se(\hat{y})$.
+Its variance is the same as the estimate for the variance of the $Y_i$. The prediction uncertainty at a $x_i$ is reported as $\hat{y} \pm se(\hat{y})$. The standard error of the fitted value at $x_0$ is:
+\begin{equation*}
+    se(\hat{y}) = \hat{\sigma} \sqrt{\frac{1}{n} + \frac{(\bar{x}_n - x_0)^2}{SXX}}
+\end{equation*}
 
 \paragraph{LSE and MLE}
-MLE and LSE are equivalent in a special case: when the $U_i$ random variables are normally distributed with mean 0 and variance $\sigma^2$. The $Y_i$ then are also normally distributed; specifically, $Y_i \sim N(\alpha + \beta x_i, \sigma^2)$. \\
+MLE and LSE are equivalent in a special case: when the $U_i$ random variables are normally distributed with mean 0 and variance $\sigma^2$. The $Y_i$ then are also normally distributed; specifically, $Y_i \sim \mathcal{N}(\alpha + \beta x_i, \sigma^2)$. \\
 The log-likelihood function is:
 \begin{equation*}
     \ell(\alpha, \beta) = \sum_{i=1}^n \log \left( \frac{1}{\sigma \sqrt{2 \pi}} e^{-\frac{1}{2} \left(\frac{y_i - \alpha - \beta x_i}{\sigma}\right)^2}\right) = -n \log(\sigma \sqrt{2 \pi}) - \frac{1}{2} \left(\frac{\sum_{i=1}^n (y_i - \alpha - \beta x_i)}{\sigma}\right)^2
@@ -292,7 +295,7 @@ where $r$ is the correlation between $x^1$ and $x^2$, $\sigma^2$ is the variance
 where $R_j^2$ is the coefficient of determination in the regression of $x_j$ from all other $x_i$. The term $1/(1-R_j^2)$ is called \textbf{variance inflation factor}. If this factor is 1, it means $x_j$ is not at all correlated with the other independent variables, and th variance of the estimator is the same as the one for simple linear regression. If the $R_j^2$ is 1, the VIF goes to infinity, so the variance of the estimator is also infinite.
 
 \paragraph{Variable selection}
-Recall that when the distribution of the error terms is $N(0, \sigma^2)$, the distribution of the $Y_i$ is also normal ($N(x_i \cdot \beta), \sigma^2$), so LSE and MLE applied to find the estimators of slope and intercept are equivalent. The log-likelihood function is $\ell(\beta) = \sum_{i=1}^n \log(\phi(y_i))$. We can use the Akaike Information Criterion (AIC) to evaluate the goodness of the current model and choose which combination of variables produces the best result. The AIC balances model fit against simplicity, so minimizing it is equivalent to finding the simplest model that best fits the data. \texttt{stepAIC()} is an \texttt{R} function that performs this task. The pseudocode is as follows:
+Recall that when the distribution of the error terms is $\mathcal{N}(0, \sigma^2)$, the distribution of the $Y_i$ is also normal ($\mathcal{N}(x_i \cdot \beta), \sigma^2$), so LSE and MLE applied to find the estimators of slope and intercept are equivalent. The log-likelihood function is $\ell(\beta) = \sum_{i=1}^n \log(\phi(y_i))$. We can use the Akaike Information Criterion (AIC) to evaluate the goodness of the current model and choose which combination of variables produces the best result. The AIC balances model fit against simplicity, so minimizing it is equivalent to finding the simplest model that best fits the data. \texttt{stepAIC()} is an \texttt{R} function that performs this task. The pseudocode is as follows:
 \begin{algorithm}
     \begin{algorithmic}
         \Function{stepAIC}{$S = \{ x^1 , \ldots, x^k\}$}
