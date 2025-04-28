@@ -1,0 +1,98 @@
+\section{Bootstrap and resampling}
+
+\subsection{Bootstrap}
+
+Bootstrapping is a statistical method used to estimate the distribution of estimators by resampling with replacement from the data. To illustrate the concept, we use a simple example. Let $X_1, \ldots, X_n \sim F$ be a random sample, where $F$ is the unknown distribution of the population. We want to study the distributtion of some parameter of the distribution; let it be the mean. We can build an estimator to get a point estimate of that parameter from a specific dataset. For the mean, we already observed that the sample mean is an unbiased estimator for the population mean. If we have multiple datasets from the same population, each of them will give us a different sample mean; then, if we calculate the empirical distribution of the sample means, by the Glivenko-Cantelli theorem, it will converge to the real distribution of the sample means, which is the same as the distribution of the population mean. However, we usually have only one dataset.
+
+Once we have a dataset, we can use it to both get a point estimate of the parameter of interest, and also to derive the empirical distribution $\hat{F}$ of the sample. This empirical distribution is then used to generate a number of \textbf{bootstrap samples} $x_1^*, \ldots, x_n^*$ using random sampling with replacement from the original dataset. For each bootstrap sample, we calculate the point estimate of the parameter of interest, and finally we determine the empirical distribution of it.
+\boxdefinition{Bootstrap principle}{
+    Use the dataset $x_1, \ldots, x_n$ to compute an estimate $\hat{F}$ for the true distribution $F$. Replace the random sample $X_1, \ldots, X_n$ from $F$ with a random sample $X_1^*, \ldots, X_n^*$ from $\hat{F}$. Approximate the probability distribution of $h(X_1, \ldots, X_n)$ by that of $h(X_1^*, \ldots, X_n^*)$.
+}
+
+\subsubsection{Empirical bootstrap}
+Assuming we know absolutely nothing abount $F$, the empirical CDF is calculated as
+\begin{equation*}
+    \hat{F}(a) = F_n(a) = \frac{|\{i \in 1 \ldots n : x_i \leq a\}|}{n}
+\end{equation*}
+Often, the bootstrap approximation is better if we relate the estimator to the corresponding parameter, e.g., instead of approximating the distribution of the mean, we approximate that of $\Delta = \bar{X}_n - \mu$ by $\Delta^* = \bar{X}_n^* - \mu^*$, where $\mu^*$ is the sample mean $\bar{x}_n$ of the initial dataset. This is done to reduce the distance between the estimated distribution and the true distribution. \\
+The realization of the difference $\Delta^*$ of a sample is $\delta^* = \bar{x}_n^* - \mu^* = \bar{x}_n^* - \bar{x}_n$. Then, since
+\begin{equation*}
+    \E[\Delta] = \E[\bar{X}_n] - \mu \approx \E[\Delta^*] \approx \textit{mean}(\delta^*)
+\end{equation*}
+we can estimate the real mean by reversing the equality:
+\begin{equation*}
+    \hat{\mu} = \E[\bar{X}_n] - \textit{mean}(\delta^*) \approx \bar{x}_n - \textit{mean}(\delta^*)
+\end{equation*}
+Also, the standard error of the mean can be approximated from the standard deviation of the empirical distribution of $\delta^*$:
+\begin{equation*}
+    se(\bar{X}_n) = \sqrt{Var(\bar{X}_n)} = \sqrt{Var(\bar{X}_n - \mu)} \approx \sqrt{Var(\bar{X}_n^* - \mu^*)} \approx sd(\delta^*)
+\end{equation*}
+Other than point estimates, we can establish confidence intervals for the parameters. Let $\delta = \bar{x}_n - \mu$ be the realization of $\Delta$. Then a confidence interval for $\delta$ is $(q_{{\alpha}/2}, q_{1-\alpha/2})$, where the quantiles are calculated from the empirical distribution of $\delta^*$. The confidence interval of the mean is
+\begin{equation*}
+    q_{\frac{\alpha}{2}} \leq \delta = \bar{x}_n - \mu \leq q_{\frac{1-\alpha}{2}} \implies \mu \in (\bar{x}_n - q_{\frac{1-\alpha}{2}}, \bar{x}_n - q_{\frac{\alpha}{2}})
+\end{equation*}
+
+\texttt{R} has a built-in method for bootstrap confidence intervals, \texttt{boot.ci}. It allows the user to choose the type of confidence interval, such as:
+\begin{itemize}
+    \item \texttt{type='basic'}: $(q_{{\alpha}/2}, q_{1-\alpha/2})$. Same method as the one described above.
+    \item \texttt{type='perc'}: $(q_{\alpha/2}, q_{1 - \alpha/2})$. No shift. Quantiles are estimated from the empirical distribution of $\bar{x}_n$.
+    \item \texttt{type='norm'}: $(\bar{x}_n - q_{1-\alpha/2}, \bar{x}_n - q_{\alpha/2})$. Quantiles are calculated over $\mathcal{N}(\textit{mean}(\delta^*), \textit{Var}(\delta^*))$ (i.e., the distribution of the deltas is assumed to be normal).
+    \item \texttt{type='bca'}: ``bias-corrected and acceleration'' method. It corrects the skewness of the distribution to adjust the confidence interval (if it is positively skewed, the interval is shifted to the right; if it is negatively skewed, the interval is shifted to the left).
+    \item \texttt{type='stud'}: $(\bar{x}_n - q_{1-\alpha/2}\frac{s_n}{\sqrt{n}}, \bar{x}_n - q_{\alpha/2}\frac{s_n}{\sqrt{n}})$. Quantiles are calculated over the $t$-distribution with $n-1$ degrees of freedom.
+\end{itemize}
+Until now only the mean was considered, but the bootstrap method can be applied to any estimator, such as the variance, or the linear regression coefficients. Bootstrap is generally good to estimate parameters which are not greatly perturbed by small perturbations of the data: it has issues with approximating extreme values, such as percentiles or the maximum/minimum of a distribution.
+
+\paragraph{How many bootstrap samples?} In order to get a good result, the sample size must be large enough. Let $n$ be the size of the original sample of the data, the total number of distinct possible bootstrap samples is $\binom{2n-1}{n-1}$. A rule of thumb is to use $B = 1000$ bootstrap samples. An alternative is to use \textbf{Jackknife resampling}, which works by extracting $n$ samples of size $n-1$ from the original dataset, such that sample $i$ includes all the data points except the $i^{\textit{th}}$ one.
+\begin{align*}
+    1:& \ x_2, x_3, x_4, \ldots, x_n \\
+    2:& \ x_1, x_3, x_4, \ldots, x_n \\
+    3:& \ x_1, x_2, x_4, \ldots, x_n \\
+    \vdots \\
+    n:& \ x_1, x_2, x_3, \ldots, x_{n-1}
+\end{align*}
+
+\subsubsection{Parametric bootstrap}
+
+Let $X_1, \ldots, X_n \sim F(\gamma)$ be a random sample, with known family $F$ but unknown parameter $\gamma$, and we are interested in approximating the distribution of some parameter $\theta$. Given a dataset $x_1, \ldots, x_n$, we can derive an estimate $\hat{\gamma}$ of $\gamma$, such that $F(\hat{\gamma})$ is the empirical distribution of the sample. This distribution is then used to generate a number of bootstrap samples $x_1^*, \ldots, x_n^*$ (realizations of $X_1^*, \ldots, X_n^* \sim F(\hat{\gamma})$), and from each of them a point estimate of $\theta$.
+
+Parametric bootstrap is also often used to estimate the distribution of the difference between the sample parameter and the real one. For example, if we take the mean $\bar{X}_n$, we would estimate the distribution of $\Delta = \bar{X}_n - \mu$ by that of $\Delta^* = \bar{X}_n - \mu_{\hat{\theta}}$, i.e., we compute the expectation $\mu^* = \mu_{\hat{\theta}}$ of $F_{\hat{\theta}}$. Like empirical bootstrap, we can also calculate confidence intervals for the parameter of interest.
+
+\subsection{Resampling methods}
+
+This section describes how to use resampling methods to estimate the performance of a classifier. We introduced the concept of risk as a measure of how well a classifier preforms, as it is the expected value of the loss function given the data. There are a series of possible approaches to estimate the risk given a dataset:
+\begin{itemize}
+    \item \textbf{Holdout method}: the dataset is split into training and test set. The decision rule is trained on the training set only, and the empirical risk is calculated on the test set.
+    \begin{align*}
+        &\hat{r} = \frac{1}{n} \sum_{i=1}^n \ell_{\theta}(c_i, w_i) &se = \sqrt{\frac{\hat{r}(1-\hat{r})}{n}}
+    \end{align*}
+    The biggest drawback of this method is that the result depends on how the data is split into train/test, and also the estimate has high variablity.
+    \item \textbf{Random sampling}: holdout is repeated $k$ times, and the average of the $k$ estimates is taken as the final estimate.
+    \begin{align*}
+        &\hat{r} = \frac{1}{k} \sum_{j=1}^k \hat{r}^j &se = \sqrt{\frac{1}{k-1}\sum_{j=1}^k (\hat{r}^j - \hat{r})^2}
+    \end{align*}
+    The $\hat{r}_j$ term is the error calculated on the $j^{\textit{th}}$ holdout sample:
+    \begin{equation*}
+        \hat{r}^j = \frac{1}{n_j} \sum_{i=1}^{n_j} \ell_{\theta}(c_i^j, w_i^j)
+    \end{equation*}
+    Unfortunately, this method yields a wrong estimate, since the test sets (and as a consequence also the error estimates) are not independent.
+    \item \textbf{k-fold cross-validation}: the empirical risk is averaged over $k$-fold splits of the dataset, guaranteeing that the test sets are independent.
+    \begin{align*}
+        &\hat{r} = \frac{1}{k} \hat{r}^j &se = \sqrt{\frac{1}{k-1} \sum_{j} (\hat{r}^j - \hat{r})^2}
+    \end{align*}
+    Here the error of a split is calculated as
+    \begin{equation*}
+        \hat{r}^j = \frac{1}{n/k} \sum_{i=1}^{n/k} \ell_{\theta}(c_i^j, w_i^j)
+    \end{equation*}
+    i.e., each test set has size $n/k$. This method has still the issue of the training sets across splits not being independent, which results in the error estimates also not being independent. Cross-validation estimates the average error across training sets.
+
+    If the classifier is stable over the folds, then we can use $se = \sqrt{\frac{\hat{r}(1-\hat{r})}{n}}$. The estimation is similar to holdout, but all data instances are used. This is also the implementation in \texttt{R}.
+
+    Setting $k=n$ results in what is called \textbf{leave-one-out cross-validation} (\textbf{LOOCV}).
+    \item \textbf{.632 bootstrap algorithm}: this method combines bootstrap and cross-validation. The classifier is trained on bootstrap samples, and the empirical risk is estimated on a test set which corresponds to all the data points not included in the sample. For $k$ bootstrap runs, the risk is estimated as
+    \begin{equation*}
+        \hat{r} = \frac{1}{k} \sum_j (0.632 \hat{r}^j + 0.368 \hat{r}_{tr})
+    \end{equation*}
+    where $\hat{r}^j$ is the empirical risk on the $j^{\textit{th}}$ bootstrap sample, and $\hat{r}_{tr}$ is the empirical risk over the original dataset.
+
+    Bootstrap has low variance, but it is very biased. $k$-fold cross-validation has a low bias and variance can be controlled by choosing the number of folds.
+\end{itemize}

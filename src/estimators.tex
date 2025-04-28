@@ -92,7 +92,7 @@ This is true for most estimators: if $T$ is unbiased for $\theta$, $g(T)$ is not
 \end{equation*}   
     Then
     \begin{equation*}
-        T \sim N\left(m, \frac{1}{4n f(m)^2}\right) \quad \text{as} \quad n \to \infty
+        T \sim \mathcal{N}\left(m, \frac{1}{4n f(m)^2}\right) \quad \text{as} \quad n \to \infty
 \end{equation*}   
     and $T$ is an unbiased estimator for the median as $n$ goes to infinity.
 }
@@ -103,7 +103,7 @@ This is true for most estimators: if $T$ is unbiased for $\theta$, $g(T)$ is not
 \end{equation*}   
     Then
     \begin{equation*}
-        T \sim N\left(q_p, \frac{p(1-p)}{n f(q_p)^2}\right) \quad \text{as} \quad n \to \infty
+        T \sim \mathcal{N}\left(q_p, \frac{p(1-p)}{n f(q_p)^2}\right) \quad \text{as} \quad n \to \infty
 \end{equation*}   
     and $T$ is an unbiased estimator for the $p^{th}$ quantile as $n$ goes to infinity.
 }
@@ -114,7 +114,7 @@ This is true for most estimators: if $T$ is unbiased for $\theta$, $g(T)$ is not
     \end{equation*}   
     Then
     \begin{equation*}
-        T \sim N\left( Md, \frac{\sigma_1^2}{n} \right)
+        T \sim \mathcal{N}\left( Md, \frac{\sigma_1^2}{n} \right)
     \end{equation*}   
     (where $\sigma_1^2$ is defined in terms of $Md$, median, and CDF of the distribution) and $T$ is an unbiased estimator for the MAD as $n$ goes to infinity.  
 }
@@ -122,7 +122,7 @@ All the above estimators are found by applying the corresponding version of the 
 
 For correlation, the various coefficients seen in the previous section are estimators of the true correlation coefficient between two random variables. Pearson's $r$ is an estimator for $\rho$, but the distribution of $r$ is highly skewed. To fix this issue, the \textbf{Fisher transformation} can be applied, defined as follows: $\textit{FisherZ}(r) = \frac{1}{2} \log\frac{1+r}{1-r}$. The distribution of the Fisher-transformed coefficient is approximately normal:
 \begin{equation*}
-    \textit{FisherZ}(r) \sim N\left(\textit{FisherZ}(\rho), \frac{1}{n-3}\right)
+    \textit{FisherZ}(r) \sim \mathcal{N}\left(\textit{FisherZ}(\rho), \frac{1}{n-3}\right)
 \end{equation*}   
 Hence, if we apply the inverse transformation to its expected value we get
 \begin{equation*}
@@ -131,7 +131,7 @@ Hence, if we apply the inverse transformation to its expected value we get
 This is also true for Spearman's $\rho$, sicne it is a special case of Pearson's $r$. \\
 For Kendall's $\tau_a$, we have, for $n > 10$, that
 \begin{equation*}
-    \tau_a (X,Y) \sim N\left(\theta, \frac{2(2n + 5)}{9n(n-1)}\right)
+    \tau_a (X,Y) \sim \mathcal{N}\left(\theta, \frac{2(2n + 5)}{9n(n-1)}\right)
 \end{equation*}   
 where $\theta = \E_{X_1,X_2 \sim F_X, Y_1, Y_2 \sim F_Y}[sign(X_1 - X_2) \cdot \textit{sign}(Y_1 - Y_2)]$. Hence $\tau_a$ is an unbiased estimator for $\theta$.
 \boxdefinition{Mean Squared Error (MSE)}{

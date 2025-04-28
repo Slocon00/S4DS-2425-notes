@@ -75,7 +75,7 @@ The procedure is almost identical to that above, but we need to estimate the var
 \begin{equation*}
     S^2 = \frac{1}{n-1} \sum_{i=1}^n (X_i - \bar{X}_n)^2
 \end{equation*}
-and also $S_n^2/n$ is an unbiased estimator of $Var(\bar{X}_n)$. The key difference is that the distribution of $T = \frac{\bar{X}_n - \mu}{S-n / \sqrt{n}}$ is not normal, but follows a Student's t-distribution with $n-1$ degrees of freedom.
+and also $S_n^2/n$ is an unbiased estimator of $Var(\bar{X}_n)$. The key difference is that the distribution of $T = \frac{\bar{X}_n - \mu}{S_n / \sqrt{n}}$ is not normal, but follows a Student's t-distribution with $n-1$ degrees of freedom.
 \distribution{Student's t-distribution}{$X \sim t(m)$}{
     A continuous random variable has a t-distribution with parameter $m \geq 1$, where $m$ is an integer, if its PDF is given by:
     \begin{align*}
