@@ -299,3 +299,30 @@ A \textbf{soft selective binary classifier} is a variant of selective binary cla
 where $\tau \in [1/2, 1]$. A good confidence function should rank instances based on descending loss: if $k(w) \leq k(w')$, then $\E[\ell_{\theta}(C,w)] \geq \E[\ell_{\theta}(C, w')]$.
 
 The inherent trade-off between risk and coverage is summarized by the \textbf{risk-coverage curve}, which tracks how changes in coverage affect the overall risk of the classifier. If the coverage is high, the risk is also high, because we ``admit'' more classifications even when the confidence is low. If the coverage is low, the risk is also lower, because we only classify instances associated with a high confidence (so they are more likely to be correct).
+
+\subsection{Classifier performance}
+
+Metrics computed on the test set are used to estimate some parameter over the whole population. Various metrics can be displayed together in a \textbf{confusion matrix}, summarizing the overall performance of the classifier. Let the data points be represented by $X = (W,C) \sim F$, where $F$ is the unknown joint distribution of predictive features and class. The \textbf{accuracy} of a binary classifier $y_{\theta}^+$ is a point estimate of
+\begin{equation*}
+    \E_F[\mathds{1}_{y_{\theta}^+(W) = C}] = P_F(y_{\theta}^+(W) = C)
+\end{equation*}
+i.e., it is the probability of the classifier being correct. It is calculated as the ratio between the number of correct predictions and the total number of predictions.
+
+Probabilistic classifiers output a score. The classifier is \textbf{calibrated} if the score output by the score function for positive instances is equal to the real probability of being positive:
+\begin{equation*}
+    P(C=1|s_{\theta}(w) = p) = p
+\end{equation*}
+The \textbf{Binary Expected Calibration Error} (\textbf{binary-ECE}) is a metric that measures the calibration error of a classifier, and is defined as:
+\begin{equation*}
+    \textit{binary-ECE} = \sum_b \frac{|B_b|}{n} \cdot |Y_b - S_b| 
+\end{equation*}
+where $B_b$ is the set of instances in the $b^{\textit{th}}$ bin, $Y_b$ is the fraction of positives in the $b^{\textit{th}}$ bin, and $S_b$ is the average score assigned to the instances in the $b^{\textit{th}}$ bin.
+\begin{align*}
+    &Y_b = \frac{|\{i : i \in B_b, c_i = 1\}|}{|B_b|} &S_b =  \frac{\sum_{i \in B_b} s_{\theta}(w_i)}{|B_b|}
+\end{align*}
+
+The \textbf{Receiving Operating Characteristic} (\textbf{ROC}) curve is a graphical representation of the performance of a binary classifier, and is the plot of the \textbf{true positive rate} (\textbf{TPR}) against the \textbf{false positive rate} (\textbf{FPR}) at various thresholds. TPR and FPR at a given probability threshold are respectively defined as:
+\begin{align*}
+    &\textit{TPR}(p) = P(s_{\theta}(w) \geq p | C=1) &\textit{FPR}(p) = P(s_{\theta}(w) \geq p | C=0)
+\end{align*}
+The ROC curve plots TPR and FPR at various values of $p$ ranging from 0 to 1. The area under the ROC curve (\textit{AUC-ROC}) is a single value that summarizes the performance of the classifier. The ideal classifier has an AUC-ROC of 1, while a random classifier has an AUC-ROC of 0.5.

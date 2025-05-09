@@ -1,0 +1,173 @@
+\section{Hypothesis Testing}
+
+The statistical methods explored until now are used to infer knowledge about features of the model distribution that represent quantities of interest, in the form of numerical estimates. Sometimes, the conclusion to be drawn is not numerical, but rather a decision about the validity of a claim.  The process of formulating the possible conclusions of an experiment and choosing between two alternatives is known as hypothesis testing.
+
+The two alternatives are called the \textbf{null hypothesis} $H_0$ and the \textbf{alternative hypothesis} $H_1$. The null hypothesis is presumed to be true until evidence through testing leads to its rejection in favor of the alternative one. The alternative hypothesis is a claim that goes against the null hypothesis. Since the null hypothesis is assumed to be true, we cannot accept it, and instead we say that we cannot reject it. To decide whether to reject the null hypothesis, we need to define a test statistic.
+\boxdefinition{Test statistic}{
+    Suppose the dataset is modeled as the realization of random variables $X_1, \ldots, X_n$. A test statistic is any sample statistic $T = h(X_1, \ldots, X_n)$ whose numerical value is used to decide whether we reject $H_0$.
+}
+Once we define the test statistic, we can calculate its value (``t-value'') under the null hypothesis and calculate the probability (``p-value'') of observing that value: if it is very unlikely, we reject the null hypothesis.
+
+\paragraph{One-tailed test}
+\begin{align*}
+    &H_0 : \theta = v &H_1 : \theta < v (\text{or } H_1 : \theta > v)
+\end{align*}
+\begin{align*}
+    &(1-\alpha),\ \alpha &\text{Confidence level, significance level}\\
+    &T = h(X_1, \ldots, X_n) &\text{Test statistic}\\
+    &t = h(x_1, \ldots, x_n) &\text{t-value}\\
+    &p = P(T \leq t) \quad (\text{or } P(T \geq t)) &\text{p-value}\\
+    &c_l \text{ s.t. } P(T \leq c_l) = \alpha \quad (\text{or } c_u \text{ s.t. } P(T \geq c_u) = \alpha) &\text{Critical value} \\
+    &[-\infty, c_l] \quad (\text{or } [c_u, \infty]) &\text{Critical region}
+\end{align*}
+If $t \leq c_l$ (or $t \geq c_u$) $\implies$ $H_0$ is rejected. \\
+If $p \leq \alpha$ $\implies$ $H_0$ is rejected. \\
+
+\paragraph{Two-tailed test}
+\begin{align*}
+    &H_0 : \theta = v &H_1 : \theta \not = v
+\end{align*}
+\begin{align*}
+    &p = P(T \leq t) + P(T \geq t) &\text{p-value}\\
+    &c_l \text{ s.t. } P(T \leq c_l) = \frac{\alpha}{2} \text{ and } c_u \text{ s.t. } P(T \geq c_u) = \frac{\alpha}{2} &\text{Critical values} \\
+    &[-\infty, c_l] \land [c_u, \infty] &\text{Critical region}
+\end{align*}
+Hypothesis testing can be related to confidence intervals. Suppose we have a test for the mean in the form:
+\begin{align*}
+    H_0 : \mu = v
+    H_1 : \mu > v
+\end{align*}
+where $\alpha = 0.05$, and the test statistic $T$ is a mean of $n$ random variables, so it has a normal distribution $\mathcal{N}(\mu, \sigma)$. The null hypothesis is rejected when:
+\begin{gather*}
+    t = \bar{x}_n \geq c_u \\
+    \iff \bar{x}_n \geq v + z_{0.05} \cdot \sigma \\
+    \iff v \leq \bar{x}_n - z_{0.05} \cdot \sigma \\
+    \iff v \not \in \text{95\% one tailed C.I. for } \mu
+\end{gather*}
+In other words, the interval $(\bar{x}_n - z_{0.05} \cdot \sigma, \infty)$ is a one-tailed confidence interval for the mean $\mu$.
+
+\subsection{Type I and Type II errors}
+Errors in hypothesis testing can be of two types:
+\begin{itemize}
+    \item \textbf{Type I error} (\textbf{$\alpha$-risk}, \textbf{false positive rate}): we falsely reject the null hypothesis when it is true. The probability of this error occurring is equal to the significance level $\alpha$, since we reject $H_0$ when $p < \alpha$. This error can be controlled by choosing the largest appropriate significance level. An alternative is to simply report the p-value, and let the decision makers to choose their own level.
+    \item \textbf{Type II error} (\textbf{$\beta$-risk}, \textbf{false negative rate}): we falsely do not reject the null hypothesis when the alternative one is true. The probability of this error occurring is called \textbf{power} of the test, and is $1 - \beta$.
+\end{itemize}
+Type II error can be arbitrarily close to the confidence level $1 - \alpha$: this is because the true distribution of the test statistic and the distribution under the null hypothesis can overlap significantly. Obviously the error probability never reaches $1-\alpha$, because that can only happen if the two distributions are identical, i.e., the null hypothesis is true.
+
+\subsection{One sample tests for the mean}
+
+Let $x_1, \ldots, x_n$ be the realizations of $X_1, \ldots, X_n \sim F$, where $\E[X_i] = \mu$ and $Var(X_i)=\sigma^2$. How consistent is the dataset with the (null) hypothesis that the mean is equal to a specific value ($\mu = \mu_0$)? We can distinguish three cases, depending on the assumed distribution of the random variables: normally distributed data with known or unknown variance, general data with unknown variance, and bernoulli data.
+
+\subsubsection{Normal data}
+
+Let $X_1, \ldots, X_n \sim \mathcal{N}(\mu, \sigma^2)$ be our random sample, and $x_1, \ldots, x_n$ the dataset. We set up a two-tailed test, choosing the hypotheses:
+\begin{align*}
+    &H_0 : \mu = \mu_0 &H_1 : \mu \not = \mu_0
+\end{align*}
+and fixing the significance level $\alpha$. Depending on whether we know the variance or not, we will build the test statistic accordingly.
+
+\paragraph{Known variance: z-test}
+The test statistic is:
+\begin{equation*}
+    Z = \frac{\bar{X}_n - \mu_0}{\frac{\sigma}{\sqrt{n}}} \sim \mathcal{N}(0,1)
+\end{equation*}
+Let $z$ be its realization. Since this is a two-tailed test, we find the critical values $-z_{\alpha/2}, z_{\alpha/2}$:
+\begin{align*}
+    &P(Z \leq -z_{\alpha/2}) = \frac{\alpha}{2} &P(Z \geq z_{\alpha/2}) = \frac{\alpha}{2}
+\end{align*}
+Finally, if $|z| \geq z_{\alpha/2}$ we reject the null hypothesis; otherwise, we cannot reject it.
+
+\paragraph{Unknown variance: t-test}
+The test statistic is:
+\begin{equation*}
+    T = \frac{\bar{X}_n - \mu_0}{\frac{S_n}{\sqrt{n}}} \sim t(n-1)
+\end{equation*}
+where $S_n$ is the sample standard deviation estimated from the dataset. Let $t$ be its realization. As above, we find the critical values $-t_{\alpha/2, n-1}, t_{\alpha/2, n-1}$:
+\begin{align*}
+    &P(T \leq -t_{\alpha/2, n-1}) = \frac{\alpha}{2} &P(T \geq t_{\alpha/2, n-1}) = \frac{\alpha}{2}
+\end{align*}
+If $|t| \geq t_{\alpha/2, n-1}$ we reject the null hypothesis; otherwise, we cannot reject it.
+
+\subsubsection{General data}
+\paragraph{Large sample size: z-test or t-test}
+If the sample size $n$ is large enough, then, for a variant of the CLT, the distribution of the test statistic
+\begin{equation*}
+    T = \frac{\bar{X}_n - \mu_0}{\frac{S_n}{\sqrt{n}}}
+\end{equation*} 
+is standard normal. We can then either use the z-test and approximate $\sigma^2$ with $s^2$, or we exploit the fact that $t(x) \to \mathcal{N}(0,1)$ for $n \to \infty$ and use the t-test directly.
+
+\paragraph{Symmetric distribution: Wilcoxon signed-rank test}
+Let the random sample be $X_1, \ldots, X_n \sim F$, where $f(\mu-x) = f(\mu+x)$, i.e., the distribution is symmetric around the mean. The test statistic is:
+\begin{equation*}
+    W = \min \left\{ \sum \textit{rank}^+, \sum \textit{rank}^- \right\}
+\end{equation*}
+where $\textit{rank}^+$ are the ranks of the instances which are greater than $\mu_0$, and $\textit{rank}^-$ are the ranks of the instances which are less than $\mu_0$; ranks are assigned with respect to the absolute value of the differences with the mean according to the null hypothesis, $|x_i - \mu_0|$. Cases where the difference is 0 are ignored, and ties are handled by looking at the mean value of the instances involved in the tie.
+
+If $n > 50$, the distribution of $W$ is approximately normal. If $n < 50$, we use the exact distribution of $W$, which is the ``null distribution''. As long as the distribution is symmetric, the same test is valid for the median of the distribution.
+
+\paragraph{Bootstrap t-test}
+Let $x_1, \ldots, x_n$ be the dataset. We estimate the empirical distribution of the random sample variables, use it to generate a number of bootstrap samples, and compute the studentized mean for each dataset:
+\begin{equation*}
+    t^* = \frac{\bar{x}_n^* - \bar{x}_n}{s_n^* / \sqrt{n}}
+\end{equation*}
+where $\bar{x}_n^*$ and $s_n^*$ are respectively the sample mean and the sample standard deviation of the bootstrap sample. Then, we calculate
+\begin{equation*}
+    t_0 = \frac{\bar{x}_n - \mu_0}{s_n / \sqrt{n}}
+\end{equation*}
+i.e., the t-value over the original dataset, and calculate the p-value using the bootstrap distribution of $t^*$. The p-value of the one-sided test is:
+\begin{equation*}
+    P(T \geq t_0) = \frac{|\{i = 1, \ldots, r : t_i^* \geq t_0 \}|}{r}
+\end{equation*}
+and the two-sided test is:
+\begin{equation*}
+    P(|T| \geq |t_0|) = \frac{|\{i = 1, \ldots, r : |t_i^*| \geq |t_0| \}|}{r}
+\end{equation*}
+where $r$ is the number of repetitions of the bootstrap sampling, which is also the number of estimated $t$ values.
+
+\subsubsection{Bernoulli data: binomial test}
+
+Let $x_1, \ldots, x_n$ be the dataset, realization of $X_1, \ldots, X_n \sim Ber(\theta)$. Let the null and alternative hypotheses be:
+\begin{align*}
+    &H_0 : \theta = \theta_0 &H_1 : \theta \not = \theta_0
+\end{align*}
+The test statistic is:
+\begin{equation*}
+    B = \sum_{i=1}^n X_i \sim Bin(n, \theta_0)
+\end{equation*}
+This test statistic measures the number of successes in the data; the $b$-value is the actual numer of recorded successes in the dataset, $b = \sum_{i=1}^n x_i$. We can either use the exact distribution and find the critical values, or exploit the normal approximation of the binomial distribution for large $n$.\\
+The critical values $l$ and $u$ in the exact test are:
+\begin{equation*}
+    P(B \leq l) = \sum_{i=0}^l \binom{n}{i} \theta^i_0 (1-\theta_0)^{n-i} = P(B \geq u) = \sum_{i=u}^n \binom{n}{i} \theta^i_0 (1-\theta_0)^{n-i} = \frac{\alpha}{2}
+\end{equation*}
+If instead we use the normal approximation ($Bin(n, \theta_0) \approx \mathcal{N}(n\theta_0, n\theta_0(1-\theta_0))$), we can build the scaled test statistic:
+\begin{equation*}
+    B^* = \frac{B - n\theta_0}{\sqrt{n\theta_0(1-\theta_0)}} \sim \mathcal{N}(0,1)
+\end{equation*}
+and then use the z-test with $\sigma^2 = \theta_0(1-\theta_0)$, since we can rewite the test statistic as:
+\begin{equation*}
+    B^* = \frac{B/n - \theta_0}{\sqrt{\theta_0(1-\theta_0)/n}} = \frac{\bar{X}_n - \theta_0}{\sigma / \sqrt{n}}
+\end{equation*}
+Alternatively, we can also use the t-test, if $n$ is sufficiently large.
+
+\subsection{Testing for linear regression}
+
+Let us consider a simple linear regression model:
+\begin{align*}
+    &Y_i = \alpha + \beta x_i + U_i &U_i \sim \mathcal{N}(0, \sigma^2)
+\end{align*}
+We set up a two-tailed statistical test for $\beta$. The hypotheses are:
+\begin{align*}
+    &H_0 : \beta = 0 &H_1 : \beta \not = 0
+\end{align*}
+We know that $\hat{\beta} \sim \mathcal{N}(\beta, Var{\hat{\beta}})$, where the variance is unknown. The test statistic is
+\begin{equation*}
+    T = \frac{\hat{\beta} - \beta}{\sqrt{Var(\hat{\beta})}} \sim t(n-2)
+\end{equation*}
+The p-value is $p = P(|T| > |t|) = 2 \cdot P\left(T > \left|\frac{\hat{\beta} - 0}{se(\hat{\beta})}\right|\right)$. $H_0$ can be rejected at significance level $\alpha$ if $p < \alpha$, or if $|t| > t_{\alpha, n-2}$. \\
+A similar approach is used for the intercept.
+
+\subsection{s-values}
+
+\textbf{Shannon information values} or (\textbf{s-values}, \textbf{surprisal values}) are a measure of the information of the data against the null hypothesis, and are calculated as $S = -\log_2(p)$, where $p$ is the p-value. The unit of measure of the s-value is the bit.
+
+When comparing p-values of two different test hypotheses, the absolute difference between p-values should not be interpreted ``linearly''. For example, suppose we have two pairs of null hypotheses and respective p-values. The first pair has p-values $0.9$ and $0.9999$, so the difference is $0.0999$; the second pair has p-values $0.0001$ and $0.1$, so the difference is also $0.0999$. However, the first pair correspond to t-values that are really close in the distribution of the test statistic, while the difference between the second pair is more significant. If we take the difference in s-values, we have $< 0.15$ bits and $9.97$ bits of difference respectively. We can interpret this difference as the number of bits of information needed to distinguish between the two hypotheses.
