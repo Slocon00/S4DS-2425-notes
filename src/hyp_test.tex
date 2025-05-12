@@ -166,6 +166,110 @@ We know that $\hat{\beta} \sim \mathcal{N}(\beta, Var{\hat{\beta}})$, where the 
 The p-value is $p = P(|T| > |t|) = 2 \cdot P\left(T > \left|\frac{\hat{\beta} - 0}{se(\hat{\beta})}\right|\right)$. $H_0$ can be rejected at significance level $\alpha$ if $p < \alpha$, or if $|t| > t_{\alpha, n-2}$. \\
 A similar approach is used for the intercept.
 
+\subsection{Two sample tests for the mean}
+Let $x_1, \ldots, x_n$ be the realizations of $X_1, \ldots, X_n \sim F_1$, with $\E[X_i] = \mu_1$ and $Var(X_i) = \sigma_X^2$. \\
+Let $y_1, \ldots, y_m$ be the realizations of $Y_1, \ldots, Y_m \sim F_2$, with $\E[Y_i] = \mu_2$ and $Var(Y_i) = \sigma_Y^2$. \\
+How consistent is the dataset with the null hypothesis that the means of the two distributions are equal ($H_0: \mu_1 = \mu_2$)? Like in the one sample case, we can distinguish multiple cases: normal data, general data, bernoulli data, and paired data.
+
+\subsubsection{Normal data}
+Let $X_1, \ldots, X_n \sim \mathcal{N}(\mu_1, \sigma_X^2)$ and $Y_1, \ldots, Y_m \sim \mathcal{N}(\mu_2, \sigma_Y^2)$. Assume the test is set up with the following hypotheses:
+\begin{align*}
+    &H_0 : \mu_1 = \mu_2 &H_1 : \mu_1 \not = \mu_2
+\end{align*}
+The significance level is $\alpha$. The test statistic is difference depending on what we know about the variances.
+
+\paragraph{Known variance: z-test}
+Since $\sigma_X^2$ and $\sigma_Y^2$ are known, we can use the z-test, with the test statistic:
+\begin{equation*}
+    Z = \frac{\bar{X}_n - \bar{Y}_m}{\sqrt{\frac{\sigma_X^2}{n} + \frac{\sigma_Y^2}{m}}} \sim \mathcal{N}(0,1)
+\end{equation*}
+The z-value is calculated from the dataset, and the p-value is calculated as $p = P(|Z| \geq |z|) = 2(1-\phi(|z|))$. If the p value is less than $\alpha$, or if the absolute value of the z-value is greater than the critical value $z_{\alpha/2}$ of the standard normal distribution, we reject the null hypothesis.
+
+\paragraph{Unknown variance}
+Before proceeding with the test, we need to estimate the variance $Var(\bar{X}_n - \bar{Y}_m) = \sigma^2\left(\frac{1}{n} + \frac{1}{m}\right)$. Variances of the two distributions can be individually (unbiasedly) estimated with the empirical variances as $S_X^2$ and $S_Y^2$. Another important information to gather is whether the variances of the two distributions are equal. For this task, we can use the \textbf{F-test}. The hypotheses are:
+\begin{align*}
+    &H_0 : \sigma_X^2 = \sigma_Y^2 &H_1 : \sigma_X^2 \not = \sigma_Y^2
+\end{align*}
+The test statistic is:
+\begin{equation*}
+    F = \frac{S_X^2}{S_Y^2} \sim F(n-1, m-1)
+\end{equation*}
+i.e., the ratio of the sample variances. The distribution of $F$ is called \textbf{Fisher-Snedecor distribution}. the f-value is the ratio of the sample variances calculated from the data, and the p-value is $p = 2 \min \{ P(F \leq f), 1 - P(F \leq f) \}$ (the distribution is asymmetric, so the smaller value between the tail probabilities is taken).
+Then:
+\begin{itemize}
+    \item \textbf{If the two variances are equal}, we use the t-test. The test statistic is:
+    \begin{equation*}
+        T_p = \frac{\bar{X}_n - \bar{Y}_m}{S_p} \sim t(n+m-2)
+    \end{equation*}
+    where $S_p$ is the pooled satandard deviation. The \textbf{pooled variance} is an unbiased estimator of $Var(\bar{X}_n - \bar{Y}_m)$:
+    \begin{equation*}
+        S_p^2 = \frac{(n-1) S_X^2 + (m-1) S_Y^2}{n+m-2} \left(\frac{1}{n} + \frac{1}{m}\right) = \frac{\sum_{i=1}^n (X_i - \bar{X}_n)^2 + \sum_{i=1}^m (Y_i - \bar{Y}_m)^2}{n+m-2} \left(\frac{1}{n} + \frac{1}{m}\right)
+    \end{equation*}
+
+    \item \textbf{If the two variances are not equal}, we use the Welch t-test. The test statistic is:
+    \begin{equation*}
+        T_d = \frac{\bar{X}_n - \bar{Y}_m}{S_d} \approx t(v)
+    \end{equation*}
+    where $S_d$ is the unpooled standard deviation. The \textbf{unpooled variance} is an unbiased estimator of $Var(\bar{X}_n - \bar{Y}^2)$:
+    \begin{equation*}
+        S_d^2 = \frac{S_X^2}{x} + \frac{S_Y^2}{y}
+    \end{equation*}
+    The degrees of fredom $v$ are 
+    \begin{equation*}
+        v = \frac{\left(\frac{1}{n} + \frac{u}{m}\right)^2}{\frac{1}{n^2(n-1)} + \frac{u^2}{m^2(m-1)}} \quad \text{where } u = \frac{S_Y^2}{S_X^2}
+    \end{equation*}
+\end{itemize}
+
+\subsubsection{General data}
+Let $X_1, \ldots, X_n \sim F_1$ and $Y_1, \ldots, Y_m \sim F_2$. The hypotheses are:
+\begin{align*}
+    &H_0 : \mu_1 = \mu_2 &H_1 : \mu_1 \not = \mu_2
+\end{align*}
+
+\paragraph{Large sample size: t-test}
+If the sample sizes $n$ and $m$ are large enough, then, by a variant of the CLT, the following test statistic is approximately standard normal:
+\begin{equation*}
+    T_d = \frac{\bar{X}_n - \bar{Y}_m}{S_d} \sim 
+\end{equation*}
+where $S_d$ is the unpooled standard deviation.
+
+\paragraph{Location shift: Wilcoxon rank-sum test}
+Also known as the Mann-Whitney U test, or Mann-Whitney-Wilcoxon test. This test is used when we want to check if the two distributions are related by a location shift. This means that the hypotheses are:
+\begin{align*}
+    &H_0 : F_1(x - \delta) = F_2(x) &H_1 : F_1(x - \delta) \not = F_2(x)
+\end{align*}
+with $\delta = \mu_2 - \mu_1$. The test statistic is:
+\begin{equation*}
+    W = \sum_{i=1}^n S_i \sim W(n,m)
+\end{equation*}
+where $S_i$ is the rank of variable $X_i$ in the sorting of the combination of the two datasets. Critical values are extracted from the distribution $W$ (in \texttt{R}, the function \texttt{pwilcox()} is used to calculate its distribution).
+
+\paragraph{Bootstrap t-test}
+We distinguish two cases. If the two samples have the same variance, then we use the bootstrap of pooled studentized mean difference:
+\begin{equation*}
+    t_p^* = \frac{(\bar{x}_n^* - \bar{y}_m^*) - (\bar{x}_n - \bar{y}_m)}{s_p^*} 
+\end{equation*}
+If instead the variances are different, we use the bootstrap of nonpooled studentized mean difference:
+\begin{equation*}
+    t_d^* = \frac{(\bar{x}_n^* - \bar{y}_m^*) - (\bar{x}_n - \bar{y}_m)}{s_d^*}
+\end{equation*}
+Then, we build the test statistic $t_0$ over the original data, and use the empirical distribution of the bootstrap samples to find the critical values.
+
+\subsubsection{Bernoulli data: test of proportions}
+Let $X_1, \ldots, X_n \sim Ber(\mu_1)$ and $Y_1, \ldots, Y_m \sim Ber(\mu_2)$. If the sample sizes are large, we define the following test statistic:
+\begin{equation*}
+    Z = \frac{\bar{X}_n - \bar{Y}_m}{\sqrt{\bar{W}_{n+m} (1 - \bar{W}_{n+m}) \sqrt{\frac{1}{n} + \frac{1}{m}}}} \sim \mathcal{N}(0,1)
+\end{equation*}
+where $\bar{W}_{n+m} = (X_1 + \ldots + X_n + Y_1 + \ldots + Y_m) / n+m$, i.e., the average of the entire dataset. \\
+If the sample sizes are small, we use the \textbf{Fisher's exact test}, based on odds ratios.
+
+\subsubsection{Paired data: t-test}
+Let the datasets $x_1, \ldots, x_n$ and $y_1, \ldots, y_n$ be measurements of the same experimental unit; for example, the measurements of blood markers taken from the same person before and after a medical treatment, or a dataset used to train two different classifier models. The idea is to take the differences between each pair of measurements:
+\begin{equation*}
+    x_1 - y_1, \ldots, x_n - y_n
+\end{equation*}
+effectively reducing the problem to a one-sample test. The null hypothesis goes from $H_0 : \mu_1 = \mu_2$ to $H_0 : \mu_1 - \mu_2 = 0$. The advantage of this test is that it has better power (lower $\beta$-risk) with respect to the unpaired version.
+
 \subsection{s-values}
 
 \textbf{Shannon information values} or (\textbf{s-values}, \textbf{surprisal values}) are a measure of the information of the data against the null hypothesis, and are calculated as $S = -\log_2(p)$, where $p$ is the p-value. The unit of measure of the s-value is the bit.
