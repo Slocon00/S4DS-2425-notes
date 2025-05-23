@@ -270,8 +270,120 @@ Let the datasets $x_1, \ldots, x_n$ and $y_1, \ldots, y_n$ be measurements of th
 \end{equation*}
 effectively reducing the problem to a one-sample test. The null hypothesis goes from $H_0 : \mu_1 = \mu_2$ to $H_0 : \mu_1 - \mu_2 = 0$. The advantage of this test is that it has better power (lower $\beta$-risk) with respect to the unpaired version.
 
-\subsection{s-values}
+\subsection{Multiple sample tests for the mean}
+Say we want to run multiple tests on the same dataset. For example, we run $m$ tests for the mean of $m$ different subpopulations, and set up a null hypothesis for each of them, claiming that the mean is 0 for each subpopulation:
+\begin{equation*}
+    H_0^i : \mu_i = 0 \quad i = 1, \ldots, m
+\end{equation*}
+What is the probability of rejecting at least one $H_0^i$ when all of them are true? If the tests are independent, then this probability is
+\begin{equation*}
+    P(\cup_{i=1}^m \{p_i \leq \alpha\}) = 1 - P(\cup_{i=1}^m \{p_i > \alpha\}) = 1 - (1 - \alpha)^m
+\end{equation*}
+If they are dependent, we can state the following:
+\begin{equation*}
+    P(\cup_{i=1}^m \{p_i \leq \alpha\}) \leq \sum_i P(\{p_i \leq \alpha\}) = m \cdot \alpha
+\end{equation*}
+\boxdefinition{Family-wise error rate (FWER)}{
+    The family-wise error rate is the probability of making at least one Type I error in a family of $m$ tests. If the tests are independent, it is:
+    \begin{equation*}
+        \alpha_{FWER} = 1 - (1 - \alpha)^m
+    \end{equation*}
+    If they are dependent:
+    \begin{equation*}
+        \alpha_{FWER} \leq m \cdot \alpha
+    \end{equation*}
+}
+How can we control the FWER? This is done by choosing the appropriate value of $\alpha$ such that the FWER is guaranteed to be below some bound $b$. There are various methods to do this:
+\begin{itemize}
+    \item \textbf{Bonferroni correction}: set $\alpha = b/m$, such that $\alpha_{FWER} \leq m \cdot \alpha = b$. Using this method is equivalent to ``scaling down'' the p-values of the tests by $m$, and compare them with $b$ instead of $\alpha$: $p \leq \alpha \iff p \cdot m \leq b$. This method is very conservative, and can lead to a large number of false negatives.
+    \item \textbf{Sidak correction}: set $\alpha = 1 - (1 - b)^{\frac{1}{m}}$, such that $\alpha_{FWER} = 1 - (1-\alpha)^m = b$. Like the one above, this method is also equivalent to scaling down the p-values and comparing to $b$. This method is less conservative than the Bonferroni correction, and can be used when the tests are independent.
+\end{itemize}
+These corrections also help control the false positive rate, since $FWER = P(FP > 0 | H_0^i \ i=1,\ldots,m)$. On the other hand, they increase the false negative rate. We introduce the \textbf{False Discovery Rate}, which is the proportion of false positives among the rejections of the null hypotheses:
+\begin{equation*}
+    FDR = \frac{FP}{FP + TP}
+\end{equation*}
+It is associated with a \textbf{q-value}. p-value and q-value are respectively defined as
+\begin{align*}
+    &p = P(T \geq t | H_0) &q = P(H_0 | T \geq t) 
+\end{align*}
+The FDR can be controlled by requiring that the q-value is below a certain threshold $b$.
 
+\subsubsection{Omnibus test}
+Let the test be set up with the following hypotheses:
+\begin{align*}
+    &H_0 : \theta_1 = \theta_2 = \ldots = \theta_k = v &H_1 : \theta_i \not = \theta_j \text{for some } i \not = j
+\end{align*}
+\textbf{Omnibus tests} are used to detect any of several possible differences between the parameters of the distributions. The main advantage of these tests is that they don't require the user to specify which specific pairs are to be compared, and they don't need adjustment for multiple comparisons. Then, if the test is significant ($H_0$ is rejected), we run a \textbf{post-hoc test} to find which specific pairs are different. Post-hoc tests may be \textbf{everything to everything}, which compares all pairs, or \textbf{one to everything}, which compares a new population to the others. We distinguish a few cases with different combinations:
+\begin{itemize}
+    \item Tests for multiple linear regression, assuming normal errors and equal variances; here we use the F-test and the t-test.
+    \item Equality of means with normal distributions and equal variances; here we use ANOVA and Tukey's HSD test/Dunnett's test.
+    \item Equality of means with general distributions; here we use the Friedman test and Nemenyi's test.
+\end{itemize}
+
+\paragraph{Multiple linear regression: F-test + t-test}
+Assume we have a multiple linear regression model in the form:
+\begin{equation*}
+    \mathbf{Y} = \mathbf{X} \cdot \boldsymbol{\beta} + \mathbf{U}
+\end{equation*}
+where $\mathbf{Y} = (Y_1, \ldots, Y_n)$, $\mathbf{U} = (U_1, \ldots, U_n)$, and $\mathbf{X} = (\mathbf{x}_1, \ldots, \mathbf{x}_n)$. $\boldsymbol{\beta}$ holds all the coefficients (inlcuding the intercept) of the model. Each vector $\mathbf{x}_i$ has the first element equal to 1. The unexplained residual error is the SSE. The explained error is SSR = SST - SSE. The coefficient of determination is the ratio between SSR and SST, and quantifies how useful the model is in explaining the variance of the data. \\
+We want to test whether the model is statistically significant. We set the test hypotheses:
+\begin{align*}
+    &H_0 : \beta_1 = \ldots = \beta_k = 0 &H_1 : \beta_i \not = 0 \quad \text{for some } i = 1, \ldots, k
+\end{align*}
+The null hypothesis is assuming the model is a so-called \textbf{null model} (or ``intercept-only model''), where the only predictor is the intercept. The test statistic is:
+\begin{equation*}
+    F = \frac{SSR}{SSE} \frac{n - k -1}{k} \sim F(k, n-k-1)
+\end{equation*}
+After the F-test, if the null hypothesis is rejected, we run a t-test to find the specific coefficients that are different from 0.
+
+\paragraph{Equality of means: ANOVA + Tukey/Dunnett}
+This test is a generalization of the two sample t-test. The test is set up with the following hypotheses:
+\begin{align*}
+    &H_0 : \mu_1 = \mu_2 = \ldots = \mu_k &H_1 : \mu_i \not = \mu_j \quad \text{for some } i \not = j
+\end{align*}
+The data is represented by a series of datasets, $y_1^j, \ldots, y_{n_j}^j$ for $j = 1, \ldots, k$. We assume that the data is normally distributed (can be tested with the Shapiro-Wilk test), and that the variances are equal (can be tested with the Bartlett test). Examples of datasets can be the responses of $k-1$ treatments and 1 control group, or the accuracies of $k$ classifiers over $n_j$ datasets.
+
+We build the linear regression model over the dummy encoded data of the $j^{\textit{th}}$ dataset is:
+\begin{equation*}
+    Y = \alpha + \beta_1 x_1 + \ldots + \beta_{k-1} x_{k-1}
+\end{equation*}
+where $\alpha = \mu_k$ is the mean of the reference group, $\beta_j$ is the difference between the mean of the $j^{\textit{th}}$ group and the mean of the reference group, $\mu_j - \mu_k$. We finally run and F-test over this linear regression model, choosing as hypotheses
+\begin{align*}
+    &H_0 : \beta_1 = \ldots = \beta_k = 0 &H_1 : \beta_i \not = 0 \quad \text{for some } i = 1, \ldots, k
+\end{align*}
+When all the $\beta_j$ are equal to 0, it means that the difference with the mean of the reference group and the other groups is 0. After this test, we can use either of these tests:
+\begin{itemize}
+    \item Tukey's Honest Significant Differences, which compares all pairs of means.
+    \item Dunnett's test, which is a one-to-everything test.
+\end{itemize}
+
+\paragraph{Equality of means: Friedman + Nemenyi}
+The test is the same as the on above:
+\begin{align*}
+    &H_0 : \mu_1 = \mu_2 = \ldots = \mu_k &H_1 : \mu_i \not = \mu_j \quad \text{for some } i \not = j
+\end{align*}
+The datasets are $x_1^j, \ldots, x_n^j$ for $j=1, \ldots, k$, which are paired observations/repeated measures of the same experimental unit (for example, the accuracies of $k$ classifiers over $n$  datasets). Let $r_i^j$ be the rank of the data point $x_i^j$ within its dataset. We can average the ranks in the whole dataset:
+\begin{equation*}
+    R_j = \frac{1}{n} \sum_{i=1}^n r_i^j
+\end{equation*}
+Under the null hypothesis, the ranks over all datasets are equal: $R_1 = R_2 = \ldots = R_k$ (in the classifiers example, this means that they perform equally well). For large $n$ and $k$, we can build the following test statistic:
+\begin{equation*}
+    \chi_F^2 = \frac{12 n}{k(k+1)} \left( \sum_{j=1}^k  R_j^2 - \frac{k(k+1)^2}{4} \right) \sim \chi^2(k)
+\end{equation*}
+where $\chi^2(k)$ is the Chi-square distribution with $k$ degrees of freedom.
+\distribution{Chi-square distribution}{$X \sim \chi^2(k)$}{
+    A random variable has a chi-square distribution with $k$ degrees of freedom is its PDF is given by
+    \begin{align*}
+        &f(x) = \frac{1}{2^{k/2} \Gamma(\frac{k}{2})} x^{\frac{k}{2} - 1} e^{-\frac{x}{2}} &\text{for } x > 0
+    \end{align*}
+    The sum of the squares of $k$ i.i.d. standard normal random variables is gamma distributed with parameter $k$:
+    \begin{align*}
+        &X = \sum_{i=1}^k X_i^2 \sim \chi^2(4) &\text{where } X_i \sim \mathcal{N}(0,1)
+    \end{align*}
+}
+If the null hypothesis is rejected, the Nemenyi test is used to find which specific pairs are different. If unpaired observations are used, the Kruskal-Wallis test is used instead of the Friedman test.
+
+\subsection{s-values}
 \textbf{Shannon information values} or (\textbf{s-values}, \textbf{surprisal values}) are a measure of the information of the data against the null hypothesis, and are calculated as $S = -\log_2(p)$, where $p$ is the p-value. The unit of measure of the s-value is the bit.
 
 When comparing p-values of two different test hypotheses, the absolute difference between p-values should not be interpreted ``linearly''. For example, suppose we have two pairs of null hypotheses and respective p-values. The first pair has p-values $0.9$ and $0.9999$, so the difference is $0.0999$; the second pair has p-values $0.0001$ and $0.1$, so the difference is also $0.0999$. However, the first pair correspond to t-values that are really close in the distribution of the test statistic, while the difference between the second pair is more significant. If we take the difference in s-values, we have $< 0.15$ bits and $9.97$ bits of difference respectively. We can interpret this difference as the number of bits of information needed to distinguish between the two hypotheses.
