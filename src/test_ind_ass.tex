@@ -1,0 +1,92 @@
+\section{Testing independence and association}
+
+Another application of hypothesis testing is to test whether two random variables are independent or associated/correlated.
+
+\subsection{Independence}
+
+Assume we have two random variables $X$ and $Y$, discrete and finite. We observe a bivariate dataset $(x_1, y_1), \ldots, (x_n, y_n)$, and want to test if $X$ and $Y$ are independent:
+\begin{align*}
+    &H_0 : X \indep Y &H_1 : X \not\indep Y
+\end{align*}
+The tests that can be used are:
+\begin{itemize}
+    \item \textbf{Pearson's chi-square test}, with the following test statistic:
+    \begin{equation*}
+        \chi^2 = \sum_{i,j} \frac{(O_{i,j} - E_{i,j})^2}{E_{i,j}} = n \cdot \sum_{i,j} \frac{(O_{i,j}/n - p_i \cdot q_i)^2}{p_i \cdot q_i} \sim \chi^2(\textit{df})
+    \end{equation*}
+    where $O_{i,j}$ is the number of observations where $X = i$ and $Y = j$; $E_{i,j} = n \cdot p_i \cdot q_i$, where $p_i = \sum_{j} O_{i,j}/n$ and $q_j = \sum_{i} O_{i,j}/n$ are the empirical marginal probabilities of $X$ and $Y$; $\textit{df} = (n_x - 1)(n_y - 1)$ where $n_x$ and $n_y$ are the number of distinct values of $X$ and $Y$ respectively (i.e., the size of their supports).
+    \item \textbf{Fisher's exact test}, if the sample size is small. It consists in computing the probability of observing the contingency table derived from the data, where the numbers in the table follow a hypergeometric distribution under the null hypothesis of independence.
+    \item \textbf{McNemar's test}, if the data is paired (i.e., $x_i$ and $y_i$ refer to different measurements of the same entity).
+    \item \textbf{G-test}, which is closely related to Pearson's chi-square test and the likelihood ratio test. It uses the following test statistic:
+    \begin{equation*}
+        G = 2 \sum_{i,j} O_{i,j} \log \frac{O_{i,j}}{E_{i,j}} = 2 \sum_{i,j} O_{i,j} \log \frac{O_{i,j}}{n \cdot p_i \cdot q_j} \sim \chi^2(\textit{df})
+    \end{equation*}
+    The terms $O_{i,j}$ and $E_{i,j}$ are the same as in Pearson's chi-square test, and the degrees of freedom are also the same. This test is preferred when the $O_{i,j}$ and $E_{i,j}$ values are small, and it is asymptotically equivalent to Pearson's chi-square test.
+
+    Additionally, $G = 2 \cdot n \cdot I(O,E)$ (where $I$ is the mutual information).
+    \item \textbf{Permutation test}, which involves randomly permuting the values of one of the variables and computing the test statistic for each permutation. If the variables are indeed independent, permutating the values of one variable should not affect the distribution of the test statistic.
+\end{itemize}
+There are cases where one or more variables are continuous. If both $X$ and $Y$ are continuous, the possible options are to simply discretize them and apply any of the tests above, test for correlation instead of independence (see the next sections), or use \textbf{Hoeffding's test}. \\
+If one variable is continuous and the other is discrete, either the continuous one is discretized, or a direct approach is used (such as the one in \cite{yanga2020independence}).
+
+A special case is when one variable is binary. Two variables $X$ and $Y$, where $Y$ is binary, are independent if and only if:
+\begin{equation*}
+    P(X|Y) = P(X) \iff P(X|Y = 0) = P(X|Y = 1) .
+\end{equation*}
+
+\subsection{Association}
+
+Association quantifies how much information one variable provides about the other. It is zero if the variables are independent, and is is maximum when one variable is a function of the other, resulting in a deterministic relationship. For nominal variables, there exist several measures of association, such as:
+\begin{itemize}
+    \item $\boldsymbol{\phi} $\textbf{coefficient} (or \textbf{Matthew's correlation coefficient}), defined for $2 \times 2$ contingency tables:
+    \begin{equation*}
+        \phi = \sqrt{\frac{\chi^2}{n}} \in [0,1]
+    \end{equation*}
+    \item \textbf{Cramer's V}, for contingency tables larger than $2 \times 2$:
+    \begin{equation*}
+        V = \sqrt{\frac{\chi^2}{n \cdot \min \{ r-1, c-1 \}}} \in [0,1]
+    \end{equation*}
+    where $r$ and $c$ are the number of rows and columns in the contingency table.
+    \item \textbf{Tschuprov's T}, also for contingency tables larger than $2 \times 2$:
+    \begin{equation*}
+        T = \sqrt{\frac{\chi^2}{n \cdot \sqrt{(r-1)(c-1)}}} \in [0,1]
+    \end{equation*}
+    where $r$ and $c$ are the number of rows and columns in the contingency table.
+\end{itemize}
+These measures are all based on the chi-square test statistic.
+
+\subsection{Correlation}
+
+Correlation is a measure of the strenght and direction of a trend that relates two variables. Correlation is zero if the two variables are independent, but the inverse is not always true. Population correlation is $\rho$:
+\begin{equation*}
+    \rho = \frac{\E [(X - \mu_X)(Y - \mu_Y)]}{\sigma_X \sigma_Y} \in [-1,1]
+\end{equation*}
+Pearson's correlation coefficient is an estimate of the population correlation, and is defined as:
+\begin{equation*}
+    r = \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum_{i=1}^n (x_i - \bar{x})^2} \cdot \sqrt{\sum_{i=1}^n (y_i - \bar{y})^2}}
+\end{equation*}
+We observe a bivariate dataset $(x_1, y_1), \ldots, (x_n, y_n)$. We assume that the joint distribution of $X$ and $Y$ is bivariate normal (or approximately so, if the sample size is large enough). We want to test for correlation with the following hypotheses:
+\begin{align*}
+    &H_0 : \rho = 0 &H_1 : \rho \neq 0
+\end{align*}
+The test statistic is:
+\begin{equation*}
+    T = \frac{r(\sqrt{n-2})}{\sqrt{1 - r^2}} \sim t(n-2)
+\end{equation*}
+Since $X \indep Y$ implies $\rho = 0$, if the null hypothesis is rejected, then also $X \indep Y$ can be rejected.
+
+\subsection{Testing th AUC-ROC}
+
+The area under the receiving operating characteristic curve (AUC-ROC) is used to evaluate the performance of binary classifiers. The ROC curve is computed as the scatter plot of the true positive rate against the false positive rate calculated for various thresholds for the classifier's scores.
+
+The AUC is the probability of a correct identification of the ordering of two instances belonging to different classes:
+\begin{equation*}
+    \textit{AUC} = P_{\theta_{\textit{TRUE}}} (s_{\theta}(W_1) < s_{\theta}(W_2) | C_{W_1} = 0 \land C_{W_2} = 1)
+\end{equation*}
+where $(W_1, C_{W_1}) \sim f_{\theta_{\textit{TRUE}}}$ and $(W_2, C_{W_2}) \sim f_{\theta_{\textit{TRUE}}}$. \\
+Let $s_{\theta}(W_1), \ldots, s_{\theta}(W_n) \sim F_{\theta_{\textit{TRUE} | C = 1}}$ be the scores of the positive instances, and $s_{\theta}(V_1), \ldots, s_{\theta}(V_m) \sim F_{\theta_{\textit{TRUE} | C = 0}}$ be the scores of the negative instances. We then define
+\begin{equation*}
+    U = \sum_{i=1}^n \sum_{j=1}^m S(s_{\theta}(W_i), s_{\theta}(V_j))
+\end{equation*}
+with $S(X,Y) = 1$ if $X > Y$, $S(X,Y) = 0$ if $X < Y$, and $S(X,Y) = 1/2$ if $X = Y$. The AUC-ROC $U / (n \cdot m)$ is an estimator for the real AUC; $U$ is the same statistic used in the Wilcoxon rank-sum test. \\
+To test the AUC we can use the normal approximation of $U$, \textbf{DeLong's test} to compare two AUCs of different classifiers, bootstrap approaches, \textbf{Fligner-Policello's test}, \textbf{Brunner-Munzel's test}, or use confidence intervals. 

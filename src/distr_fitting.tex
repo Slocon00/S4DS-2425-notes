@@ -1,0 +1,51 @@
+\section{Distribution fitting and testing}
+
+Given a dataset $x_1, \ldots, x_n$, realization of $X_1, \ldots, X_n \sim F$, we want to find a plausible distribution $F$. The task of fitting distributions to data has several appliceations in data science; it can be used to understand the data generation process, or check assumptions such as the normality of the noise terms in linear regression, or to check if the distribution of the same data has changed over time. Past sections have already showed different methods, both parametric (assuming a family and estimating the parameters via MLE or bootstrap), and non-parametric (estimating the empirical distribution, or using KDE). If we end up getting several plausible distributions, how do decide which one is the best?
+
+\subsection{Quality of fit of single distributions}
+
+A simple way to evaluate the quality of fit of some distribution $F$ over the data is to use the loss function, such as the AIC or BIC. Otherwise, we can use statistical tests where the null hypothesis assumes that the data is distributed according to that $F$. For \textbf{continuous data}, possible tests are:
+\begin{itemize}
+    \item \textbf{Kolmogorov-Smirnov test}: $H_0 : X \sim F, \quad H_1 : X \not \sim F$ \\
+    The Kolmogorov-Smirnov test statistic is defined as:
+    \begin{equation*}
+        D = \sup_{a \in \mathbb{R}} |F_n(a) - F(a)| \sim K
+    \end{equation*}
+    \item \textbf{Likelihood-ratio test}: $H_0 : X \sim F_1, \quad H_1 : X \sim F_2$ \\
+    The likelihood-ratio test statistic is defined as:
+    \begin{equation*}
+        \lambda_{LR} = \log \frac{L(F_1(\lambda_1))}{L(F_2(\lambda_2))} = \ell (F_1(\lambda_1)) - \ell(F_2(\lambda_2))
+    \end{equation*}
+    with $-2\lambda_{LR} \sim \chi^2(1)$.
+\end{itemize}
+For \textbf{discrete data}, possible tests are:
+\begin{itemize}
+    \item \textbf{Pearson's Chi-square test}: $H_0 : X \sim F, \quad H_1 : X \not \sim F$ \\
+    The chi-square test statistic is defined as:
+    \begin{equation*}
+        \chi^2 = \sum_{N_i > 0} \frac{(N_i - n_i)^2}{n_i} = n \cdot \sum_{N_i > 0} \frac{(N_i/n - p(i))^2}{p(i)} \sim \chi^2(\textit{df})
+    \end{equation*}
+    where $N_i$ is the number of observations of value $i$, $n_i$ is the expected number of observations of that value according to the empirical distribution ($n_i = n \cdot p(i)$), and the degrees of freedom $\textit{df} = |\{i : N_i > 0\}| - 1$ is the number of observed values minus 1. If some $i$ has 0 observations, the test statistic goes to infinity.
+    \item \textbf{Yates' correction for continuity}: $H_0 : X \sim F, \quad H_1 : X \not \sim F$ \\
+    It corrects by approximating the discrete probabilities of observed frequencies using the continuous chi-squared distribution. The test statistic is:
+    \begin{equation*}
+        \chi^2 = \sum_{N_i > 0} \frac{(|N_i - n_i| - 0.5)^2}{n_i}
+    \end{equation*}
+    However, this correction increases Type II error, so it is not recommended.
+\end{itemize}
+
+\subsection{Comparing two datasets}
+
+Imagine we have two datasets, $x_1, \ldots, x_n$ and $y_1, \ldots, y_m$, respectively realization of $X_1, \ldots, X_n \sim G_1$ and $Y_1, \ldots, Y_m \sim G_2$. We want to test if the two distributions are the same, i.e. $H_0 : G_1 = G_2$ and $H_1 : G_1 \not = G_2$, for example to detect concept drift in datasets collected over time regarding the same phenomenon. If the data is \textbf{univariate}, then:
+\begin{itemize}
+    \item For \textbf{continuous data} we use the Kolmogorov-Smirnov test, defined from the empirical distributions $F_n$ (approximation of $G_1$) and $F_m$ (approximation of $G_2$):
+    \begin{equation*}
+        D = \sup_{a \in \mathbb{R}} |F_n(a) - F_m(a)| \sim K
+    \end{equation*}
+    \item For \textbf{discrete data} we use the chi-square test, defined from counts derived from both datasets:
+    \begin{equation*}
+        \chi^2 = \sum_{R_i > 0 \land S_i > 0} \frac{(\sqrt{\frac{m}{n}} R_i - \sqrt{\frac{n}{m}} S_i)^2}{R_i + S_i} \sim \chi^2(\textit{df})
+    \end{equation*}
+    $R_i$ and $S_i$ are the number of observations of value $i$ in the first and second dataset, respectively, and $\textit{df} = |\{ i : R_i > 0 \lor S_i > 0 \}| - 1$.
+\end{itemize}
+Other tests can be found in the \texttt{R} package \texttt{twosamples}. For \textbf{multivariate data}, the package \texttt{Ecume} contains several tests.
